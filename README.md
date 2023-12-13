@@ -109,8 +109,8 @@
 | 정상준 | BE | 백엔드 팀장 |
 | 윤혜원 | FE | 프론트 팀장 |
 
-## 5.실행 방법
+## 5.스토리보드 
+https://www.figma.com/file/GIGSIUCcXM7fEHuvKbA5Bj/dogiary%EC%8A%A4%ED%86%A0%EB%A6%AC%EB%B3%B4%EB%93%9C?type=whiteboard&node-id=0%3A1&t=EE28PtvuA6qOhb5O-1
 
----
 
-프론트
+
