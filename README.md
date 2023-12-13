@@ -95,6 +95,8 @@
 [엘리스팀프로젝트2_9팀](https://www.figma.com/file/Nj49rFgzooY5TD209loVdt/엘리스팀프로젝트2_9팀?type=design&node-id=23:3&mode=design&t=ZaMYNUDqdf9WDYze-1)
 
 - API 명세서 : [API Docs](https://www.notion.so/API-Docs-4114de1f27a64a3e8f9aa57b503cffec?pvs=21)
+- 스토리보드 : [스토리보드](https://www.figma.com/file/GIGSIUCcXM7fEHuvKbA5Bj/dogiary%EC%8A%A4%ED%86%A0%EB%A6%AC%EB%B3%B4%EB%93%9C?type=whiteboard&node-id=0%3A1&t=EE28PtvuA6qOhb5O-1)
+
 
 ## 4.프로젝트 팀원 역할 분담
 
@@ -109,8 +111,7 @@
 | 정상준 | BE | 백엔드 팀장 |
 | 윤혜원 | FE | 프론트 팀장 |
 
-## 5.스토리보드 
-https://www.figma.com/file/GIGSIUCcXM7fEHuvKbA5Bj/dogiary%EC%8A%A4%ED%86%A0%EB%A6%AC%EB%B3%B4%EB%93%9C?type=whiteboard&node-id=0%3A1&t=EE28PtvuA6qOhb5O-1
+
 
 
 
