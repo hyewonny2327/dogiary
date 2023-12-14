@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import MapComponent from '../components/myMapPage/Map';
 import { LogoBar,NavBar } from '../components/common/Header';
-import { TextInputBox } from '../components/common/Boxes';
+import { InputBox } from '../components/common/Boxes';
+
 
 
 function MyMapPage(){
@@ -32,12 +33,11 @@ function MyMapPage(){
             <MapComponent searchInput={searchInput}/>
             <MapUiStyle>
                 <div className='map-background'>
-                    <TextInputBox 
-                        className='text-input' 
-                        customStyle={searchInputCustomStyle} 
-                        placeholder={'장소를검색하세요.'} 
-                        value ={searchInput}
-                        onChange = {handleInputChange}/>
+                <InputBox>
+                    <input className='text-input' type='text'placeholder='장소를검색하세요' onChange={handleInputChange}/>
+                </InputBox>
+
+
                     <button className='button'onClick={handleSearch}>검색</button>
                     {/* <FilterBtn text={산책}/> */}
 
@@ -72,13 +72,28 @@ const MapUiStyle = styled.div`
     border:none;
 
 }
-    .map-background{
-        display:flex;
-        height: 119px;
-        background: linear-gradient(180deg, rgba(3, 2, 0, 0.41) 0%, rgba(255, 248, 230, 0.00) 100%);
 
-    }
+.map-background{
+    display:flex;
+    height: 119px;
+    width:100%;
+    background: linear-gradient(180deg, rgba(3, 2, 0, 0.41) 0%, rgba(255, 248, 230, 0.00) 100%);
 
+}
+.text-input{
+    background-color:#fff;
+    border:none;
+    width:70vw;
+    height:38px;
+    padding:5px;
+    margin:10px;
+    box-sizing: border-box;
+
+}
+
+
+display:flex;
+justify-content:center;
 
 `
 const FilterBtnStyle = styled.div`
@@ -89,19 +104,3 @@ border-radius: 18px;
 background: #5F5013;
 }
 `
-const searchInputCustomStyle=`
-    input[type=text]{
-        background-color:#fff;
-        border:none;
-        width:70vw;
-        height:38px;
-        padding:5px;
-        margin:10px;
-        box-sizing: border-box;
-
-    }
-
-    display:flex;
-    justify-content:center;
-    
-    `

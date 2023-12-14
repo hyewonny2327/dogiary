@@ -2,7 +2,28 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 
-export function Modal({ onClose, content, customModalStyle, containerStyle }) {
+
+
+// export function Modal({ onClose, content, customModalStyle, containerStyle }) {
+//     const [isModalClicked, setIsModalClicked] = useState(true);
+  
+//     const closeModal = () => {
+//       setIsModalClicked(false);
+//       onClose();
+//     };
+  
+   
+  
+//     return isModalClicked
+//       ? createPortal(
+//           <ModalContainerStyle containerStyle={containerStyle} onClick={closeModal}>
+//             <ModalContentStyle customModalStyle={customModalStyle}>{content}</ModalContentStyle>
+//           </ModalContainerStyle>,
+//           document.body
+//         )
+//       : null;
+//   }
+export function Modal({ children,onClose,containerStyle }) {
     const [isModalClicked, setIsModalClicked] = useState(true);
   
     const closeModal = () => {
@@ -15,7 +36,7 @@ export function Modal({ onClose, content, customModalStyle, containerStyle }) {
     return isModalClicked
       ? createPortal(
           <ModalContainerStyle containerStyle={containerStyle} onClick={closeModal}>
-            <ModalContentStyle customModalStyle={customModalStyle}>{content}</ModalContentStyle>
+            <ModalContentStyle>{children}</ModalContentStyle>
           </ModalContainerStyle>,
           document.body
         )
@@ -36,13 +57,11 @@ export function Modal({ onClose, content, customModalStyle, containerStyle }) {
   `;
   
   const ModalContentStyle = styled.div`
-    width: 371px;
-    height: 83px;
+    
     border-radius: 4px;
     background: #FFF;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   
-    ${(props) => props.customModalStyle && props.customModalStyle};
   `;
 
 
@@ -59,4 +78,5 @@ export function Modal({ onClose, content, customModalStyle, containerStyle }) {
    * !모달 뜨고안뜨고 상태 -> 리덕스 스토어에만 영향, 종속x 
    * ! 유저의 인증상태 : 로그인여부같은거 
    */
+
 
