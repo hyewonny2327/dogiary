@@ -4,16 +4,14 @@ dotenv.config();
 const mongoose = require("mongoose");
 const cors = require("cors");
 const mapRouter = require("../server/routes/mapRouter.js");
-const dogRouter = require("../server/routes/dogRouter.js");
-const diaryRouter = require("./routers/diaryApi.js");
-const userRouter = require("./routers/user-router");
+const dogRouter = require("./routers/dogRouter.js");
+const diaryRouter = require("./routers/diaryRouter.js");
+const userRouter = require("./routers/userRouter.js");
 const cookieParser = require("cookie-parser");
 
-const PORT = 5000;
 const app = express();
 app.use(express.json());
 app.use(cors());
-const PORT = 5000;
 const router = express.Router();
 
 router.use("/", mapRouter);
