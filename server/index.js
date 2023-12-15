@@ -3,20 +3,28 @@ const dotenv = require("dotenv");
 dotenv.config();
 const mongoose = require("mongoose");
 const cors = require("cors");
-const mapRouter = require("../server/routes/mapRouter.js");
-const dogRouter = require("../server/routes/dogRouter.js");
+const mapRouter = require("./routers/mapRouter.js");
+const dogRouter = require("./routers/dogRouter.js");
+const diaryRouter = require("./routers/diaryRouter.js");
+const {userRouter} = require("./routers/userRouter.js");
+const cookieParser = require("cookie-parser");
+
 const app = express();
 app.use(express.json());
 app.use(cors());
-
 const router = express.Router();
+
+const port = 8080;
+
 router.use("/", mapRouter);
 router.use("/", dogRouter);
+router.use("/", diaryRouter);
 
-// /maps와 /dogs 경로를 combinedRouter로 처리
 app.use("/api", router);
-
-app.listen(3000, function () {
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use("/api/auth", userRouter);
+app.listen(8080, function () {
 	console.log("severOpen");
 });
 
@@ -25,9 +33,9 @@ mongoose.connect(DB_URL);
 const db = mongoose.connection;
 
 db.on("connected", () => {
-	console.log(`DB 연결 성공`);
+  console.log("DB 연결 성공");
 });
 
 db.on("error", (error) => {
-	console.log("DB 연결 실패");
+  console.log("DB 연결 실패");
 });

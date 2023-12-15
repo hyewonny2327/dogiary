@@ -1,4 +1,4 @@
-const Dog = require("../models/dog-model.js");
+const Dog = require("../models/dogModel.js");
 const { ObjectId } = require("mongoose");
 
 const dogService = {
