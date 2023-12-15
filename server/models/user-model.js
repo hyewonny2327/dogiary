@@ -1,33 +1,34 @@
-import { model, Schema } from "mongoose";
+const mongoose = require("mongoose");
+const path = require("path");
 
-const UserSchema = new Schema(
-	{
-		user_email: {
-			type: String,
-			required: true,
-		},
-		user_id: {
-			type: String,
-			required: true,
-		},
-		nickname: {
-			type: String,
-			required: true,
-		},
-		password: {
-			type: String,
-			required: true,
-		},
-		image_url: {
-			type: String,
-			default: "defaultImage.png",
-		},
-	},
-	{
-		collection: "users",
-		timestamps: true,
-	}
+const userSchema = new mongoose.Schema(
+    {
+        email: {
+            type: String,
+            required: true,
+        },
+        userId: {
+            type: String,
+            required: true,
+        },
+        nickName: {
+            type: String,
+            required: true,
+        },
+        password: {
+            type: String,
+            required: true,
+        },
+        imageUrl: {
+            type: String,
+            default: path.join(__dirname, "../public/defaultImage.png"),
+        },
+    },
+    {
+        collection: "Users",
+        timestamps: true,
+    }
 );
 
-const User = model("users", UserSchema);
-export { User };
+const User = mongoose.model("Users", userSchema);
+module.exports = { User };
