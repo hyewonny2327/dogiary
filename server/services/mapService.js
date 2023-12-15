@@ -49,6 +49,23 @@ const mapService = {
 		}
 		return allMaps;
 	},
+	//태그별 데이터 받아오기
+	async getMapsByTag(tagName) {
+		try {
+			const mapsByTag = await Map.find({ tag: tagName }).lean();
+
+			if (!mapsByTag || mapsByTag.length === 0) {
+				const error = new Error(
+					`태그 '${tagName}'에 해당하는 맵 데이터가 존재하지 않습니다.`
+				);
+				throw error;
+			}
+			return mapsByTag;
+		} catch (error) {
+			console.error("Error getting maps by tag:", error);
+			throw error;
+		}
+	},
 };
 
 module.exports = mapService;

@@ -6,7 +6,7 @@ const cors = require("cors");
 const mapRouter = require("./routers/mapRouter.js");
 const dogRouter = require("./routers/dogRouter.js");
 const diaryRouter = require("./routers/diaryRouter.js");
-const {userRouter} = require("./routers/userRouter.js");
+const { userRouter } = require("./routers/userRouter.js");
 const cookieParser = require("cookie-parser");
 
 const app = express();
@@ -33,9 +33,9 @@ mongoose.connect(DB_URL);
 const db = mongoose.connection;
 
 db.on("connected", () => {
-  console.log("DB 연결 성공");
+	console.log("DB 연결 성공");
 });
 
 db.on("error", (error) => {
-  console.log("DB 연결 실패");
+	console.log("DB 연결 실패");
 });
