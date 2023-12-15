@@ -6,7 +6,7 @@ const cors = require("cors");
 const mapRouter = require("./routers/mapRouter.js");
 const dogRouter = require("./routers/dogRouter.js");
 const diaryRouter = require("./routers/diaryRouter.js");
-const { userRouter } = require("./routers/userRouter.js");
+const {userRouter} = require("./routers/userRouter.js");
 const cookieParser = require("cookie-parser");
 
 const app = express();
