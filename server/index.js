@@ -9,6 +9,7 @@ const diaryRouter = require("./routers/diaryApi.js");
 const userRouter = require("./routers/user-router");
 const cookieParser = require("cookie-parser");
 
+const PORT = 5000;
 const app = express();
 app.use(express.json());
 app.use(cors());
