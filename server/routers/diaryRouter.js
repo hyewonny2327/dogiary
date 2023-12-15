@@ -6,7 +6,7 @@ router.post("/diary", diaryController.diarySave);
 
 router.put(`/diary/:id`, diaryController.diaryUpdate);
 
-router.delete(`/diary:id`, diaryController.diaryDelete);
+router.delete(`/diary/:id`, diaryController.diaryDelete);
 
 router.get("/diary", diaryController.diaryGetAll);
 
