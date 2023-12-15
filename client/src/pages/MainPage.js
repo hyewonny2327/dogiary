@@ -7,6 +7,7 @@ import Map from '../components/myMapPage/Map';
 import styled from 'styled-components';
 import Dropdown from '../components/common/Dropdown';
 import { DropdownProvider,useDropdown } from '../hooks/useDropdown';
+import { getAddress } from '../utils/getAddress';
 function MainPage(){
   
   
@@ -21,6 +22,12 @@ function MainPage(){
     { label: 'Option 3', value: 'option3' },
   ]
   const { selectedOption } = useDropdown();
+
+  useEffect(()=>{
+    let lat = 37.402056;
+     let lng = 127.108212;
+    getAddress(lat,lng);
+  })
 
     return(
         <div>

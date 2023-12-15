@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
-import markerIcon from '../myMapPage/markerIcon.svg';
+import markerIcon from '../icons/markerIcon.svg';
 import { useSelector } from 'react-redux';
 
 const { kakao } = window;

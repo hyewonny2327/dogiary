@@ -7,8 +7,11 @@ import { DropdownProvider } from '../../hooks/useDropdown';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSearchInput } from '../../slice/store';
-import { setMarkers } from '../../slice/store';
-import imageIcon from '../../components/myMapPage/imageIcon.svg'
+import { callMapApi } from '../../utils/callMapApi';
+import closeBtn from '../../components/icons/closeBtn.svg'
+import imageIcon from '../../components/icons/imageIcon.svg'
+import { getAddress } from '../../utils/getAddress';
+
 const { kakao } = window;
 
 function RegisterPlace(){
@@ -34,39 +37,28 @@ const [selectedShowOption, setSelectedShowOption] = useState(null);
         { label: '기타', value: '3' },
         { label: '전체보기', value: '4' },
     ]
-    //const [searchInput, setSearchInput] = useState('이태원 맛집');
+
+    //검색 버튼 클릭여부를 판별해서 장소 목록 리스트를 보여준다. 
+    const [isSearchBtnClicked, setIsSearchBtnClicked ] = useState(false);
 
     const [inputVal, setInputVal] = useState('')
+    const [selectedPlace, setSelectedPlace] = useState('')
     const handleInputChange = (e) =>{
         //사용자의 input 추적
         setInputVal(e.target.value);
     };
     const handleSearch = (e) =>{
         e.preventDefault();
+        setIsSearchBtnClicked(!isSearchBtnClicked);
         //검색 결과 저장
         dispatch(setSearchInput(inputVal));
         console.log(searchInput)
         
     } 
 
-    useEffect(() => {
-        //이렇게 또 호출하는게 맞나 ,..?  
-        //여기서 redux에 상태 업데이트하면 변경된거 인지하고 map에서 해줘야하는거 아닌가 . .
 
-  const ps = new kakao.maps.services.Places();
-      
-        ps.keywordSearch(`${searchInput}`, (data, status) => {
-          if (status === kakao.maps.services.Status.OK) {
-            const newMarkers = data.map((place) => ({
-              position: { lat: place.y, lng: place.x },
-              content: place.place_name,
-            }));
-            dispatch(setMarkers(newMarkers));
-          }
-        });
-      }, [dispatch, searchInput]);
- 
-      useEffect(()=>{
+    useEffect(()=>{
+        callMapApi(dispatch,searchInput)
         //검색어로 마커 정보 가져옴 (페이지로드 / 검색버튼 클릭시)
         dispatch(setSearchInput(searchInput));
     },[dispatch,searchInput])
@@ -83,21 +75,39 @@ const [selectedShowOption, setSelectedShowOption] = useState(null);
         }
       };
 
+    function handleSelect(index){
+        setIsSearchBtnClicked(false);
+        setSelectedPlace(markers[index].content);
+        
+        console.log('클릭',markers[index].content)
+    }
+
+
+ 
+
+
 
     return(
         <RegisterPlaceContainer>
             <ContainerBox>
                 <ContentContainerStyle>
+                    <div className='header-text'>나만의 장소를 저장해보세요!</div>
                     <DropdownProvider>
                         <InputContainerStyle>
                             <Dropdown  options={showOptions} placeholder='공개여부' onSelect={(option)=> setSelectedShowOption(option)} />
                             <Dropdown  options={filterOptions} placeholder='카테고리' onSelect={(option)=>setSelectedFilterOption(option)} />
                             <InputBox>
                             <div className='search-container'>
+                                <div className='search-box'>
+                                    <input className='text-input' type='text'placeholder='장소를검색하세요' onChange={handleInputChange}/>
+                                    <button className='button'onClick={handleSearch}>{isSearchBtnClicked ? '닫기':'검색'}</button>
+                                </div>
+                                {selectedPlace ? (
+                                    <div>선택한 장소 : {selectedPlace}</div>
 
-                                <input className='text-input' type='text'placeholder='장소를검색하세요' onChange={handleInputChange}/>
-                                <button className='button'onClick={handleSearch}>검색</button>
+                                ):''}
                             </div>
+                            
                             </InputBox>
                             <div className='image-container'>
                                 <img src={imageIcon}></img>
@@ -111,12 +121,24 @@ const [selectedShowOption, setSelectedShowOption] = useState(null);
                             </InputBox>
                         </InputContainerStyle>
                     </DropdownProvider>
-                    {/* <div>
-                        {markers.map((item)=>(
-                            <div>{item.content}</div>
-                            ))}
-                    </div> */}
-
+                    {
+                        isSearchBtnClicked && (
+                            <PlaceListStyle className='place-list'>
+                                <div className='header-container'>
+                                    <div>장소를 선택하세요</div>
+                                    <img src={closeBtn}/>
+                                </div>
+                                {markers.map((item,index)=>(
+                                    <div className='list-container' key={index}>
+                                        <div className='text'>{item.content}</div>
+                                        <button className='btn' onClick={()=>handleSelect(index)}>선택</button>
+                                        <div></div>
+                                    </div>
+                                    ))}
+                            </PlaceListStyle>
+                        )
+                    }
+                    
                 </ContentContainerStyle>
             </ContainerBox>
             <BtnContainer>
@@ -138,11 +160,15 @@ const [selectedShowOption, setSelectedShowOption] = useState(null);
 export default RegisterPlace;
 
 const RegisterPlaceContainer = styled.div`
+font-family: Noto Sans KR;
 display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
 height:100vh;
+.header-text{
+    margin-bottom:7px;
+}
 `
 const BtnContainer = styled.div`
 margin : 2rem 48.5px;
@@ -159,18 +185,22 @@ flex-direction:column;
 justify-content:center;
 align-items:center;
 margin:2% 5%;
+position:relative;
 `
 const InputContainerStyle = styled.div`
 height:80%;
 display:flex;
 flex-direction:column;
 justify-content:flex-start;
-
 .search-container{
+    display:flex;
+    flex-direction:column;
+    margin:6px;
+}
+.search-box{
     display:flex;
     flex-direction:row;
     justify-content:space-between;
-    margin:6px;
 }
 .text-input{
     width:80%;
@@ -212,5 +242,47 @@ font-weight:600;
     
 }
 
+
+`
+const PlaceListStyle = styled.div`
+position:absolute;
+top:40%;
+height:270px;
+overflow:auto;
+border-radius: 5px;
+background: #BDAF74;
+padding:10px 20px;
+width:90%;
+
+.header-container{
+    display:flex;
+    justify-content:space-between;
+    color: #5F5013;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 10px 0;
+
+}
+.list-container{
+    padding:14px;
+    border-top:1px solid #fff;
+    display:flex;
+    flex-direction:row;
+    justify-content:space-between;
+}
+.text{
+    width:70%;
+}
+.btn{
+    width: 52px;
+    height: 37px;
+    border-radius: 2px;
+    background: #FFF8E6;
+    color: #5F5013;
+    font-weight: 800;
+    border:none;
+    font-family: Noto Sans KR;
+    
+}
 
 `

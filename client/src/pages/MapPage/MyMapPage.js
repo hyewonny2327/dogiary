@@ -4,7 +4,7 @@ import MapComponent from '../../components/myMapPage/Map';
 import { LogoBar,NavBar } from '../../components/common/Header';
 import { InputBox } from '../../components/common/Boxes';
 import axios from 'axios';
-import myMapIcon from '../../components/myMapPage/myMapIcon.svg';
+import myMapIcon from '../../components/icons/myMapIcon.svg';
 import { Modal } from '../../components/common/Modal';
 import { useNavigate } from 'react-router-dom';
 import { useDropdown } from '../../hooks/useDropdown';
