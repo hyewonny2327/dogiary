@@ -6,7 +6,7 @@ const cors = require("cors");
 const mapRouter = require("./routers/mapRouter.js");
 const dogRouter = require("./routers/dogRouter.js");
 const diaryRouter = require("./routers/diaryRouter.js");
-const { userRouter } = require("./routers/userRouter.js");
+const {userRouter} = require("./routers/userRouter.js");
 const cookieParser = require("cookie-parser");
 
 const app = express();
@@ -24,8 +24,8 @@ app.use("/api", router);
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use("/api/auth", userRouter);
-app.listen(port, function () {
-  console.log(`severOpen${port}`);
+app.listen(8080, function () {
+	console.log("severOpen");
 });
 
 const DB_URL = process.env.ATLAS_URL;
