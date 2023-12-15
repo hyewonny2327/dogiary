@@ -1,16 +1,17 @@
-import { model, Schema } from "mongoose";
+const mongoose = require("mongoose");
+const path = require("path");
 
-const UserSchema = new Schema(
+const userSchema = new mongoose.Schema(
     {
-        user_email: {
+        email: {
             type: String,
             required: true,
         },
-        user_id: {
+        userId: {
             type: String,
             required: true,
         },
-        nickname: {
+        nickName: {
             type: String,
             required: true,
         },
@@ -18,16 +19,16 @@ const UserSchema = new Schema(
             type: String,
             required: true,
         },
-        image_url: {
+        imageUrl: {
             type: String,
-            default: "defaultImage.png",
+            default: path.join(__dirname, "../public/defaultImage.png"),
         },
     },
     {
-        collection: "users",
+        collection: "Users",
         timestamps: true,
     }
 );
 
-const User = model("users", UserSchema);
-export { User };
+const User = mongoose.model("Users", userSchema);
+module.exports = { User };
