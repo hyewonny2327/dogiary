@@ -23,8 +23,8 @@ function RegisterPlace(){
     
     const navigate = useNavigate();
 
-const [selectedShowOption, setSelectedShowOption] = useState(null);
-  const [selectedFilterOption, setSelectedFilterOption] = useState(null);
+    const [selectedShowOption, setSelectedShowOption] = useState(null);
+    const [selectedFilterOption, setSelectedFilterOption] = useState(null);
 
     const showOptions=[
         { label: '공개', value: 'Public' },
@@ -42,7 +42,7 @@ const [selectedShowOption, setSelectedShowOption] = useState(null);
     const [isSearchBtnClicked, setIsSearchBtnClicked ] = useState(false);
 
     const [inputVal, setInputVal] = useState('')
-    const [selectedPlace, setSelectedPlace] = useState('')
+    const [selectedPlace, setSelectedPlace] = useState({content:'',lat:0,lng:0})
     const handleInputChange = (e) =>{
         //사용자의 input 추적
         setInputVal(e.target.value);
@@ -77,16 +77,41 @@ const [selectedShowOption, setSelectedShowOption] = useState(null);
 
     function handleSelect(index){
         setIsSearchBtnClicked(false);
-        setSelectedPlace(markers[index].content);
+        const newSelectedPlace = selectedPlace;
+        newSelectedPlace.content = markers[index].content;
+        newSelectedPlace.lat = markers[index].position.lat;
+        newSelectedPlace.lng = markers[index].position.lng;
+        setSelectedPlace(newSelectedPlace);
         
         console.log('클릭',markers[index].content)
+        console.log('좌표값', markers[index].position.lat );
     }
 
+    const [markerAddresses, setMarkerAddresses] = useState([]);
 
- 
+    // marker에 변경이 생기면 promise all 로 모든 marker의 좌표값에 대한 주소를 받아온다. 
+    // 그리고나서 아래 map 에서 index별로 보여줌 
+    useEffect(() => {
+        const fetchMarkerAddresses = async () => {
+          try {
+            const addresses = await Promise.all(
+              markers.map(async (marker) => {
+                const addressResult = await getAddress(Number(marker.position.lng), Number(marker.position.lat));
+                return addressResult;
+              })
+            );
+            setMarkerAddresses(addresses);
+          } catch (error) {
+            console.error('주소 가져오기 오류:', error);
+          }
+        };
+      
+        fetchMarkerAddresses();
+      }, [markers]);
 
-
-
+      useEffect(()=>{
+        console.log('selectedPlace' ,selectedPlace);
+      },[selectedPlace]);
     return(
         <RegisterPlaceContainer>
             <ContainerBox>
@@ -102,8 +127,8 @@ const [selectedShowOption, setSelectedShowOption] = useState(null);
                                     <input className='text-input' type='text'placeholder='장소를검색하세요' onChange={handleInputChange}/>
                                     <button className='button'onClick={handleSearch}>{isSearchBtnClicked ? '닫기':'검색'}</button>
                                 </div>
-                                {selectedPlace ? (
-                                    <div>선택한 장소 : {selectedPlace}</div>
+                                {selectedPlace.content !== '' ? (
+                                    <div>선택한 장소 : {selectedPlace.content}</div>
 
                                 ):''}
                             </div>
@@ -130,9 +155,11 @@ const [selectedShowOption, setSelectedShowOption] = useState(null);
                                 </div>
                                 {markers.map((item,index)=>(
                                     <div className='list-container' key={index}>
-                                        <div className='text'>{item.content}</div>
-                                        <button className='btn' onClick={()=>handleSelect(index)}>선택</button>
-                                        <div></div>
+                                        <div className='place-container'>
+                                            <div className='text'>{item.content}</div>
+                                            <div className='address'>{markerAddresses[index]}</div>
+                                        </div>
+                                            <button className='btn' onClick={()=>handleSelect(index)}>선택</button>
                                     </div>
                                     ))}
                             </PlaceListStyle>
@@ -269,9 +296,11 @@ width:90%;
     display:flex;
     flex-direction:row;
     justify-content:space-between;
+    font-family: Noto Sans KR;
 }
 .text{
     width:70%;
+    font-weight:800;
 }
 .btn{
     width: 52px;
@@ -283,6 +312,9 @@ width:90%;
     border:none;
     font-family: Noto Sans KR;
     
+}
+.address{
+    font-size:0.8rem;
 }
 
 `

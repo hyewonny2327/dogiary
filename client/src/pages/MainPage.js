@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import Dropdown from '../components/common/Dropdown';
 import { DropdownProvider,useDropdown } from '../hooks/useDropdown';
 import { getAddress } from '../utils/getAddress';
+import axios from 'axios';
 function MainPage(){
   
   
@@ -23,11 +24,17 @@ function MainPage(){
   ]
   const { selectedOption } = useDropdown();
 
-  useEffect(()=>{
-    let lat = 37.402056;
-     let lng = 127.108212;
-    getAddress(lat,lng);
-  })
+
+  useEffect(() => {
+    axios.get('/api/maps')
+      .then((response) => {
+        console.log('api를 잘 받아왔을까!!!', response.data);
+      })
+      .catch((error) => {
+        // 오류 출력
+        console.error('API 호출 중 오류 발생:', error);
+      });
+  }, []);
 
     return(
         <div>
