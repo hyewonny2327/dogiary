@@ -14,6 +14,8 @@ app.use(express.json());
 app.use(cors());
 const router = express.Router();
 
+const port = 8080;
+
 router.use("/", mapRouter);
 router.use("/", dogRouter);
 router.use("/", diaryRouter);
@@ -31,11 +33,9 @@ mongoose.connect(DB_URL);
 const db = mongoose.connection;
 
 db.on("connected", () => {
-	console.log(`DB 연결 성공`);
+  console.log("DB 연결 성공");
 });
 
 db.on("error", (error) => {
-	console.log("DB 연결 실패");
+  console.log("DB 연결 실패");
 });
-
-//
