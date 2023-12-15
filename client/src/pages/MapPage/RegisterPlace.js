@@ -6,12 +6,12 @@ import Dropdown from '../../components/common/Dropdown';
 import { DropdownProvider } from '../../hooks/useDropdown';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { setSearchInput } from '../../slice/store';
+import { setSearchInput, setSelectedOption } from '../../slice/store';
 import { callMapApi } from '../../utils/callMapApi';
 import closeBtn from '../../components/icons/closeBtn.svg'
 import imageIcon from '../../components/icons/imageIcon.svg'
 import { getAddress } from '../../utils/getAddress';
-
+import { callRegisterPlaceApi } from '../../utils/registerPlace';
 const { kakao } = window;
 
 function RegisterPlace(){
@@ -112,15 +112,27 @@ function RegisterPlace(){
       useEffect(()=>{
         console.log('selectedPlace' ,selectedPlace);
       },[selectedPlace]);
+
+      const handleShowSelect = (selectedOption) => {
+        setSelectedShowOption(selectedOption);
+      };
+    
+      const handleFilterSelect = (selectedOption) => {
+        setSelectedFilterOption(selectedOption);
+    };
+
+    useEffect(()=>{
+        
+    },[])
+    
     return(
         <RegisterPlaceContainer>
             <ContainerBox>
                 <ContentContainerStyle>
                     <div className='header-text'>나만의 장소를 저장해보세요!</div>
-                    <DropdownProvider>
                         <InputContainerStyle>
-                            <Dropdown  options={showOptions} placeholder='공개여부' onSelect={(option)=> setSelectedShowOption(option)} />
-                            <Dropdown  options={filterOptions} placeholder='카테고리' onSelect={(option)=>setSelectedFilterOption(option)} />
+                            <Dropdown  options={showOptions} placeholder='공개여부' onSelect={handleShowSelect} />
+                            <Dropdown  options={filterOptions} placeholder='카테고리' onSelect={handleFilterSelect} />
                             <InputBox>
                             <div className='search-container'>
                                 <div className='search-box'>
@@ -145,7 +157,6 @@ function RegisterPlace(){
                                 </div>
                             </InputBox>
                         </InputContainerStyle>
-                    </DropdownProvider>
                     {
                         isSearchBtnClicked && (
                             <PlaceListStyle className='place-list'>
@@ -172,6 +183,8 @@ function RegisterPlace(){
                 <LongStrokedBtn text='취소하기'/>
                 <LongColoredBtn text='등록하기' onClick={
                     ()=>{
+                        dispatch(setSelectedOption({show:selectedShowOption, filter:selectedFilterOption}));
+                        callRegisterPlaceApi();
                         console.log('클릭했음');
                         //장소 검색에 등록한 내용 저장 
                         navigate('/mapPage');

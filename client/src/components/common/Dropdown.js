@@ -3,11 +3,18 @@
  import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { useDropdown } from '../../hooks/useDropdown';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSelectedOption } from '../../slice/store';
 
 
+function Dropdown({options,placeholder,onSelect}){
+    //const {selectedOption, onSelect} = useDropdown();
+    const [selectedOption, setSelectedOption] = useState(null);
 
-function Dropdown({options,placeholder}){
-    const {selectedOption, onSelect} = useDropdown();
+  const handleSelect = (option) => {
+    setSelectedOption(option);
+    onSelect(option);
+  };
 
     return(
         <DropdownStyle className="dropdown">
@@ -17,8 +24,8 @@ function Dropdown({options,placeholder}){
         onChange={(e) => {
           const selectedValue = e.target.value;
           const selectedOption = options.find((option) => option.value === selectedValue);
-          onSelect(selectedOption);
-          console.log('여기는 dropdown 컴포넌트', selectedOption);
+          handleSelect(selectedOption);
+          
         }}
       >
         <option value="" disabled>

@@ -26,7 +26,7 @@ function MainPage(){
 
 
   useEffect(() => {
-    axios.get('/api/maps')
+    axios.get('http://localhost:8080/api/maps')
       .then((response) => {
         console.log('api를 잘 받아왔을까!!!', response.data);
       })
