@@ -110,7 +110,7 @@ const [selectedShowOption, setSelectedShowOption] = useState(null);
                             
                             </InputBox>
                             <div className='image-container'>
-                                <img src={imageIcon}></img>
+                                <img src={uploadedImage ? uploadedImage:imageIcon} style={{width:'109px', height:'96px', objectFit:'contain' }}></img>
                                 <input className='add-photo' type="file" id="file-input" name="ImageStyle" onChange={handleImageUpload}/>
                                 <label className='upload-btn' htmlFor="file-input" >이미지 업로드</label>
                             </div>
