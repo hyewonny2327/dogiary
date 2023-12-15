@@ -1,4 +1,4 @@
-const dogService = require("../services/dog-service.js");
+const dogService = require("../services/dogService.js");
 
 const dogController = {
 	async createDog(req, res) {
