@@ -5,10 +5,7 @@ import { ContainerBox,InputBox } from '../components/common/Boxes';
 import { Modal, ModalContainer } from '../components/common/Modal';
 import Map from '../components/myMapPage/Map';
 import styled from 'styled-components';
-import Dropdown from '../components/common/Dropdown';
-import { DropdownProvider,useDropdown } from '../hooks/useDropdown';
 import { getAddress } from '../utils/getAddress';
-import axios from 'axios';
 function MainPage(){
   
   
@@ -16,25 +13,6 @@ function MainPage(){
   function handleModalClose(){
     setShowModal(false);
   }
-
-  const options=[
-    { label: 'Option 1', value: 'option1' },
-    { label: 'Option 2', value: 'option2' },
-    { label: 'Option 3', value: 'option3' },
-  ]
-  const { selectedOption } = useDropdown();
-
-
-  useEffect(() => {
-    axios.get('http://localhost:8080/api/maps')
-      .then((response) => {
-        console.log('api를 잘 받아왔을까!!!', response.data);
-      })
-      .catch((error) => {
-        // 오류 출력
-        console.error('API 호출 중 오류 발생:', error);
-      });
-  }, []);
 
     return(
         <div>
@@ -62,13 +40,7 @@ function MainPage(){
                 <div className='content'>안녕</div>
               </ModalStyle>
             </Modal>:''}
-            <DropdownProvider>
-              <div>
-                <h1>my components</h1>
-                <Dropdown options={options} placeholder='선택하세요' />
-                <p>{selectedOption}를 선택함</p>
-              </div>
-            </DropdownProvider>
+            
 
    
             

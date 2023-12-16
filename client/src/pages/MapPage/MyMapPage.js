@@ -3,11 +3,9 @@ import styled from 'styled-components';
 import MapComponent from '../../components/myMapPage/Map';
 import { LogoBar,NavBar } from '../../components/common/Header';
 import { InputBox } from '../../components/common/Boxes';
-import axios from 'axios';
 import myMapIcon from '../../components/icons/myMapIcon.svg';
 import { Modal } from '../../components/common/Modal';
 import { useNavigate } from 'react-router-dom';
-import { useDropdown } from '../../hooks/useDropdown';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSearchInput } from '../../slice/store';
 function MyMapPage(){
@@ -58,11 +56,8 @@ function MyMapPage(){
     
     const navigate = useNavigate();
 
-    //const { selectedShowOption, selectedFilterOption } = useDropdown();
 
-    const selectedOption = useSelector((state)=>state.dropDown_RegisterPlace.selectedOption)
-    const selectedFilter = selectedOption.filter ? selectedOption.filter.label : null;
-    const selectedShow = selectedOption.show ? selectedOption.show.label : null;
+    
  
     return(
         <div>
@@ -108,10 +103,7 @@ function MyMapPage(){
 
             </MapUiStyle>
             <div>
-                {/* 여기서 선택된 값 사용 */}
-                <div>{selectedShow}</div>
-                <div>{selectedFilter}</div>
-                {/* 나머지 컴포넌트들과 로직들 */}
+            
             </div>
             
             

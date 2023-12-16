@@ -19,31 +19,15 @@ const mapSlice = createSlice({
     },
 });
 
-const dropDownSlice = createSlice({
-    name:'dropDown_RegisterPlace',
-    initialState:{
-        selectedOption:{
-            show:null,
-            filter:null,
-        },
-    },
-    reducers: {
-        setSelectedOption: (state,action)=>{
-            state.selectedOption = action.payload;
-        },
-    },
-});
 
 
 //액션 및 리듀서 내보내기
 //configureStore를 사용해서 리듀서들을 전달함 (createStore같은것. 저장공간생성)
 export const {setSearchInput,setMarkers} = mapSlice.actions;
-export const {setSelectedOption} = dropDownSlice.actions;
 
 
 export default configureStore({
     reducer:{
         map:mapSlice.reducer,
-        dropDown_RegisterPlace: dropDownSlice.reducer,
     },
 });

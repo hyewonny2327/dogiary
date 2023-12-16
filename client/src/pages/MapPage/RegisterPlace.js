@@ -2,47 +2,33 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ContainerBox,InputBox } from '../../components/common/Boxes';
 import { LongColoredBtn,LongStrokedBtn } from '../../components/common/Buttons';
-import Dropdown from '../../components/common/Dropdown';
-import { DropdownProvider } from '../../hooks/useDropdown';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { setSearchInput, setSelectedOption } from '../../slice/store';
+import { setSearchInput } from '../../slice/store';
 import { callMapApi } from '../../utils/callMapApi';
 import closeBtn from '../../components/icons/closeBtn.svg'
 import imageIcon from '../../components/icons/imageIcon.svg'
 import { getAddress } from '../../utils/getAddress';
 import { callRegisterPlaceApi } from '../../utils/registerPlace';
-const { kakao } = window;
+
 
 function RegisterPlace(){
-    const dispatch = useDispatch();
-
+    
     //이 페이지에서 searchInput, markers를 사용하기 위해 필요함 
+    const dispatch = useDispatch();
     const searchInput = useSelector((state)=>state.map.searchInput)
     const markers = useSelector((state)=>state.map.markers);
-    
+    //페이지 이동 (라우터)
     const navigate = useNavigate();
 
-    const [selectedShowOption, setSelectedShowOption] = useState(null);
-    const [selectedFilterOption, setSelectedFilterOption] = useState(null);
-
-    const showOptions=[
-        { label: '공개', value: 'Public' },
-        { label: '비공개', value: 'Private' },
-      ]
-    const filterOptions =[
-        { label: '산책', value: '0' },
-        { label: '애견동반', value: '1' },
-        { label: '상점', value: '2' },
-        { label: '기타', value: '3' },
-        { label: '전체보기', value: '4' },
-    ]
-
+    //! 장소 검색 기능 
     //검색 버튼 클릭여부를 판별해서 장소 목록 리스트를 보여준다. 
     const [isSearchBtnClicked, setIsSearchBtnClicked ] = useState(false);
-
     const [inputVal, setInputVal] = useState('')
+    //저장된 장소의 장소이름과 위도,경도를 저장한다. -> 주소 받아올때, 데이터 저장할때 필요함 
     const [selectedPlace, setSelectedPlace] = useState({content:'',lat:0,lng:0})
+    
+
     const handleInputChange = (e) =>{
         //사용자의 input 추적
         setInputVal(e.target.value);
@@ -55,38 +41,13 @@ function RegisterPlace(){
         console.log(searchInput)
         
     } 
-
-
     useEffect(()=>{
         callMapApi(dispatch,searchInput)
         //검색어로 마커 정보 가져옴 (페이지로드 / 검색버튼 클릭시)
         dispatch(setSearchInput(searchInput));
     },[dispatch,searchInput])
-        
 
-    const [uploadedImage, setUploadedImage] = useState(null);
-    const handleImageUpload = (event) => {
-        const file = event.target.files[0];
-    
-        // Make sure a file is selected
-        if (file) {
-          // Display the uploaded image
-          setUploadedImage(URL.createObjectURL(file));
-        }
-      };
-
-    function handleSelect(index){
-        setIsSearchBtnClicked(false);
-        const newSelectedPlace = selectedPlace;
-        newSelectedPlace.content = markers[index].content;
-        newSelectedPlace.lat = markers[index].position.lat;
-        newSelectedPlace.lng = markers[index].position.lng;
-        setSelectedPlace(newSelectedPlace);
-        
-        console.log('클릭',markers[index].content)
-        console.log('좌표값', markers[index].position.lat );
-    }
-
+    //장소 리스트에서 marker의 pos 정보를 기준으로 주소를 받아와서 보여줌 
     const [markerAddresses, setMarkerAddresses] = useState([]);
 
     // marker에 변경이 생기면 promise all 로 모든 marker의 좌표값에 대한 주소를 받아온다. 
@@ -109,30 +70,92 @@ function RegisterPlace(){
         fetchMarkerAddresses();
       }, [markers]);
 
-      useEffect(()=>{
-        console.log('selectedPlace' ,selectedPlace);
-      },[selectedPlace]);
+    //장소리스트에서 선택 버튼 누를때 (장소 1개 최종선택)
+    function handleSelect(index){
+        setIsSearchBtnClicked(false);
+        const newSelectedPlace = {
+            content: markers[index].content,
+            lat: markers[index].position.lat,
+            lng: markers[index].position.lng,
+            //주소값을 추가해서 selectedPlace state를 업데이트해준다. (이렇게해도 되나 ?????)
+            address: markerAddresses[index],
+          };
+        setSelectedPlace(newSelectedPlace);
 
-      const handleShowSelect = (selectedOption) => {
-        setSelectedShowOption(selectedOption);
-      };
+    }
+
     
-      const handleFilterSelect = (selectedOption) => {
-        setSelectedFilterOption(selectedOption);
+    //! 이미지 업로드 기능 
+    const [uploadedImage, setUploadedImage] = useState(null);
+    const handleImageUpload = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setUploadedImage(URL.createObjectURL(file));
+        }
     };
-
-    useEffect(()=>{
-        
-    },[])
     
+    //! 사용자의 입력값 저장 
+    
+    const [selectedTag, setSelectedTag] = useState('기타');
+    const [selectedToggle, setSelectedToggle] = useState('공개');
+    const [content,setContent] = useState('');
+
+    function handleToggleChange(event){
+        if(event.target.vale === 'true'){
+            setSelectedToggle(true);
+        }else if(event.target.value === 'false')
+        {
+            setSelectedToggle(false);
+        }
+        
+    }
+    function handleTagChange(event){
+        setSelectedTag(event.target.value);
+    }
+    function handleContentChange(event){
+        setContent(event.target.value);
+    }
+    //! 등록하기 버튼 클릭 시 
+    function handleSubmit(){
+        //post요청보낼 정보들을 저장한다. 
+        const submitData = {
+            tag:selectedTag,
+            toggle:selectedToggle,
+            content:'',
+            imageUrl:uploadedImage,
+            position:[selectedPlace.lng,selectedPlace.lat],
+            address:selectedPlace.address,
+
+        }
+        //submitData 속 내용을 인자로 보내서 api 호출 (아직 구현 진행중 )
+        callRegisterPlaceApi();
+        console.log('클릭했음');
+        navigate('/mapPage');
+    }
+
     return(
         <RegisterPlaceContainer>
             <ContainerBox>
                 <ContentContainerStyle>
                     <div className='header-text'>나만의 장소를 저장해보세요!</div>
                         <InputContainerStyle>
-                            <Dropdown  options={showOptions} placeholder='공개여부' onSelect={handleShowSelect} />
-                            <Dropdown  options={filterOptions} placeholder='카테고리' onSelect={handleFilterSelect} />
+                        <DropdownStyle>
+                            <select value={selectedToggle} onChange={handleToggleChange}>
+                                <option disabled selected>공개여부 선택</option>
+                                <option value='true'>공개</option>
+                                <option value='false'>비공개</option>
+                            </select>
+                        </DropdownStyle>
+                        <DropdownStyle>
+                            <select value={selectedTag} onChange={handleTagChange}>
+                                <option value='' disabled selected>카테고리 선택</option>
+                                <option value='tag1'>산책</option>
+                                <option value='tag2'>애견동반</option>
+                                <option value='tag3'>상점</option>
+                                <option value='tag4'>기타</option>
+                            </select>
+                        </DropdownStyle>
+                            
                             <InputBox>
                             <div className='search-container'>
                                 <div className='search-box'>
@@ -153,7 +176,7 @@ function RegisterPlace(){
                             </div>
                             <InputBox>
                                 <div className='content-container'>
-                                    <input className='content-input' type='text'placeholder='내용을 넣어주세요'></input>
+                                    <input className='content-input' type='text'placeholder='내용을 넣어주세요' onChange={handleContentChange}></input>
                                 </div>
                             </InputBox>
                         </InputContainerStyle>
@@ -181,14 +204,8 @@ function RegisterPlace(){
             </ContainerBox>
             <BtnContainer>
                 <LongStrokedBtn text='취소하기'/>
-                <LongColoredBtn text='등록하기' onClick={
-                    ()=>{
-                        dispatch(setSelectedOption({show:selectedShowOption, filter:selectedFilterOption}));
-                        callRegisterPlaceApi();
-                        console.log('클릭했음');
-                        //장소 검색에 등록한 내용 저장 
-                        navigate('/mapPage');
-                    }
+                <LongColoredBtn text='등록하기' onClick={handleSubmit
+                    
                 }/>
             </BtnContainer>
         </RegisterPlaceContainer>
@@ -330,4 +347,14 @@ width:90%;
     font-size:0.8rem;
 }
 
+`
+
+const DropdownStyle = styled.div`
+select{
+    width: 320px;
+    height: 37px;
+    border-radius: 2px;
+    border: 1px solid #BDAF74;
+    background: rgba(255, 255, 255, 0.00);
+  }  
 `

@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+//! 구현 진행중 ... 
 export async function callRegisterPlaceApi(){
     try{
         // const body = {
@@ -14,9 +15,9 @@ export async function callRegisterPlaceApi(){
         const body = {
             "title": "제목",
             "toggle": true,
-            "tag": ['산책'],
+            "tag": ['ttt'],
             "content": '안녕',
-            "image_url": '이미지경로',
+            "imageUrl": '이미지경로',
             "position": [38, 29],
             "address": '주소'
         }

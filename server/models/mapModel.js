@@ -7,14 +7,14 @@ const MapSchema = new mongoose.Schema(
 			require: true,
 		},
 		toggle: {
-			type: String,
+			type: Boolean,
 			required: true,
 		},
 		tag: {
-			type: Array,
-			required: true,
-			default: [],
-		},
+            type: [String], 
+            default: [],
+            required: true,
+        },
 		imageUrl: {
 			type: String,
 			required: true,
