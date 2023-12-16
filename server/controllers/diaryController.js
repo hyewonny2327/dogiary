@@ -3,9 +3,10 @@ const {
   diaryUpdateService,
   diaryDeleteService,
   diaryGetAllService,
+  diaryGetMonthService,
 } = require("../services/diaryService");
-// ======
 
+//다이어리 생성
 exports.diarySave = async (req, res) => {
   try {
     if (!req.body) {
@@ -53,6 +54,7 @@ exports.diarySave = async (req, res) => {
   }
 };
 
+//다이어리 수정
 exports.diaryUpdate = async (req, res) => {
   try {
     const { id } = req.params;
@@ -88,7 +90,7 @@ exports.diaryUpdate = async (req, res) => {
   }
 };
 
-//
+//다이어리 삭제
 exports.diaryDelete = async (req, res) => {
   console.log(req.id);
 
@@ -111,6 +113,7 @@ exports.diaryDelete = async (req, res) => {
   }
 };
 
+//다이어리 모두 조회
 exports.diaryGetAll = async (req, res) => {
   try {
     const { success, result } = await diaryGetAllService();
@@ -132,6 +135,34 @@ exports.diaryGetAll = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "일기 목록을 가져오는 중에 오류가 발생했습니다.",
+    });
+  }
+};
+
+//다이어리 월별 조회
+exports.diaryGetMonth = async (req, res) => {
+  try {
+    const { month } = req.query;
+    const { success, result, error } = await diaryGetMonthService(month);
+
+    if (success) {
+      res.status(200).json({
+        success: true,
+        message: `${month}월 다이어리를 성공적으로 가져왔습니다.`,
+        data: result,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: `${month}월 다이어리를 가져오는 데 실패했습니다.`,
+        error: error || "내부 서버 오류",
+      });
+    }
+  } catch (err) {
+    console.error("Error", err);
+    res.status(500).json({
+      success: false,
+      message: `${month}월 다이어리를 가져오는 중에 오류가 발생했습니다.`,
     });
   }
 };
