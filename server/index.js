@@ -14,8 +14,6 @@ app.use(express.json());
 app.use(cors());
 const router = express.Router();
 
-const port = 8080;
-
 router.use("/", mapRouter);
 router.use("/", dogRouter);
 router.use("/", diaryRouter);
@@ -25,7 +23,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use("/api/auth", userRouter);
 app.listen(8080, function () {
-	console.log("severOpen");
+  console.log("severOpen");
 });
 
 const DB_URL = process.env.ATLAS_URL;
