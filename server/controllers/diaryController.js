@@ -5,7 +5,6 @@ const {
   diaryGetAllService,
   diaryGetMonthService,
 } = require("../services/diaryService");
-// ======
 
 //다이어리 생성
 exports.diarySave = async (req, res) => {
