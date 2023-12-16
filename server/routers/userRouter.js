@@ -136,4 +136,22 @@ userRouter.delete("/my-page", async (req, res, next) => {
 	}
 });
 
+//기존 비밀번호 확인
+userRouter.get("/check-password", async (req, res, next) => {
+	const secretKey = process.env.JWT_SECRET_KEY;
+	const userToken = req.cookies.Authorization?.split(" ")[1] ?? "null";
+	const decoded = jwt.verify(userToken, secretKey);
+	const userId = decoded.userId;
+	const { password } = req.body;
+	try {
+		const result = await userService.checkPassword(userId, password);
+		if(result.message === "SUCCESS") {
+			res.status(200).json({check: true});
+		}
+	} catch (err) {
+		next(err);
+	}
+});
+
+
 module.exports = { userRouter };

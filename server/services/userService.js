@@ -70,8 +70,8 @@ class UserService {
 
 		const payload = {
 			userId: jwtDecoded.userId,
-			email: existUser.email,
-			nickName: existUser.nickName,
+			email: jwtDecoded.email,
+			nickName: jwtDecoded.nickName,
 		};
 
 		const expiredToken = jwt.sign(payload, secretKey);
@@ -129,6 +129,26 @@ class UserService {
 			const deleteUser = await User.findOneAndDelete({ userId: userId });
 
 			if (deleteUser) {
+				return { message: "SUCCESS" };
+			} else {
+				throw { message: "NOT MATCHED" };
+			}
+		} catch (err) {
+			return err;
+		}
+	}
+
+	//기존 비밀번호 확인
+	async checkPassword(userId, password) {
+		try {
+			const existUser = await User.findOne({ userId: userId });
+
+			const isPasswordValid = await bcrypt.compare(
+				password,
+				existUser.password
+			);
+
+			if (isPasswordValid) {
 				return { message: "SUCCESS" };
 			} else {
 				throw { message: "NOT MATCHED" };
