@@ -13,14 +13,14 @@ const dogService = {
 	},
 	//강아지 수정
 	async updateDog(id, dogData) {
-		const { image_url, name, type, gender, date, birthday } = dogData;
+		const { imageUrl, name, type, gender, date, birthday } = dogData;
 		const dogProfile = await Dog.findById(id);
 		if (!dogProfile) {
 			const error = new Error("해당 강아지가 존재하지 않습니다.");
 			throw error;
 		}
 		const updateDogProfile = await Dog.updateOne({
-			image_url: image_url,
+			imageUrl: imageUrl,
 			name: name,
 			type: type,
 			gender: gender,
