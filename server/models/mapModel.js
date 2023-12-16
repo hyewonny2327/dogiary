@@ -7,13 +7,13 @@ const MapSchema = new mongoose.Schema(
 			require: true,
 		},
 		toggle: {
-			type: String,
+			type: Boolean,
 			required: true,
 		},
 		tag: {
-			type: Array,
-			required: true,
+			type: [String], // 배열 형태로 여러 개의 문자열을 저장
 			default: [],
+			required: true,
 		},
 		imageUrl: {
 			type: String,
