@@ -18,9 +18,8 @@ class UserService {
 			}
 
 			//bcrypt 비밀번호 암호화
-			const salt = await bcrypt.genSalt(10);
-			const hash = await bcrypt.hash(user.password, salt);
-			user.password = hash;
+			const hashedPassword = await bcrypt.hash(user.password, 10);
+			user.password = hashedPassword;
 
 			const newUser = await User.create(user);
 			return { message: "SUCCESS SIGNUP", user: newUser };
@@ -45,6 +44,7 @@ class UserService {
 
 			if (isPasswordValid) {
 				const payload = {
+					userId: existUser.userId,
 					email: existUser.email,
 					nickName: existUser.nickName,
 				};
@@ -70,6 +70,8 @@ class UserService {
 
 		const payload = {
 			userId: jwtDecoded.userId,
+			email: existUser.email,
+			nickName: existUser.nickName,
 		};
 
 		const expiredToken = jwt.sign(payload, secretKey);
@@ -81,38 +83,40 @@ class UserService {
 	}
 
 	//내 정보 조회
-	async getUserInfo() {
+	async getUserInfo(userId) {
 		try {
-			const matched_user = await User.findOne(
-				{ _id: _id },
-				{ nickname: 1, user_id: 1, user_email: 1, image_url: 1 }
+			const matchedUser = await User.findOne(
+				{ userId: userId },
+				{ nickName: 1, userId: 1, userEmail: 1, imageUrl: 1 }
 			);
-			if (matched_user) {
-				return { message: "회원정보 조회 완료", user: matched_user };
+			if (matchedUser) {
+				return { message: "SUCCESS", user: matchedUser };
 			} else {
-				throw { message: "일치하는 회원정보가 없습니다." };
+				throw { message: "NOT MATCHED" };
 			}
 		} catch (err) {
 			return err;
 		}
 	}
 
-	//회원정보 수정
-	async updateUserInfo(_id, user) {
+	//내 정보 수정
+	async updateUserInfo(userId, data) {
 		try {
-			const matched_user = await User.findOneAndUpdate(
-				{ _id: _id },
+			const hashedPassword = await bcrypt.hash(data.password, 10);
+
+			const matchedUser = await User.findOneAndUpdate(
+				{ userId: userId },
 				{
-					nickname: user.nickname,
-					user_id: user.user_id,
-					new_password: user.password,
+					nickName: data.nickName,
+					password: hashedPassword,
+					imageUrl: data.imageUrl,
 				},
 				{ new: true }
 			);
-			if (matched_user) {
-				return { message: "회원정보 수정 완료", user: matched_user };
+			if (matchedUser) {
+				return { message: "SUCCESS", user: matchedUser };
 			} else {
-				throw { message: "회원정보 수정 실패" };
+				throw { message: "NOT MATCHED" };
 			}
 		} catch (err) {
 			return err;
@@ -120,14 +124,14 @@ class UserService {
 	}
 
 	//회원탈퇴
-	async deleteUserInfo(_id) {
+	async deleteUserInfo(userId) {
 		try {
-			const deleteUser = await User.findOneAndDelete({ _id: _id });
+			const deleteUser = await User.findOneAndDelete({ userId: userId });
 
 			if (deleteUser) {
-				return { message: "회원 탈퇴 완료" };
+				return { message: "SUCCESS" };
 			} else {
-				throw { message: "회원 탈퇴 실패" };
+				throw { message: "NOT MATCHED" };
 			}
 		} catch (err) {
 			return err;
