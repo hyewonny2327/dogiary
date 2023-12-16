@@ -10,11 +10,11 @@ class UserService {
 		try {
 			const existUserId = await User.findOne({ userId: user.userId });
 			if (existUserId !== null) {
-				return { message: "DUPILCATED ID" };
+				return { message: "DUPLICATED ID" };
 			}
 			const existNickName = await User.findOne({ nickName: user.nickName });
 			if (existNickName !== null) {
-				return { message: "DUPILCATED NICKNAME" };
+				return { message: "DUPLICATED NICKNAME" };
 			}
 
 			//bcrypt 비밀번호 암호화
@@ -152,6 +152,34 @@ class UserService {
 				return { message: "SUCCESS" };
 			} else {
 				throw { message: "NOT MATCHED" };
+			}
+		} catch (err) {
+			return err;
+		}
+	}
+
+	//아이디 중복 확인
+	async checkId(data) {
+		try {
+			const existUser = await User.findOne({ userId: data.userId });
+			if (existUser) {
+				return { message: "DUPLICATED" };
+			} else {
+				throw { message: "SUCCESS" };
+			}
+		} catch (err) {
+			return err;
+		}
+	}
+
+	//닉네임 중복 확인
+	async checkNickname(data) {
+		try {
+			const existUser = await User.findOne({ userId: data.nickName });
+			if (existUser) {
+				return { message: "DUPLICATED" };
+			} else {
+				throw { message: "SUCCESS" };
 			}
 		} catch (err) {
 			return err;

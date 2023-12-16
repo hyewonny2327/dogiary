@@ -147,11 +147,47 @@ userRouter.get("/check-password", async (req, res, next) => {
 		const result = await userService.checkPassword(userId, password);
 		if(result.message === "SUCCESS") {
 			res.status(200).json({check: true});
+		} else if (result.message === "NOT MATCHED") {
+			throw {status: 400, message: "비밀번호가 일치하지 않습니다."};
+		} else {
+			throw {status: 404, message: "unknown error"};
 		}
 	} catch (err) {
 		next(err);
 	}
 });
 
+
+//아이디 중복 확인
+userRouter.get("/check-id", async (req, res, next) => {
+	try {
+		const result = await userService.checkId(req.body);
+		if(result.message === "SUCCESS") {
+			res.status(200).json({check: true});
+		} else if (result.message === "DUPLICATED") {
+			throw {status: 400, message: "동일한 아이디가 존재합니다."};
+		} else {
+			throw {status: 404, message: "unknown error"};
+		}
+	} catch (err) {
+		next(err);
+	}
+});
+
+//닉네임 중복 확인
+userRouter.get("/check-nickname", async (req, res, next) => {
+	try {
+		const result = await userService.checkNickname(req.body);
+		if(result.message === "SUCCESS") {
+			res.status(200).json({check: true});
+		} else if (result.message === "DUPLICATED") {
+			throw {status: 400, message: "동일한 닉네임이 존재합니다."};
+		} else {
+			throw {status: 404, message: "unknown error"};
+		}
+	} catch (err) {
+		next(err);
+	}
+});
 
 module.exports = { userRouter };
