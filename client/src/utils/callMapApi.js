@@ -2,6 +2,7 @@ import React from 'react';
 
 import { setMarkers } from '../slice/store';
 
+//kakao map api에서 키워드를 기준으로 지도를 불러오는 함수 
 export function callMapApi(dispatch,searchInput){
 
     const { kakao } = window;

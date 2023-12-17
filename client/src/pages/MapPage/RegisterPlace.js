@@ -9,8 +9,7 @@ import { callMapApi } from '../../utils/callMapApi';
 import closeBtn from '../../components/icons/closeBtn.svg'
 import imageIcon from '../../components/icons/imageIcon.svg'
 import { getAddress } from '../../utils/getAddress';
-import { callRegisterPlaceApi } from '../../utils/registerPlace';
-
+import { registerMyPlace } from '../../utils/mapApi';
 
 function RegisterPlace(){
     
@@ -26,7 +25,7 @@ function RegisterPlace(){
     const [isSearchBtnClicked, setIsSearchBtnClicked ] = useState(false);
     const [inputVal, setInputVal] = useState('')
     //저장된 장소의 장소이름과 위도,경도를 저장한다. -> 주소 받아올때, 데이터 저장할때 필요함 
-    const [selectedPlace, setSelectedPlace] = useState({content:'',lat:0,lng:0})
+    const [selectedPlace, setSelectedPlace] = useState({placename:'',lat:0,lng:0})
     
 
     const handleInputChange = (e) =>{
@@ -86,7 +85,7 @@ function RegisterPlace(){
 
     
     //! 이미지 업로드 기능 
-    const [uploadedImage, setUploadedImage] = useState(null);
+    const [uploadedImage, setUploadedImage] = useState('./img.png');
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -96,8 +95,8 @@ function RegisterPlace(){
     
     //! 사용자의 입력값 저장 
     
-    const [selectedTag, setSelectedTag] = useState('기타');
-    const [selectedToggle, setSelectedToggle] = useState('공개');
+    const [selectedTag, setSelectedTag] = useState('tag0');
+    const [selectedToggle, setSelectedToggle] = useState(true);
     const [content,setContent] = useState('');
 
     function handleToggleChange(event){
@@ -118,17 +117,18 @@ function RegisterPlace(){
     //! 등록하기 버튼 클릭 시 
     function handleSubmit(){
         //post요청보낼 정보들을 저장한다. 
+        
         const submitData = {
-            tag:selectedTag,
-            toggle:selectedToggle,
-            content:'',
-            imageUrl:uploadedImage,
-            position:[selectedPlace.lng,selectedPlace.lat],
-            address:selectedPlace.address,
-
-        }
+            "title": selectedPlace.placename,
+            "toggle": selectedToggle,
+            "tag": [selectedTag],
+            "content": content,
+            "imageUrl": uploadedImage,
+            "position": [selectedPlace.lng,selectedPlace.lat],
+            "address": selectedPlace.address 
+        };
         //submitData 속 내용을 인자로 보내서 api 호출 (아직 구현 진행중 )
-        callRegisterPlaceApi();
+        registerMyPlace(submitData)
         console.log('클릭했음');
         navigate('/mapPage');
     }
@@ -357,4 +357,5 @@ select{
     border: 1px solid #BDAF74;
     background: rgba(255, 255, 255, 0.00);
   }  
+
 `

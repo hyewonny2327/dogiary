@@ -6,6 +6,9 @@ import { Modal, ModalContainer } from '../components/common/Modal';
 import Map from '../components/myMapPage/Map';
 import styled from 'styled-components';
 import { getAddress } from '../utils/getAddress';
+import { registerMyPlace } from '../utils/mapApi';
+import { deleteMyPlace } from '../utils/mapApi';
+
 function MainPage(){
   
   
@@ -40,6 +43,8 @@ function MainPage(){
                 <div className='content'>안녕</div>
               </ModalStyle>
             </Modal>:''}
+            <button onClick={registerMyPlace}>장소 등록 api를 테스트해보자</button>
+            <button onClick={()=>{deleteMyPlace('657ec0823e4e4261163dfa86')}}>삭제!</button>
             
 
    

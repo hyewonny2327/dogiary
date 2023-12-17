@@ -56,8 +56,6 @@ function MyMapPage(){
     
     const navigate = useNavigate();
 
-
-    
  
     return(
         <div>
