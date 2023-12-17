@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 
-export function LongColoredBtn({text}){
+export function LongColoredBtn({text,onClick}){
     return(
-        <LongBtnStyle className='colored'>{text}</LongBtnStyle>
+        <LongBtnStyle className='colored' onClick={onClick}>{text}</LongBtnStyle>
     )
 }
-export function LongStrokedBtn({text}){
+export function LongStrokedBtn({text,onClick}){
     return(
-        <LongBtnStyle className='stroked'>{text}</LongBtnStyle>
+        <LongBtnStyle className='stroked' onClick={onClick}>{text}</LongBtnStyle>
     )
 }
 
