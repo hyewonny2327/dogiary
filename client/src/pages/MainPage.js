@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { LogoBar,NavBar } from '../components/common/Header';
 import { LongColoredBtn,LongStrokedBtn,SmallBtn } from '../components/common/Buttons';
 import { ContainerBox,InputBox } from '../components/common/Boxes';
 import { Modal, ModalContainer } from '../components/common/Modal';
 import Map from '../components/myMapPage/Map';
 import styled from 'styled-components';
-
-
+import { getAddress } from '../utils/getAddress';
 function MainPage(){
   
   
@@ -14,7 +13,6 @@ function MainPage(){
   function handleModalClose(){
     setShowModal(false);
   }
-
 
     return(
         <div>
@@ -43,6 +41,8 @@ function MainPage(){
               </ModalStyle>
             </Modal>:''}
             
+
+   
             
         </div>
     )
