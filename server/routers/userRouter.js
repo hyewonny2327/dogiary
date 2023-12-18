@@ -1,8 +1,8 @@
 const jwt = require("jsonwebtoken");
 const UserService = require("../services/userService");
 const {
-	validatorSignup,
-	validatorSignin,
+	validateSignUp,
+	validateSignIn,
 } = require("../middlewares/validator");
 const { Router } = require("express");
 
@@ -10,7 +10,7 @@ const userService = new UserService();
 const userRouter = Router();
 
 // 회원가입
-userRouter.post("/sign-up", validatorSignup, async (req, res, next) => {
+userRouter.post("/sign-up", validateSignUp, async (req, res, next) => {
 	try {
 		const result = await userService.signUp(req.body);
 		if (result.message === "SUCCESS SIGNUP") {
@@ -29,7 +29,7 @@ userRouter.post("/sign-up", validatorSignup, async (req, res, next) => {
 });
 
 //로그인
-userRouter.post("/login", validatorSignin, async (req, res, next) => {
+userRouter.post("/login", validateSignIn, async (req, res, next) => {
 	try {
 		const result = await userService.signIn(req.body);
 
@@ -40,26 +40,25 @@ userRouter.post("/login", validatorSignin, async (req, res, next) => {
 				token: result.token,
 			});
 			return;
-		} else if (result.message === "NO EXIST USER") {
-			throw { statue: 400, message: "아이디 및 비밀번호를 확인해주세요." };
-		} else if (result.message === "NOT MATCHED") {
-			throw { status: 400, message: "일치하지 않는 로그인 정보입니다." };
-		} else {
-			throw { status: 404, message: "unknown error" };
 		}
 	} catch (err) {
-		next(err);
+		if (result.message === "NO EXIST USER") {
+			next({ statue: 400, message: "아이디 및 비밀번호를 확인해주세요." });
+		} else if (result.message === "NOT MATCHED") {
+			next({ status: 400, message: "일치하지 않는 로그인 정보입니다." });
+		} else {
+			next({ status: 404, message: "unknown error" });
+		}
 	}
 });
 
 //로그아웃
 userRouter.post("/logout", async (req, res, next) => {
-	// const userToken = req.headers["authorization"]?.split(" ")[1] ?? "null";
 	const userToken = req.cookies.Authorization?.split(" ")[1] ?? "null";
 	try {
 		const result = await userService.signOut(userToken);
 		if (result.message == "SUCCESS") {
-			res.setHeader("Authorization", `Bearer ${result.token}`);
+			res.clearCookie("Authorization");
 			res.status(204).send();
 		} else {
 			throw { status: 404, message: "unknown error" };
@@ -80,13 +79,13 @@ userRouter.get("/my-page", async (req, res, next) => {
 		if(result.message === "SUCCESS") {
 			res.status(200).json(result.user);
 			return;
-		} else if (result.message === "NOT MATCHED") {
-			throw {status: 404, message: "존재하지 않는 계정입니다."};
-		} else {
-			throw {status: 404, message: "unknown error"};
 		}
 	} catch (err) {
-		next(err);
+		if (err.message === "NOT MATCHED") {
+			next({status: 404, message: "존재하지 않는 계정입니다."});
+		} else {
+			next({status: 404, message: "unknown error"});
+		}
 	}
 });
 
@@ -104,13 +103,13 @@ userRouter.put("/my-page", async (req, res, next) => {
 		if(result.message === "SUCCESS") {
 			res.status(200).json(result.user);
 			return;
-		} else if (result.message === "NOT MATCHED") {
-			throw {status: 404, message: "존재하지 않는 계정입니다."};
-		} else {
-			throw {status: 404, message: "unknown error"};
 		}
 	} catch (err) {
-		next(err);
+		if (err.message === "NOT MATCHED") {
+			next({status: 404, message: "존재하지 않는 계정입니다."});
+		} else {
+			next({status: 404, message: "unknown error"});
+		}
 	}
 });
 
@@ -124,15 +123,14 @@ userRouter.delete("/my-page", async (req, res, next) => {
 	try {
 		const result = await userService.deleteUserInfo(userId);
 		if(result.message === "SUCCESS") {
-			res.status(204);
-			return;
-		} else if (result.message === "NOT MATCHED") {
-			throw {status: 400, message: "존재하지 않는 계정입니다."};
-		} else {
-			throw {status: 404, message: "unknown error"};
+			res.status(204).send();
 		}
 	} catch (err) {
-		next(err);
+		if (err.message === "NOT MATCHED") {
+			next({status: 400, message: "존재하지 않는 계정입니다."});
+		} else {
+			next({status: 404, message: "unknown error"});
+		}
 	}
 });
 
@@ -147,13 +145,13 @@ userRouter.get("/check-password", async (req, res, next) => {
 		const result = await userService.checkPassword(userId, password);
 		if(result.message === "SUCCESS") {
 			res.status(200).json({check: true});
-		} else if (result.message === "NOT MATCHED") {
-			throw {status: 400, message: "비밀번호가 일치하지 않습니다."};
-		} else {
-			throw {status: 404, message: "unknown error"};
 		}
 	} catch (err) {
-		next(err);
+		if (result.message === "NOT MATCHED") {
+			next({status: 400, message: "비밀번호가 일치하지 않습니다."});
+		} else {
+			next({status: 404, message: "unknown error"});
+		}
 	}
 });
 
@@ -164,13 +162,13 @@ userRouter.get("/check-id", async (req, res, next) => {
 		const result = await userService.checkId(req.body);
 		if(result.message === "SUCCESS") {
 			res.status(200).json({check: true});
-		} else if (result.message === "DUPLICATED") {
-			throw {status: 400, message: "동일한 아이디가 존재합니다."};
-		} else {
-			throw {status: 404, message: "unknown error"};
 		}
 	} catch (err) {
-		next(err);
+		if (result.message === "DUPLICATED") {
+			next({status: 400, message: "동일한 아이디가 존재합니다."});
+		} else {
+			next({status: 404, message: "unknown error"});
+		}
 	}
 });
 
@@ -180,13 +178,13 @@ userRouter.get("/check-nickname", async (req, res, next) => {
 		const result = await userService.checkNickname(req.body);
 		if(result.message === "SUCCESS") {
 			res.status(200).json({check: true});
-		} else if (result.message === "DUPLICATED") {
-			throw {status: 400, message: "동일한 닉네임이 존재합니다."};
-		} else {
-			throw {status: 404, message: "unknown error"};
 		}
 	} catch (err) {
-		next(err);
+		if (result.message === "DUPLICATED") {
+			next({status: 400, message: "동일한 닉네임이 존재합니다."});
+		} else {
+			next({status: 404, message: "unknown error"});
+		}
 	}
 });
 
