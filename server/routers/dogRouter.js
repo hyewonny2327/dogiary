@@ -4,10 +4,10 @@ const router = express.Router();
 const weightController = require("../controllers/weightController.js");
 
 // POST: /dogs - 새로운 강아지 생성
-router.post("/", dogController.createDog);
+router.post("/", dogController.postDog);
 
 // PUT: /dogs/:id - 강아지 수정
-router.put("/:id", dogController.updateDog);
+router.put("/:id", dogController.putDog);
 
 // DELETE: /dogs/:id - 강아지 삭제
 router.delete("/:id", dogController.deleteDog);

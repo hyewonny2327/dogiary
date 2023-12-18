@@ -1,32 +1,38 @@
 const Map = require("../models/mapModel.js");
 
-const handleError = (operation, error) => {
-	console.error(`${operation} 오류:`, error);
-	throw { status: 500, message: "내부 서버 오류" };
-};
-
 const mapService = {
 	// 마커 데이터 생성
 	async createMap(mapData) {
 		try {
 			const mapProfile = await Map.create(mapData);
-			return mapProfile;
+			const mapObject = mapProfile.toObject();
+			return mapObject;
 		} catch (error) {
-			handleError("맵 생성", error);
+			throw error;
 		}
 	},
-
 	// 마커 정보 수정
-	async updateMap(id, mapData) {
+	async updatedMapProfile(id, mapData) {
 		try {
-			const mapProfile = await Map.findById(id);
+			const mapProfile = await Map.findById(id).lean();
 			if (!mapProfile) {
 				throw { status: 404, message: "해당 맵 데이터가 존재하지 않습니다." };
 			}
-			const updateMapProfile = await Map.updateOne(mapData);
-			return updateMapProfile;
+
+			// 업데이트 수행
+			const updateResult = await Map.updateOne({ _id: id }, mapData).lean();
+
+			if (updateResult.modifiedCount !== 1) {
+				// 업데이트된 문서의 수가 1이 아닌 경우 처리
+				const error = new Error("마커 업데이트에 실패했습니다.");
+				throw error;
+			}
+
+			// 업데이트된 맵 데이터를 다시 조회하여 반환
+			const updatedMapProfile = await Map.findById(id).lean();
+			return updatedMapProfile;
 		} catch (error) {
-			handleError("맵 업데이트", error);
+			throw error;
 		}
 	},
 
@@ -39,7 +45,7 @@ const mapService = {
 			}
 			return deleteMap;
 		} catch (error) {
-			handleError("맵 삭제", error);
+			throw error;
 		}
 	},
 
@@ -52,7 +58,7 @@ const mapService = {
 			}
 			return mapProfile;
 		} catch (error) {
-			handleError("맵 조회", error);
+			throw error;
 		}
 	},
 
@@ -65,13 +71,19 @@ const mapService = {
 			}
 			return allMaps;
 		} catch (error) {
-			handleError("모든 맵 조회", error);
+			throw error; // 예외를 던져서 컨트롤러에서 처리할 수 있도록 함
 		}
 	},
 
 	// 태그별 데이터 받아오기
+
 	async getMapsByTag(tagName) {
 		try {
+			// 태그 형식을 검증
+			if (!isValidTag(tagName)) {
+				throw { status: 400, message: "올바른 태그 형식이 아닙니다." };
+			}
+
 			const mapsByTag = await Map.find({ tag: tagName }).lean();
 			if (!mapsByTag || mapsByTag.length === 0) {
 				throw {
@@ -81,9 +93,11 @@ const mapService = {
 			}
 			return mapsByTag;
 		} catch (error) {
-			handleError("태그별 맵 조회", error);
+			throw error;
 		}
 	},
 };
-
+function isValidTag(tagName) {
+	return typeof tagName === "string" && tagName.length > 0;
+}
 module.exports = mapService;
