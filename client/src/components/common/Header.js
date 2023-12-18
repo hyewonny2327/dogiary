@@ -21,7 +21,7 @@ export function LogoBar(){
 //카테고리로 이동할 수 있는 nav bar
 export function NavBar(){
     const [isIconClicked, setIsIconClicked] = useState(false);
-    const [clickedIndex, setClickedIndex] = useState(null);
+    //const [clickedIndex, setClickedIndex] = useState(null);
 
     let navigate = useNavigate();
     const location = useLocation();
@@ -33,7 +33,7 @@ export function NavBar(){
     };
     
       const handleCategoryClick = (index) => {
-        setClickedIndex(index);
+        //setClickedIndex(index);
         //index에 따라 다른 link로 navigate 
         navigate(`/${links[index]}`);
       };
