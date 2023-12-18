@@ -71,7 +71,8 @@ userRouter.post("/logout", async (req, res, next) => {
 //내 정보 조회
 userRouter.get("/my-page", async (req, res, next) => {
 	const secretKey = process.env.JWT_SECRET_KEY;
-	const userToken = req.cookies.Authorization?.split(" ")[1] ?? "null";
+	console.log(req.headers.cookie);
+	const userToken = req.headers.cookie.split("%20")[1] ?? "null";
 	const decoded = jwt.verify(userToken, secretKey);
 	const userId = decoded.userId;
 	try {
@@ -92,7 +93,8 @@ userRouter.get("/my-page", async (req, res, next) => {
 //내 정보 수정
 userRouter.put("/my-page", async (req, res, next) => {
 	const secretKey = process.env.JWT_SECRET_KEY;
-	const userToken = req.cookies.Authorization?.split(" ")[1] ?? "null";
+	// const userToken = req.cookies.Authorization?.split(" ")[1] ?? "null";
+	const userToken = req.headers.cookie.split("%20")[1] ?? "null";
 	const decoded = jwt.verify(userToken, secretKey);
 	const userId = decoded.userId;
 
@@ -117,7 +119,8 @@ userRouter.put("/my-page", async (req, res, next) => {
 //회원탈퇴
 userRouter.delete("/my-page", async (req, res, next) => {
 	const secretKey = process.env.JWT_SECRET_KEY;
-	const userToken = req.cookies.Authorization?.split(" ")[1] ?? "null";
+	// const userToken = req.cookies.Authorization?.split(" ")[1] ?? "null";
+	const userToken = req.headers.cookie.split("%20")[1] ?? "null";
 	const decoded = jwt.verify(userToken, secretKey);
 	const userId = decoded.userId;
 	try {
@@ -137,7 +140,8 @@ userRouter.delete("/my-page", async (req, res, next) => {
 //기존 비밀번호 확인
 userRouter.get("/check-password", async (req, res, next) => {
 	const secretKey = process.env.JWT_SECRET_KEY;
-	const userToken = req.cookies.Authorization?.split(" ")[1] ?? "null";
+	// const userToken = req.cookies.Authorization?.split(" ")[1] ?? "null";
+	const userToken = req.headers.cookie.split("%20")[1] ?? "null";
 	const decoded = jwt.verify(userToken, secretKey);
 	const userId = decoded.userId;
 	const { password } = req.body;
