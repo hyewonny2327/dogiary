@@ -13,9 +13,31 @@ function JoinPage() {
   const [CheckPassword, setCheckPassword] = useState("");
   const [pwdMsg, setPwdMsg] = useState("");
   const [confirmPwdMsg, setConfirmPwdMsg] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
+  const [isNicknameAvailable, setIsNicknameAvailable] = useState(true);
+  const [nicknameCheckMsg, setNicknameCheckMsg] = useState("");
 
-  const handleChangeNickname = (e) => {
-    setNickname(e.target.value);
+  const handleChangeNickname = async () => {
+    console.log("확인");
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/auth/check-nickname",
+        {
+          nickName: nickname,
+        }
+      );
+
+      const isAvailable = response.data.isAvailable;
+      setIsNicknameAvailable(isAvailable);
+
+      if (isAvailable) {
+        setNicknameCheckMsg("사용 가능한 닉네임입니다.");
+      } else {
+        setNicknameCheckMsg("이미 사용 중인 닉네임입니다. ");
+      }
+    } catch (e) {
+      console.error("", e);
+    }
   };
 
   const handleChangeUserId = (e) => {
@@ -24,6 +46,10 @@ function JoinPage() {
 
   const handleChangeEmail = (e) => {
     setEmail(e.target.value);
+  };
+
+  const handleChangeVerificationCode = (e) => {
+    setVerificationCode(e.target.value);
   };
 
   const PasswordValid = (Password) => {
@@ -88,99 +114,110 @@ function JoinPage() {
       <LogoBar />
       <NavBar />
       <Main>
-        <ContainerBox>
-            <JoinContents className="contents-box">
-              <div className="text-box">
-                <h3 className="title">회원가입</h3>
-                <span>가입을 통해서 다양한 서비스를 이용해보세요!</span>
-              </div>
-              <div>
-                <div className="small-box-content">
-                  <InputBox>
-                    <input
-                      className="form-input-small"
-                      value={nickname}
-                      type="text"
-                      name="nickname"
-                      id="nickname"
-                      placeholder="닉네임 입력"
-                      onChange={handleChangeNickname}
-                    />
-                  </InputBox>
-                  <SmallBtn text={"중복확인"} />
-                </div>
-                <div className="small-box-content">
-                  <InputBox>
-                    <input
-                      className="form-input-small"
-                      value={user_Id}
-                      type="text"
-                      name="user_Id"
-                      id="user_Id"
-                      placeholder="아이디 입력"
-                      onChange={handleChangeUserId}
-                    />
-                  </InputBox>
-                  <SmallBtn text={"중복확인"} />
-                </div>
-                <div className="small-box-content">
-                  <InputBox>
-                    <input
-                      className="form-input-small"
-                      value={email}
-                      type="text"
-                      name="email"
-                      id="email"
-                      placeholder="이메일 입력"
-                      onChange={handleChangeEmail}
-                    />
-                  </InputBox>
-                  <SmallBtn text={"인증"} />
-                </div>
-                <InputBox>
-                  <input
-                    className="form-input"
-                    value={password}
-                    type="password"
-                    name="password"
-                    id="password"
-                    placeholder="비밀번호 입력"
-                    onChange={handleChangePassword}
-                  />
-                </InputBox>
-
-                <InputBox>
-                  <input
-                    className="form-input"
-                    value={CheckPassword}
-                    type="password"
-                    name="CheckPassword"
-                    id="CheckPassword"
-                    placeholder="비밀번호 재입력"
-                    onChange={handleChangeCheckPassword}
-                  />
-                </InputBox>
-                <div>{pwdMsg}</div>
-                <div>{confirmPwdMsg}</div>
-              </div>
-              <div className="btn-box" onClick={handleJoin}>
-                <LongColoredBtn text={"가입하기"} className="long-btn" />
-              </div>
-            </JoinContents>
-        </ContainerBox>
+        <JoinContents className="contents-box">
+          <div className="text-box">
+            <h3 className="title">회원가입</h3>
+            <span>가입을 통해서 다양한 서비스를 이용해보세요!</span>
+          </div>
+          <div>
+            <div className="small-box-content">
+              <InputBox>
+                <input
+                  className="form-input-small"
+                  value={nickname}
+                  type="text"
+                  name="nickname"
+                  id="nickname"
+                  placeholder="닉네임 입력"
+                  onChange={(e) => setNickname(e.target.value)}
+                />
+              </InputBox>
+              <SmallBtn text={"중복확인"} onClick={handleChangeNickname} />
+            </div>
+            <div className="small-box-content">
+              <InputBox>
+                <input
+                  className="form-input-small"
+                  value={user_Id}
+                  type="text"
+                  name="user_Id"
+                  id="user_Id"
+                  placeholder="아이디 입력"
+                  onChange={handleChangeUserId}
+                />
+              </InputBox>
+              <SmallBtn text={"중복확인"} />
+            </div>
+            <div className="small-box-content">
+              <InputBox>
+                <input
+                  className="form-input-small"
+                  value={email}
+                  type="text"
+                  name="email"
+                  id="email"
+                  placeholder="이메일 입력"
+                  onChange={handleChangeEmail}
+                />
+              </InputBox>
+              <SmallBtn text={"인증번호"} />
+            </div>
+            <div className="small-box-content">
+              <InputBox>
+                <input
+                  className="form-input-small"
+                  value={verificationCode}
+                  type="text"
+                  name="verificationCode"
+                  id="verificationCode"
+                  placeholder="인증번호 입력"
+                  onChange={handleChangeVerificationCode}
+                />
+              </InputBox>
+              <SmallBtn text={"인증"} />
+            </div>
+            <InputBox>
+              <input
+                className="form-input"
+                value={password}
+                type="password"
+                name="password"
+                id="password"
+                placeholder="비밀번호 입력"
+                onChange={handleChangePassword}
+              />
+            </InputBox>
+            <div className="message">{pwdMsg}</div>
+            <InputBox>
+              <input
+                className="form-input"
+                value={CheckPassword}
+                type="password"
+                name="CheckPassword"
+                id="CheckPassword"
+                placeholder="비밀번호 재입력"
+                onChange={handleChangeCheckPassword}
+              />
+            </InputBox>
+            <div className="message">{confirmPwdMsg}</div>
+          </div>
+          <div className="btn-box" onClick={handleJoin}>
+            <LongColoredBtn text={"가입하기"} className="long-btn" />
+          </div>
+        </JoinContents>
       </Main>
     </div>
   );
 }
 
 const JoinContents = styled.div`
-
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content:center;
+  justify-content: center;
   //margin:35px;
+
   .title {
     margin: 0;
   }
@@ -212,14 +249,14 @@ const JoinContents = styled.div`
     margin-top: 10px;
     cursor: pointer;
   }
-  
 
- 
-  
+  .message {
+    font-size: 12px;
+    color: red;
+  }
 `;
 
 const Main = styled.div`
- 
   display: flex;
   margin-top: 80px;
   align-items: center;
