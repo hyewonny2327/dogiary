@@ -2,4 +2,8 @@ const generateRandomNumber = function (min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-module.exports = { generateRandomNumber };
+const generateRandomPassword = function () {
+    return Math.random().toString(36).slice(2);
+};
+
+module.exports = { generateRandomNumber, generateRandomPassword };

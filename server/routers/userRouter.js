@@ -160,8 +160,9 @@ userRouter.get("/check-password", async (req, res, next) => {
 
 //아이디 중복 확인
 userRouter.get("/check-id", async (req, res, next) => {
+	const { userId } = req.body;
 	try {
-		const result = await userService.checkId(req.body);
+		const result = await userService.checkId(userId);
 		if(result.message === "SUCCESS") {
 			res.status(200).json({check: true});
 		}
@@ -193,7 +194,7 @@ userRouter.get("/check-nickname", async (req, res, next) => {
 //이메일 인증 (feat.이메일 중복확인)
 userRouter.get("/check-email", async (req, res, next) => {
 	const { email } = req.body;
-	try{
+	try {
 		const resultCheckEmail = await userService.checkEmail(email);
 		const resultAuthEmail = await userService.sendVerificationEmail(email);
 		if((resultCheckEmail.message === "SUCCESS") && (resultAuthEmail.message === "SUCCESS")){
@@ -203,5 +204,19 @@ userRouter.get("/check-email", async (req, res, next) => {
 		next(err);
 	}
 });
+
+//임시 비밀번호 발급
+userRouter.get("/help", async (req, res, next) => {
+	const { userId } = req.body;
+	try {
+		const result = await userService.sendTemporaryPassword(userId);
+		if(result.message === "SUCCESSS") {
+			res.status(200).json(result.tempPassword);
+			return;
+		}
+	} catch (err) {
+		next(err);
+	}
+})
 
 module.exports = { userRouter };

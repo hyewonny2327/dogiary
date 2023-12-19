@@ -79,7 +79,7 @@ class UserService {
 		try {
 			const matchedUser = await User.findOne(
 				{ userId: userId },
-				{ nickName: 1, userId: 1, userEmail: 1, imageUrl: 1 }
+				{ nickName: 1, userId: 1, email: 1, imageUrl: 1 }
 			);
 			if (matchedUser) {
 				return { message: "SUCCESS", user: matchedUser };
@@ -144,9 +144,9 @@ class UserService {
 	}
 
 	//아이디 중복 확인
-	async checkId(data) {
+	async checkId(userId) {
 		try {
-			const existingUser = await User.findOne({ userId: data.userId });
+			const existingUser = await User.findOne({ userId: userId });
 			if (!existingUser) {
 				return { message: "SUCCESS" };
 			}
@@ -183,7 +183,7 @@ class UserService {
 	}
 
 	//이메일 인증
-	async sendVerificationEmail(email, callback) {
+	async sendVerificationEmail(email) {
 		try {
 			const randomNumber = mail.generateRandomNumber(1111, 9999);
 			const transporter = nodemailer.createTransport({
@@ -212,6 +212,55 @@ class UserService {
 			transporter.close();
 			if(sentEmail) {
 				return { message: "SUCCESS", authNumber: randomNumber};
+			}
+			throw new Error("FAILED");
+		} catch (err) {
+			throw err;
+		}
+	}
+
+	//임시 비밀번호 발급
+	async sendTemporaryPassword(userId) {
+		try {
+			const matchedUser = await User.findOne(
+				{ userId: userId },
+				{ email: 1 }
+			);
+			if (matchedUser) {
+				const randomPassword = mail.generateRandomPassword(11111111, 99999999);
+				const hashedPassword = await bcrypt.hash(randomPassword, 10);
+				const transporter = nodemailer.createTransport({
+					pool: true,
+					maxConnections: 1,
+					service: "naver",
+					host: "smtp.naver.com",
+					port: 587,
+					secure: false,
+					requireTLS: true,
+					auth: {
+						user: process.env.EMAIL_ID,
+						pass: process.env.EMAIL_PASSWORD,
+					},
+					tls: {
+						rejectUnauthorized: false
+					}
+				});
+				const mailOptions = {
+					from: process.env.EMAIL_ID,
+					to: matchedUser.email,
+					subject: "임시 비밀번호 관련 메일 입니다.",
+					html: "<h1>임시 비밀번호를 입력해주세요. \n\n\n\n\n\n</h1>" + hashedPassword
+				};
+				const sentEmail = await transporter.sendMail(mailOptions);
+				transporter.close();
+				if(sentEmail) {
+					const matchedUser = await User.findOneAndUpdate(
+						{ userId: userId },
+						{ password: hashedPassword },
+						{ new: true }
+					);
+					return { message: "SUCCESS", tempPassword: hashedPassword};
+				}
 			}
 			throw new Error("FAILED");
 		} catch (err) {
