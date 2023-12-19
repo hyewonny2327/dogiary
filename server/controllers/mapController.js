@@ -3,7 +3,6 @@ const mapService = require("../services/mapService.js");
 const mapController = {
 	async createMap(req, res) {
 		const mapData = req.body;
-		console.log(mapData);
 		const mapProfile = await mapService.createMap(mapData);
 
 		res.status(201).json({
@@ -47,6 +46,15 @@ const mapController = {
 		res.json({
 			error: null,
 			data: allMaps,
+		});
+	},
+	async getMapsByTag(req, res) {
+		console.log(req.params.tag);
+		const tagName = req.params.tag;
+		const maps = await mapService.getMapsByTag(tagName);
+		res.json({
+			error: null,
+			data: maps,
 		});
 	},
 };
