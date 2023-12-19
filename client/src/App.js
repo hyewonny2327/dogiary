@@ -2,6 +2,8 @@ import logo from './logo.svg';
 import './App.css';
 import { Route,Routes } from 'react-router-dom';
 import MainPage from './pages/MainPage';
+import LoginPage from './pages/LoginPage';
+import JoinPage from './pages/JoinPage';
 import MyMapPage from './pages/MapPage/MyMapPage';
 import RegisterPlace from './pages/MapPage/RegisterPlace';
 import { Provider } from 'react-redux';
@@ -14,8 +16,11 @@ function App() {
           <Route path='/' element={<MainPage />} />
           <Route path='/mapPage' element={<MyMapPage />} />
           <Route path='/registerPlace' element={<RegisterPlace />} />
+          <Route path='/LoginPage' element={<LoginPage/>}/>
+          <Route path='/JoinPage' element={<JoinPage/>}/>
         </Routes>
     </Provider>
+
   );
 }
 

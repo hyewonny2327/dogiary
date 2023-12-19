@@ -11,10 +11,11 @@ const MapSchema = new mongoose.Schema(
 			required: true,
 		},
 		tag: {
-            type: [String], 
-            default: [],
-            required: true,
-        },
+
+			type: [String], // 배열 형태로 여러 개의 문자열을 저장
+			default: [],
+			required: true,
+		},
 		imageUrl: {
 			type: String,
 			required: true,

@@ -21,5 +21,4 @@ function validatorSignin (req, res, next) {
     next();
 }
 
-
 module.exports = { validatorSignup, validatorSignin };
