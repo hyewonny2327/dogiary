@@ -60,11 +60,9 @@ userRouter.post("/logout", async (req, res, next) => {
 		if (result.message == "SUCCESS") {
 			res.clearCookie("Authorization");
 			res.status(204).send();
-		} else {
-			throw { status: 404, message: "unknown error" };
 		}
 	} catch (err) {
-		next(err);
+		next({ status: 404, message: "unknown error" });
 	}
 });
 
@@ -151,7 +149,7 @@ userRouter.get("/check-password", async (req, res, next) => {
 			res.status(200).json({check: true});
 		}
 	} catch (err) {
-		if (result.message === "NOT MATCHED") {
+		if (err.message === "NOT MATCHED") {
 			next({status: 400, message: "비밀번호가 일치하지 않습니다."});
 		} else {
 			next({status: 404, message: "unknown error"});
@@ -168,7 +166,7 @@ userRouter.get("/check-id", async (req, res, next) => {
 			res.status(200).json({check: true});
 		}
 	} catch (err) {
-		if (result.message === "DUPLICATED") {
+		if (err.message === "DUPLICATED") {
 			next({status: 400, message: "동일한 아이디가 존재합니다."});
 		} else {
 			next({status: 404, message: "unknown error"});
@@ -184,11 +182,25 @@ userRouter.get("/check-nickname", async (req, res, next) => {
 			res.status(200).json({check: true});
 		}
 	} catch (err) {
-		if (result.message === "DUPLICATED") {
+		if (err.message === "DUPLICATED") {
 			next({status: 400, message: "동일한 닉네임이 존재합니다."});
 		} else {
 			next({status: 404, message: "unknown error"});
 		}
+	}
+});
+
+//이메일 인증 (feat.이메일 중복확인)
+userRouter.get("/check-email", async (req, res, next) => {
+	const { email } = req.body;
+	try{
+		const resultCheckEmail = await userService.checkEmail(email);
+		const resultAuthEmail = await userService.sendVerificationEmail(email);
+		if((resultCheckEmail.message === "SUCCESS") && (resultAuthEmail.message === "SUCCESS")){
+			res.status(200).json({check: true, authNumber: resultAuthEmail.authNumber});
+		}
+	} catch (err) {
+		next(err);
 	}
 });
 

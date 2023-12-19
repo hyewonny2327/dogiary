@@ -1,6 +1,9 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+const mail = require("../utils/mail");
 const { User } = require("../models/userModel");
+const SMTPTransport = require("nodemailer/lib/smtp-transport");
 
 class UserService {
 	//회원가입
@@ -160,9 +163,59 @@ class UserService {
 			if (!existingUser) {
 				return { message: "SUCCESS" };
 			}
-			throw new Error("SUCCESS");
+			throw new Error("DUPLICATED");
 		} catch (err) {
 			return err;
+		}
+	}
+
+	//이메일 중복 확인
+	async checkEmail(email) {
+		try {
+			const existingUser = await User.findOne({ email: email });
+			if (!existingUser) {
+				return { message: "SUCCESS" };
+			}
+			throw new Error("DUPLICATED");
+		} catch (err) {
+			throw err;
+		}
+	}
+
+	//이메일 인증
+	async sendVerificationEmail(email, callback) {
+		try {
+			const randomNumber = mail.generateRandomNumber(1111, 9999);
+			const transporter = nodemailer.createTransport({
+				pool: true,
+				maxConnections: 1,
+				service: "naver",
+				host: "smtp.naver.com",
+				port: 587,
+				secure: false,
+				requireTLS: true,
+				auth: {
+					user: process.env.EMAIL_ID,
+					pass: process.env.EMAIL_PASSWORD,
+				},
+				tls: {
+					rejectUnauthorized: false
+				}
+			});
+			const mailOptions = {
+				from: process.env.EMAIL_ID,
+				to: email,
+				subject: "인증 관련 메일 입니다.",
+				html: "<h1>인증번호를 입력해주세요. \n\n\n\n\n\n</h1>" + randomNumber
+			};
+			const sentEmail = await transporter.sendMail(mailOptions);
+			transporter.close();
+			if(sentEmail) {
+				return { message: "SUCCESS", authNumber: randomNumber};
+			}
+			throw new Error("FAILED");
+		} catch (err) {
+			throw err;
 		}
 	}
 }

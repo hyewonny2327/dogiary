@@ -1,5 +1,5 @@
-// const nodemailer = require("nodemailer");
+const generateRandomNumber = function (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+};
 
-// const transporter = nodemailer.createTransport({
-//     host
-// })
+module.exports = { generateRandomNumber };
