@@ -7,7 +7,7 @@ import myMapIcon from '../../components/icons/myMapIcon.svg';
 import { Modal } from '../../components/common/Modal';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { setSearchInput } from '../../slice/store';
+import { setSearchInput,setTag } from '../../slice/store';
 function MyMapPage(){
 
     const dispatch = useDispatch();
@@ -32,7 +32,7 @@ function MyMapPage(){
 
     //필터
     const categoryList = ['산책','애견동반','상점','기타','전체보기'];
-    const [isFilterClicked, setIsFilterClicked] = useState(Array(categoryList.length).fill(false));
+    const [isFilterClicked, setIsFilterClicked] = useState([false,false,false,false,true]);
 
 
     function getFilterClassName(index){
@@ -45,6 +45,7 @@ function MyMapPage(){
         const updatedFilterClicked = Array(categoryList.length).fill(false);
         updatedFilterClicked[index] = !updatedFilterClicked[index];
         setIsFilterClicked(updatedFilterClicked);
+        dispatch(setTag(`tag${index}`))
     }
 
     //아이콘 클릭

@@ -34,3 +34,7 @@ export async function showAllPlaces(){
 }
 
 export function showPlacesByTag(){}
+
+
+
+

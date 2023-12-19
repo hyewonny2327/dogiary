@@ -22,28 +22,42 @@ function MapRenderer() {
     map.setBounds(bounds);
   }, [map, markers]);
 
-  const [positions, setPositions] = useState([]);
-  const [contents, setContents] = useState([]);
+
+  const clickedTag = useSelector((state)=>state.map.tag);
+  const [placesData,setPlacesData] = useState([]);
+
   useEffect(() => {
     // 모든 장소 정보 조회 API 호출 
     // 좌표값만 추출
     showAllPlaces().then((response, index) => {
-      const placesData = response.data.data;
-  
-      if (placesData && placesData.length > 0) {
-        const _positions = placesData.map(place => ({
+      const data = response.data.data;
+      console.log('현재 태그는:' ,clickedTag)
+      console.log(data);
+      if (data && data.length > 0) {
+        const places = data.map(place => ({
           lat: place.position[1], 
-          lng: place.position[0]  
+          lng: place.position[0],
+          content: place.content,
+          tag:place.tag[0],
         }));
-        const _contents = placesData.map(place => place.content);
-        setPositions(_positions);
-        setContents(_contents);
+        const filteredPlaces = places.filter((item) => {
+          // 만약 clickedTag가 'tag4'라면 모든 아이템을 포함 (전체보기)
+          if (clickedTag === 'tag4') {
+            return true;
+          }
+          // 그 외의 경우에는 clickedTag와 일치하는 아이템만 포함
+          return item.tag === clickedTag;
+        });
+        console.log(filteredPlaces)
+        //const _contents = placesData.map(place => place.content);
+        setPlacesData(filteredPlaces);
       } else {
-        // placesData가 비어있거나 없는 경우의 처리
         console.log('장소 데이터가 없습니다.');
       }
-    }, [positions]); // positions가 업데이트 될 때마다 실행
-  }, []);
+    }, [placesData]); 
+  }, [clickedTag]);
+
+  const [isOpen, setIsOpen] = useState(Array(placesData.length).fill(false));
 
   return (
     <MapStyle>
@@ -57,10 +71,10 @@ function MapRenderer() {
         onCreate={setMap}
       >
         {
-          positions.map((position,index)=>(
-            <MapMarker
-            key={`marker-${contents[index]}-${position[0]},${position[1]}`}
-            position={{ lat: position.lat, lng: position.lng }}
+          placesData.map((place,index)=>(
+            <MapMarker 
+            key={`marker-${place.content}-${place.lat},${place.lng}`}
+            position={{ lat: place.lat, lng: place.lng }}
             image={{
               src: markerIcon,
               size: {
@@ -68,27 +82,23 @@ function MapRenderer() {
                 height: 40,
               },
             }}
+            clickable={true}
+            onClick={()=>{
+              let updatedIsOpen = [...isOpen];
+              updatedIsOpen[index] = !isOpen[index];;
+              setIsOpen(updatedIsOpen);
+            }}
+            style={{
+              width: '95px',
+              height: '25px'
+            }}
           >
-            {contents[index]}
+            {isOpen[index] && <div style={{ padding: "5px", color: "#000" }}>{place.content}</div>}
           </MapMarker>
 
           ))
         }
-        {/*markers.map((marker) => (
-          <MapMarker
-            key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
-            position={marker.position}
-            image={{
-              src: markerIcon,
-              size: {
-                width: 40,
-                height: 40,
-              },
-            }}
-          >
-            {marker.content}
-          </MapMarker>
-          ))*/}
+
       </Map>
     </MapStyle>
   );
@@ -105,4 +115,18 @@ const MapStyle = styled.div`
     height: 100vh;
     z-index: -10000;
   }
+  
+`
+
+const MarkerContent = styled.div`
+
+  
+  
+    color: #5F5013;
+    font-family: Noto Sans KR;
+    font-size: 11px;
+    font-weight: 700;
+    
+  
+  
 `

@@ -4,8 +4,9 @@ import { configureStore, createSlice } from '@reduxjs/toolkit';
 const mapSlice = createSlice({
     name:'map',
     initialState:{
-        searchInput:'이태원 맛집',
+        searchInput:'인계동',
         markers:[],
+        tag:'filter0'
     },
     reducers: {
         //searchInput값을 저장하는 reducer 
@@ -16,6 +17,9 @@ const mapSlice = createSlice({
         setMarkers : (state,action) => {
             state.markers = action.payload;
         },
+        setTag : (state,action)=>{
+            state.tag = action.payload;
+        }
     },
 });
 
@@ -23,7 +27,7 @@ const mapSlice = createSlice({
 
 //액션 및 리듀서 내보내기
 //configureStore를 사용해서 리듀서들을 전달함 (createStore같은것. 저장공간생성)
-export const {setSearchInput,setMarkers} = mapSlice.actions;
+export const {setSearchInput,setMarkers,setTag} = mapSlice.actions;
 
 
 export default configureStore({

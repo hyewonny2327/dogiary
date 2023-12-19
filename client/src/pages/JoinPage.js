@@ -89,7 +89,6 @@ function JoinPage() {
       <NavBar />
       <Main>
         <ContainerBox>
-          <div className="contents-c">
             <JoinContents className="contents-box">
               <div className="text-box">
                 <h3 className="title">회원가입</h3>
@@ -168,7 +167,6 @@ function JoinPage() {
                 <LongColoredBtn text={"가입하기"} className="long-btn" />
               </div>
             </JoinContents>
-          </div>
         </ContainerBox>
       </Main>
     </div>
@@ -176,6 +174,13 @@ function JoinPage() {
 }
 
 const JoinContents = styled.div`
+
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content:center;
+  //margin:35px;
   .title {
     margin: 0;
   }
@@ -207,17 +212,14 @@ const JoinContents = styled.div`
     margin-top: 10px;
     cursor: pointer;
   }
+  
 
-  display: flex;
-  flex-direction: column;
-  // margin-top: 70px;
-  align-items: center;
-  height: 100%;
+ 
+  
 `;
 
 const Main = styled.div`
-  .contents-c {
-  }
+ 
   display: flex;
   margin-top: 80px;
   align-items: center;
