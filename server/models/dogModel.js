@@ -11,7 +11,7 @@ const weightSchema = new mongoose.Schema({
 	},
 });
 
-const recordSchema = new mongoose.Schema({
+const medicalSchema = new mongoose.Schema({
 	content: {
 		type: String,
 		required: true,
@@ -86,8 +86,11 @@ const dogSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
+		userId: {
+			type: String,
+		},
 		weights: [weightSchema],
-		records: [recordSchema],
+		medicals: [medicalSchema],
 		foods: [foodSchema],
 		memos: [memoSchema],
 	},

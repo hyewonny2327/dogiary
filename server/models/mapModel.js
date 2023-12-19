@@ -27,6 +27,9 @@ const MapSchema = new mongoose.Schema(
 			required: true,
 			default: [],
 		},
+		userId: {
+			type: String,
+		},
 	},
 	{
 		collection: "Maps",

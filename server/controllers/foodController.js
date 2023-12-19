@@ -1,31 +1,35 @@
 const foodService = require("../services/foodService.js");
 
 const foodController = {
-	async createFood(req, res) {
+	// post
+	async postFood(req, res) {
 		const dogId = req.params.id;
 		const foodData = req.body;
 		try {
-			const newFood = await foodService.createFood(dogId, foodData);
-			res.status(201).json(newFood);
+			const newFood = await foodService.createFood(
+				dogId,
+				foodData,
+				req.currentUserId
+			);
+			res.status(201).json({ message: "Data created successfully" });
 		} catch (error) {
-			res.status(500).json({ error: error.message });
+			next(error);
 		}
 	},
-	// 특정 몸무게 가져오기
+
+	// get
 	async getFoodById(req, res) {
-		// console.log(req.params);
 		const dogId = req.params.id;
-		const foodId = req.params.foodId;
-		// console.log(dogId, weightId);
 		try {
-			const food = await foodService.getFoodById(dogId, foodId);
+			const food = await foodService.getFoodById(dogId, req.currentUserId);
 			res.json(food);
 		} catch (error) {
-			res.status(500).json({ error: error.message });
+			next(error);
 		}
 	},
-	// 몸무게 정보 업데이트
-	async updateFood(req, res) {
+
+	// put
+	async putFood(req, res) {
 		const dogId = req.params.id;
 		const foodId = req.params.foodId;
 		const updatedFoodData = req.body;
@@ -33,26 +37,31 @@ const foodController = {
 			const updatedFood = await foodService.updateFood(
 				dogId,
 				foodId,
-				updatedWeightData
+				updatedFoodData,
+				req.currentUserId
 			);
-			res.json(updatedWeight);
+			res.status(200).json({ message: "Data updated successfully" });
 		} catch (error) {
-			res.status(500).json({ error: error.message });
+			next(error);
 		}
 	},
 
-	// 몸무게 삭제
+	// delete
 	async deleteFood(req, res) {
 		const dogId = req.params.id;
 		const foodId = req.params.foodId;
 
 		try {
-			const updatedDog = await foodService.deleteFood(dogId, foodId);
-			res.json(updatedDog);
+			const updatedDog = await foodService.deleteFood(
+				dogId,
+				foodId,
+				req.currentUserId
+			);
+			res.status(204).json({ message: "Data deleted successfully" });
 		} catch (error) {
-			res.status(500).json({ error: error.message });
+			next(error);
 		}
 	},
 };
 
-module.exports = weightController;
+module.exports = foodController;
