@@ -8,6 +8,7 @@ const dogRouter = require("./routers/dogRouter.js");
 const diaryRouter = require("./routers/diaryRouter.js");
 const { userRouter } = require("./routers/userRouter.js");
 const cookieParser = require("cookie-parser");
+const errorHandler = require("./middlewares/errorHandler.js");
 
 const app = express();
 app.use(express.json());
@@ -17,7 +18,7 @@ app.use("/api/maps", mapRouter);
 app.use("/api/diary", diaryRouter);
 app.use("/api/auth", userRouter);
 app.use("/api/dogs", dogRouter);
-// app.use("/api/dogs", weightRouter);
+app.use("/api/dogs", weightRouter);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -34,6 +35,16 @@ db.on("connected", () => {
 db.on("error", (error) => {
 	console.log("DB 연결 실패");
 });
+
+app.use((error, req, res, next) => {
+    console.log(error);
+    res.statusCode = error.httpCode ?? 500;
+    res.json({
+      data: null,
+      error: error.message,
+    });
+});
+console.log("express application 준비가 완료되었습니다.");
 
 app.listen(8080, function () {
     console.log("Server is now open!");
