@@ -5,11 +5,14 @@ import { LongColoredBtn,LongStrokedBtn } from '../../components/common/Buttons';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSearchInput } from '../../slice/store';
-import { callMapApi } from '../../utils/callMapApi';
 import closeBtn from '../../components/icons/closeBtn.svg'
 import imageIcon from '../../components/icons/imageIcon.svg'
+
+//!이부분 수정  (mapApi 다 개별 파일로 만들어야하나?)
+import { callMapApi } from '../../utils/callMapApi';
 import { getAddress } from '../../utils/getAddress';
 import { registerMyPlace } from '../../utils/mapApi';
+//import { callMapApi, getAddress, callRegisterPlaceApi } from '../../utils'
 
 function RegisterPlace(){
     
@@ -51,20 +54,20 @@ function RegisterPlace(){
 
     // marker에 변경이 생기면 promise all 로 모든 marker의 좌표값에 대한 주소를 받아온다. 
     // 그리고나서 아래 map 에서 index별로 보여줌 
+    const fetchMarkerAddresses = async () => {
+      try {
+        const addresses = await Promise.all(
+          markers.map(async (marker) => {
+            const addressResult = await getAddress(Number(marker.position.lng), Number(marker.position.lat));
+            return addressResult;
+          })
+        );
+        setMarkerAddresses(addresses);
+      } catch (error) {
+        console.error('주소 가져오기 오류:', error);
+      }
+    };
     useEffect(() => {
-        const fetchMarkerAddresses = async () => {
-          try {
-            const addresses = await Promise.all(
-              markers.map(async (marker) => {
-                const addressResult = await getAddress(Number(marker.position.lng), Number(marker.position.lat));
-                return addressResult;
-              })
-            );
-            setMarkerAddresses(addresses);
-          } catch (error) {
-            console.error('주소 가져오기 오류:', error);
-          }
-        };
       
         fetchMarkerAddresses();
       }, [markers]);

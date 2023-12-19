@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-
+import menuIcon from '../icons/menuIcon.svg'
 
 //로고, 마이페이지 버튼이 있는 상단 로고 bar
 export function LogoBar(){
@@ -44,13 +44,7 @@ export function NavBar(){
 
     return(
         <NavBarStyle>
-            <div className='menu-icon' onClick={()=>setIsIconClicked(!isIconClicked)}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="18" viewBox="0 0 23 18" fill="none">
-                <path d="M1 1H21.5714" stroke="#BDAF74" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M1 9H21.5714" stroke="#BDAF74" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M1 17H21.5714" stroke="#BDAF74" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div>
+            <img src={menuIcon} className='menu-icon' onClick={()=>setIsIconClicked(!isIconClicked)} />
             {isIconClicked && (
                 <CategoryContainer>
                     {categories.map((category, index) => (
@@ -103,6 +97,7 @@ position:relative;
 
 .menu-icon{
     cursor:pointer;
+    padding:10px 0;
 }
 
 `

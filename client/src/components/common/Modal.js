@@ -1,34 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { setIsOpen } from '../../slice/store';
 
 
+export function Modal({ children,containerStyle }) {
+    //const [isModalClicked, setIsModalClicked] = useState(true);
+    const dispatch = useDispatch();
+    const isModalClicked = useSelector((state)=>state.modal.isOpen);
 
-// export function Modal({ onClose, content, customModalStyle, containerStyle }) {
-//     const [isModalClicked, setIsModalClicked] = useState(true);
-  
-//     const closeModal = () => {
-//       setIsModalClicked(false);
-//       onClose();
-//     };
-  
-   
-  
-//     return isModalClicked
-//       ? createPortal(
-//           <ModalContainerStyle containerStyle={containerStyle} onClick={closeModal}>
-//             <ModalContentStyle customModalStyle={customModalStyle}>{content}</ModalContentStyle>
-//           </ModalContainerStyle>,
-//           document.body
-//         )
-//       : null;
-//   }
-export function Modal({ children,onClose,containerStyle }) {
-    const [isModalClicked, setIsModalClicked] = useState(true);
-  
     const closeModal = () => {
-      setIsModalClicked(false);
-      onClose();
+      dispatch(setIsOpen(false));
     };
   
    

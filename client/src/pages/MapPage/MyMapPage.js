@@ -32,6 +32,7 @@ function MyMapPage(){
 
     //필터
     const categoryList = ['산책','애견동반','상점','기타','전체보기'];
+    //id로 관리 
     const [isFilterClicked, setIsFilterClicked] = useState(Array(categoryList.length).fill(false));
 
 
@@ -42,6 +43,8 @@ function MyMapPage(){
     }
     function handleFilterClick(index){
         //버튼을 클릭할때 index번호를 기준으로 boolean 값을 바꿔줌
+        //! 여기 수정 (오피스아워)
+
         const updatedFilterClicked = Array(categoryList.length).fill(false);
         updatedFilterClicked[index] = !updatedFilterClicked[index];
         setIsFilterClicked(updatedFilterClicked);
