@@ -7,7 +7,7 @@ const memoService = {
 	async createMemo(dogId, memoData, currentUserId) {
 		const dog = await Dog.findById(dogId);
 		if (dog.userId !== currentUserId) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.authorizationError,
 				"해당 사용자에게 권한이 없습니다.",
 				{ statusCode: 403 }
@@ -22,7 +22,7 @@ const memoService = {
 	async getMemoById(dogId, currentUserId) {
 		const dog = await Dog.findById(dogId).sort({ createdAt: -1 }).exec();
 		if (dog.userId !== currentUserId) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.authorizationError,
 				"해당 사용자에게 권한이 없습니다.",
 				{ statusCode: 403 }
@@ -31,7 +31,7 @@ const memoService = {
 		const memo = dog.memos;
 
 		if (!memo) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.resourceNotFoundError,
 				"해당 데이터를 찾을수없습니다.",
 				{ statusCode: 404 }
@@ -45,7 +45,7 @@ const memoService = {
 	async updateMemo(dogId, memoId, updatedMemoData, currentUserId) {
 		const dog = await Dog.findById(dogId);
 		if (dog.userId !== currentUserId) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.authorizationError,
 				"해당 사용자에게 권한이 없습니다.",
 				{ statusCode: 403 }
@@ -54,7 +54,7 @@ const memoService = {
 		const memo = dog.memos.id(memoId);
 
 		if (!memo) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.resourceNotFoundError,
 				"해당 데이터를 찾을수없습니다.",
 				{ statusCode: 404 }
@@ -70,7 +70,7 @@ const memoService = {
 	async deleteMemo(dogId, memoId, currentUserId) {
 		const dog = await Dog.findById(dogId);
 		if (dog.userId !== currentUserId) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.authorizationError,
 				"해당 사용자에게 권한이 없습니다.",
 				{ statusCode: 403 }
@@ -79,7 +79,7 @@ const memoService = {
 		const memoIndex = dog.memos.findIndex((w) => w._id.toString() === memoId);
 
 		if (memoIndex === -1) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.resourceNotFoundError,
 				"해당 데이터를 찾을수없습니다.",
 				{ statusCode: 404 }

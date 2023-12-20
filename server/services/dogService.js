@@ -16,14 +16,14 @@ const dogService = {
 		const dog = await Dog.findById(id).lean();
 
 		if (dog.userId !== currentUserId) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.authorizationError,
 				"해당 사용자에게 권한이 없습니다.",
 				{ statusCode: 401 }
 			);
 		}
 		if (!dog) {
-			throw new AppError("Not Found", "해당 강아지가 존재하지 않습니다.", {
+			throw new errorHandler("Not Found", "해당 강아지가 존재하지 않습니다.", {
 				statusCode: 404,
 			});
 		}
@@ -42,7 +42,7 @@ const dogService = {
 		if (result.modifiedCount !== 1) {
 			// 업데이트된 문서의 수가 1이 아닌 경우 처리
 			// throw new Error("강아지 프로필 업데이트에 실패했습니다.");
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.configError,
 				"서버시스템에 문제로 인해 업데이트에 실패하였습니다..",
 				{ statusCode: 500 }
@@ -56,7 +56,7 @@ const dogService = {
 		const dog = await Dog.findById(id);
 
 		if (dog.userId !== currentUserId) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.authorizationError,
 				"해당 사용자에게 권한이 없습니다.",
 				{ statusCode: 401 }
@@ -65,7 +65,7 @@ const dogService = {
 
 		if (!dog) {
 			// throw new Error("해당 강아지가 존재하지 않습니다.");
-			throw new AppError("Not Found", "해당 강아지가 존재하지 않습니다.", {
+			throw new errorHandler("Not Found", "해당 강아지가 존재하지 않습니다.", {
 				statusCode: 404,
 			});
 		}
@@ -79,14 +79,14 @@ const dogService = {
 		const dog = await Dog.findById(id).lean();
 		console.log(dog);
 		if (!dog || dog.length === 0) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.resourceNotFoundError,
 				"해당 강아지를 찾을수없습니다.",
 				{ statusCode: 404 }
 			);
 		}
 		if (dog.userId !== currentUserId) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.authorizationError,
 				"해당 사용자에게 권한이 없습니다.",
 				{ statusCode: 401 }
