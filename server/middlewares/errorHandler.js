@@ -10,5 +10,4 @@ class errorHandler extends Error {
     Error.captureStackTrace(this);
   }
 }
-
 module.exports = errorHandler;
