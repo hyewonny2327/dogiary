@@ -155,9 +155,9 @@ const userController = {
     //임시 비밀번호 발급
     async sendTemporaryPassword(req, res, next) {
         try {
-            const { userId } = req.body;
+            const { email } = req.body;
 
-            const result = await userService.sendPassword(userId);
+            const result = await userService.sendPassword(email);
             res.status(200).json({
                 error: null,
                 data: result,

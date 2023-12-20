@@ -154,11 +154,9 @@ const userService = {
 	},
 
 	//임시 비밀번호 발급
-	async sendPassword(userId) {
-		const matchedUser = await User.findOne(
-			{ userId: userId },
-			{ email: 1 }
-		);
+	async sendPassword(email) {
+		const matchedUser = await User.findOne({ email: email });
+
 		if (!matchedUser) {
 			throw new errorHandler(commonErrors.resourceNotFoundError, "존재하지 않는 회원 정보입니다.", 404);
 		}
@@ -192,8 +190,8 @@ const userService = {
 			throw new errorHandler("Internal Server Error", "이메일 전송 실패", 500);
 		}
 		const updatedUser = await User.findOneAndUpdate(
-			{ userId: userId },
-			{ password: hashedPassword },
+			{ email: email },
+			{ password: hashedPassword }, 
 			{ new: true }
 		);
 		return { updatedPassword: hashedPassword };
