@@ -2,12 +2,14 @@ const express = require("express");
 const dotenv = require("dotenv");
 dotenv.config();
 const mongoose = require("mongoose");
+const errorHandler = require("./middlewares/errorHandler");
 const cors = require("cors");
 const mapRouter = require("./routers/mapRouter.js");
 const dogRouter = require("./routers/dogRouter.js");
 const diaryRouter = require("./routers/diaryRouter.js");
 const { userRouter } = require("./routers/userRouter.js");
 const cookieParser = require("cookie-parser");
+const { applyDefaults } = require("./models/dogModel");
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -20,6 +22,19 @@ app.use("/api/dogs", dogRouter);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+//에러 핸들러
+app.use(errorHandler);
+
+// 에러 핸들러 등록
+app.use((error, req, res, next) => {
+  console.log(error);
+  res.statusCode = error.httpCode ?? 500;
+  res.json({
+    data: null,
+    error: error.message,
+  });
+});
 
 const DB_URL = process.env.ATLAS_URL;
 mongoose.connect(DB_URL);

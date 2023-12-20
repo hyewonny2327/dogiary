@@ -1,3 +1,5 @@
+const commonErrors = require("../middlewares/commonError");
+const errorHandler = require("../middlewares/errorHandler");
 const {
   createDiary,
   updateDiary,
@@ -6,14 +8,15 @@ const {
   getDailyDiaries,
 } = require("../services/diaryService");
 
-exports.postDiary = async (req, res) => {
+exports.postDiary = async (req, res, next) => {
   try {
     const { imageUrl, title, content } = req.body;
 
     if (!imageUrl || !title || !content) {
-      return res
-        .status(400)
-        .json({ error: "잘못된 요청. 필수 필드가 누락되었습니다." });
+      throw new errorHandler("inputError", commonErrors.inputError, {
+        statusCode: 400,
+        cause: error,
+      });
     }
 
     const result = await createDiary({
@@ -27,26 +30,28 @@ exports.postDiary = async (req, res) => {
       .status(200)
       .json({ message: "다이어리가 DB에 저장되었습니다.", data: result });
   } catch (err) {
-    console.error("에러", err);
-    res.status(500).json({ error: "내부 서버 오류." });
+    next(err);
   }
 };
 
 //일기 수정
-exports.putDiary = async (req, res) => {
+exports.putDiary = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { imageUrl, title, content } = req.body || {};
 
     if (!id) {
-      return res.status(400).json({ error: "일기 ID가 필요합니다." });
+      throw new errorHandler(commonErrors.argumentError, "argumentError", {
+        statusCode: 400,
+      });
     }
 
     if (!imageUrl || !title || !content) {
-      return res
-        .status(400)
-        .json({ error: "잘못된 요청입니다. 필수 필드가 누락되었습니다." });
+      throw new errorHandler("inputError", commonErrors.inputError, {
+        statusCode: 400,
+      });
     }
+
     // req.currentUserId가 정의되어 있고 updateDiary에 전달되었는지 확인
     const result = await updateDiary(id, req.currentUserId, {
       imageUrl,
@@ -56,37 +61,42 @@ exports.putDiary = async (req, res) => {
 
     res
       .status(200)
-      .json({ message: "일기 업데이트가 완료되었습니다.", result });
+      .json({ message: "일기 업데이트가 완료 되었습니다.", result });
   } catch (err) {
-    console.error("에러", err);
-    res.status(500).json({ error: "일기 업데이트 중 오류가 발생했습니다." });
+    next(err);
   }
 };
 
 //일기 삭제
-exports.deleteDiary = async (req, res) => {
+exports.deleteDiary = async (req, res, next) => {
   try {
     const { id } = req.params;
+    if (!id) {
+      throw new errorHandler("argumentError", commonErrors.argumentError, {
+        statusCode: 400,
+      });
+    }
 
     const result = await deleteDiary(id, req.currentUserId);
 
-    res.status(204).json({
-      message: "일기 삭제가 완료되었습니다.",
-      data: result,
-    });
+    if (!result || result.deletedCount !== 1) {
+      throw new errorHandler("notfound", commonErrors.resourceNotFoundError, {
+        statusCode: 404,
+      });
+    }
+    res.status(204).end();
   } catch (err) {
-    console.error("에러", err);
-    res.status(500).json({ error: "일기 삭제 중에 오류가 발생했습니다." });
+    next(err);
   }
 };
 
 //모두 조회 월간 조회 일간 조회 (현재 월간 조회 보류)
-exports.getDiaries = async (req, res) => {
+exports.getDiaries = async (req, res, next) => {
   try {
     const { date } = req.query;
     if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-      return res.status(400).json({
-        error: "올바른 날짜 형식을 사용하세요 ('YYYY-MM-DD').",
+      throw new errorHandler("inputError", commonErrors.inputError, {
+        statusCode: 400,
       });
     }
     const result = date
@@ -99,14 +109,10 @@ exports.getDiaries = async (req, res) => {
       message:
         result && result.length > 0
           ? message
-          : "일치하는 일기를 찾을 수 없습니다.",
+          : "저장되어 있는 일기가 없습니다.",
       data: result,
     });
   } catch (err) {
-    console.error("에러 발생", err);
-    res.status(500).json({
-      message: "요청을 처리하는 동안 오류가 발생했습니다.",
-      error: err.message,
-    });
+    next(err);
   }
 };

@@ -1,74 +1,57 @@
+const errorHandler = require("../middlewares/errorHandler.js");
 const Diary = require("../models/diaryModel.js");
 
 //일기 생성
 exports.createDiary = async ({ imageUrl, title, content, userId }) => {
-  try {
-    const newDiary = new Diary({ imageUrl, title, content, userId });
-    const result = await newDiary.save();
-    return result;
-  } catch (err) {
-    console.error("데이터베이스에 저장하는 도중 오류가 발생했습니다.", err);
-    throw err;
-  }
+  const newDiary = new Diary({ imageUrl, title, content, userId });
+  const result = await newDiary.save();
+  return result;
 };
 
 //일기 수정
 exports.updateDiary = async (_id, userId, updates) => {
-  try {
-    const diary = await Diary.findById(_id);
+  const diary = await Diary.findById(_id);
 
-    if (!diary) {
-      throw new Error(`해당 일기를 찾을 수 없습니다.`);
-    }
-
-    //사용자가 해당 일기의 소유자인지 확인
-    if (diary.userId !== userId) {
-      throw new Error(`권한이 거부되었습니다. 해당 일기의 소유자가 아닙니다.`);
-    }
-
-    // 업데이트 적용
-    Object.assign(diary, updates);
-
-    const result = await diary.save();
-
-    return result;
-  } catch (err) {
-    console.error("일기 업데이트 중 오류가 발생했습니다.", err);
-    throw err;
+  if (!diary) {
+    throw new Error(`해당 일기를 찾을 수 없습니다.`);
   }
+
+  //사용자가 해당 일기의 소유자인지 확인
+  if (diary.userId !== userId) {
+    throw new Error(`권한이 거부되었습니다. 해당 일기의 소유자가 아닙니다.`);
+  }
+
+  // 업데이트 적용
+  Object.assign(diary, updates);
+
+  const result = await diary.save();
+
+  return result;
 };
 
 //일기 삭제
 exports.deleteDiary = async (_id, userId) => {
-  try {
-    const diary = await Diary.findById(_id);
-    if (!diary) {
-      throw new Error(`There is no corresponding diary.`);
-    }
-    if (diary.userId !== userId) {
-      throw new Error(`권한이 거부되었습니다. 해당 일기의 소유자가 아닙니다.`);
-    }
+  const diary = await Diary.findById(_id);
+  if (!diary) {
+    throw new Error(`해당일기가 없습니다`);
+  }
+  if (diary.userId !== userId) {
+    throw new Error(`권한이 거부되었습니다. 해당 일기의 소유자가 아닙니다.`);
+  }
 
-    const result = await Diary.deleteOne({ _id });
-    if (result.deletedCount === 1) {
-      return result;
-    }
-  } catch (err) {
-    console.error("일기 삭제 중에 오류가 발생했습니다.", err);
+  const result = await Diary.deleteOne({ _id });
+  if (result.deletedCount === 1) {
+    return result;
   }
 };
 
 //모든 일기 조회
 exports.getDiaries = async (userId) => {
-  try {
-    const result = await Diary.find(
-      { userId },
-      `_id createdAt imageUrl title content `
-    );
-    return result;
-  } catch (err) {
-    console.error("모든 일기 목록을 가져오는 중에 오류가 발생했습니다.", err);
-  }
+  const result = await Diary.find(
+    { userId },
+    `_id createdAt imageUrl title content `
+  );
+  return result;
 };
 
 //월간 일기 조회(보류)
@@ -100,41 +83,25 @@ exports.getDiaries = async (userId) => {
 //일간 일기 조회
 
 exports.getDailyDiaries = async (userId, date) => {
-  try {
-    if (!date) {
-      throw new Error(`올바른 날짜를 입력해주세요.`);
-    }
+  // 날짜 객체 생성
+  const startDate = new Date(date);
+  // 2023-12-16T00:00:00.000Z
+  const endDate = new Date(startDate);
+  endDate.setDate(startDate.getDate() + 1);
+  // 2023-12-17T00:00:00.000Z
 
-    //정규식표현 (=regex)
-    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-    if (!dateRegex.test(date)) {
-      throw new Error(
-        `잘못된 날짜 형식입니다. 'YYYY-MM-DD' 형식을 사용해주세요.`
-      );
-    }
+  // setDate : 객체의 날짜를 설정
+  // getDate : 객체에서 해당 월의 날짜를 검색
 
-    // 날짜 객체 생성
-    const startDate = new Date(date);
-    // 2023-12-16T00:00:00.000Z
-    const endDate = new Date(startDate);
-    endDate.setDate(startDate.getDate() + 1);
-    // 2023-12-17T00:00:00.000Z
+  // MongoDB에서 데이터 조회
+  const result = await Diary.find(
+    {
+      // 범위설정 시간 00~ 23시 59분 59초
+      userId,
+      createdAt: { $gte: startDate, $lt: endDate },
+    },
+    `_id createdAt imageUrl title content`
+  );
 
-    // setDate : 객체의 날짜를 설정
-    // getDate : 객체에서 해당 월의 날짜를 검색
-
-    // MongoDB에서 데이터 조회
-    const result = await Diary.find(
-      {
-        // 범위설정 시간 00~ 23시 59분 59초
-        userId,
-        createdAt: { $gte: startDate, $lt: endDate },
-      },
-      `_id createdAt imageUrl title content`
-    );
-
-    return result;
-  } catch (err) {
-    console.error("일간 일기 조회 중 오류가 발생했습니다.", err);
-  }
+  return result;
 };
