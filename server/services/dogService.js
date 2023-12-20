@@ -1,51 +1,99 @@
 const Dog = require("../models/dogModel.js");
-const { ObjectId } = require("mongoose");
+const errorHandler = require("../middlewares/errorHandler.js");
 
+const commonErrors = require("../middlewares/commonError.js");
 const dogService = {
-	async createDog(dogData) {
-		try {
-			const dogProfile = await Dog.create(dogData);
-			return dogProfile;
-		} catch (error) {
-			console.error("Error creating dog:", error);
-			throw error;
-		}
+	async createDog(dogData, currentUserId) {
+		dogData.userId = currentUserId;
+		const dog = await Dog.create(dogData);
+		const dogObject = dog.toObject();
+		return dogObject;
 	},
-	//강아지 수정
-	async updateDog(id, dogData) {
-		const { image_url, name, type, gender, date, birthday } = dogData;
-		const dogProfile = await Dog.findById(id);
-		if (!dogProfile) {
-			const error = new Error("해당 강아지가 존재하지 않습니다.");
-			throw error;
+
+	// 강아지 수정
+	async updatedDogProfile(id, dogData, currentUserId) {
+		const { imageUrl, name, type, gender, date, birthday } = dogData;
+		const dog = await Dog.findById(id).lean();
+
+		if (dog.userId !== currentUserId) {
+			throw new AppError(
+				commonErrors.authorizationError,
+				"해당 사용자에게 권한이 없습니다.",
+				{ statusCode: 401 }
+			);
 		}
-		const updateDogProfile = await Dog.updateOne({
-			image_url: image_url,
-			name: name,
-			type: type,
-			gender: gender,
-			date: date,
-			birthday: birthday,
-		});
-		return updateDogProfile;
+		if (!dog) {
+			throw new AppError("Not Found", "해당 강아지가 존재하지 않습니다.", {
+				statusCode: 404,
+			});
+		}
+		const result = await Dog.updateOne(
+			{ _id: id }, // 검색 조건
+			{
+				userId: currentUserId,
+				imageUrl: imageUrl,
+				name: name,
+				type: type,
+				sex: gender,
+				date: date,
+				birthday: birthday,
+			}
+		);
+		if (result.modifiedCount !== 1) {
+			// 업데이트된 문서의 수가 1이 아닌 경우 처리
+			// throw new Error("강아지 프로필 업데이트에 실패했습니다.");
+			throw new AppError(
+				commonErrors.configError,
+				"서버시스템에 문제로 인해 업데이트에 실패하였습니다..",
+				{ statusCode: 500 }
+			);
+		}
+		return result;
 	},
-	//강아지 삭제
-	async deleteDog(id) {
+
+	// 강아지 삭제
+	async deletedDog(id, currentUserId) {
+		const dog = await Dog.findById(id);
+
+		if (dog.userId !== currentUserId) {
+			throw new AppError(
+				commonErrors.authorizationError,
+				"해당 사용자에게 권한이 없습니다.",
+				{ statusCode: 401 }
+			);
+		}
+
+		if (!dog) {
+			// throw new Error("해당 강아지가 존재하지 않습니다.");
+			throw new AppError("Not Found", "해당 강아지가 존재하지 않습니다.", {
+				statusCode: 404,
+			});
+		}
+
 		const deleteDog = await Dog.findByIdAndDelete(id);
-		if (!deleteDog) {
-			const error = new Error("해당 강아지가 존재하지 않습니다.");
-			throw error;
-		}
 		return deleteDog;
 	},
-	//강아지 조회
-	async getOneDog(id) {
-		const dogProfile = await Dog.findById(id).lean();
-		if (!dogProfile || dogProfile.length === 0) {
-			const error = new Error("해당 강아지가 존재하지 않습니다.");
-			throw error;
+
+	// 강아지 조회
+	async getOneDog(id, currentUserId) {
+		const dog = await Dog.findById(id).lean();
+		console.log(dog);
+		if (!dog || dog.length === 0) {
+			throw new AppError(
+				commonErrors.resourceNotFoundError,
+				"해당 강아지를 찾을수없습니다.",
+				{ statusCode: 404 }
+			);
 		}
-		return dogProfile;
+		if (dog.userId !== currentUserId) {
+			throw new AppError(
+				commonErrors.authorizationError,
+				"해당 사용자에게 권한이 없습니다.",
+				{ statusCode: 401 }
+			);
+		}
+
+		return dog;
 	},
 };
 
