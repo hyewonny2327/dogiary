@@ -19,14 +19,14 @@ const userService = {
 	async signIn(user) {
 		const existingUser = await User.findOne({ userId: user.userId });
 		if (!existingUser) {
-			throw new errorHandler(commonErrors.resourceNotFoundError, "존재하지 않는 아이디 입니다.", 404);
+			throw new errorHandler(commonErrors.resourceNotFoundError, "존재하지 않는 아이디 입니다.", { statusCode: 404 });
 		}
 		const isPasswordValid = await bcrypt.compare(
 			user.password,
 			existingUser.password
 		);
 		if (!isPasswordValid) {
-			throw new errorHandler(commonErrors.authorizationError, "잘못된 비밀번호 입니다.", 401);
+			throw new errorHandler(commonErrors.authorizationError, "잘못된 비밀번호 입니다.", { statusCode: 401 });
 		}
 		const payload = {
 			userId: existingUser.userId,
@@ -79,7 +79,7 @@ const userService = {
 	async deleteUserInfo(userId) {
 		const deleteUser = await User.findOneAndDelete({ userId: userId });
 		if (!deleteUser) {
-			throw new errorHandler(commonErrors.resourceNotFoundError, "유저 정보를 찾을 수 없습니다.", 404);
+			throw new errorHandler(commonErrors.resourceNotFoundError, "유저 정보를 찾을 수 없습니다.", { statusCode: 404 });
 		}
 	},
 
@@ -92,7 +92,7 @@ const userService = {
 			existingUser.password
 		);
 		if (!isPasswordValid) {
-			throw new errorHandler(commonErrors.authorizationError, "잘못된 비밀번호 입니다.", 401);
+			throw new errorHandler(commonErrors.authorizationError, "잘못된 비밀번호 입니다.", { statusCode: 401 });
 		}
 	},
 
@@ -100,7 +100,7 @@ const userService = {
 	async checkId(userId) {
 		const existingUser = await User.findOne({ userId: userId });
 		if (existingUser) {
-			throw new errorHandler(commonErrors.inputError, "이미 존재하는 아이디 입니다.", 400);
+			throw new errorHandler(commonErrors.inputError, "이미 존재하는 아이디 입니다.", { statusCode: 400 });
 		}
 	},
 
@@ -108,7 +108,7 @@ const userService = {
 	async checkNickname(nickName) {
 		const existingUser = await User.findOne({ nickName: nickName });
 		if (existingUser) {
-			throw new errorHandler(commonErrors.inputError, "이미 존재하는 닉네임 입니다.", 400);
+			throw new errorHandler(commonErrors.inputError, "이미 존재하는 닉네임 입니다.", { statusCode: 400 });
 		}
 	},
 
@@ -116,7 +116,7 @@ const userService = {
 	async checkEmail(email) {
 		const existingUser = await User.findOne({ email: email });
 		if (existingUser) {
-			throw new errorHandler(commonErrors.inputError, "이미 존재하는 닉네임 입니다.", 400);
+			throw new errorHandler(commonErrors.inputError, "이미 존재하는 이메일 입니다.", { statusCode: 400 });
 		}
 	},
 
@@ -148,7 +148,7 @@ const userService = {
 		const sentEmail = await transporter.sendMail(mailOptions);
 		transporter.close();
 		if(!sentEmail) {
-			throw new errorHandler("Internal Server Error", "이메일 전송 실패", 500);
+			throw new errorHandler("Internal Server Error", "이메일 전송 실패", { statusCode: 500 });
 		}
 		return { authNumber: randomNumber };
 	},
@@ -158,7 +158,7 @@ const userService = {
 		const matchedUser = await User.findOne({ email: email });
 
 		if (!matchedUser) {
-			throw new errorHandler(commonErrors.resourceNotFoundError, "존재하지 않는 회원 정보입니다.", 404);
+			throw new errorHandler(commonErrors.resourceNotFoundError, "존재하지 않는 회원 정보입니다.", { statusCode: 404 });
 		}
 		const randomPassword = mail.generateRandomPassword(11111111, 99999999);
 		const hashedPassword = await bcrypt.hash(randomPassword, 10);
@@ -182,19 +182,58 @@ const userService = {
 			from: process.env.EMAIL_ID,
 			to: matchedUser.email,
 			subject: "임시 비밀번호 관련 메일 입니다.",
-			html: "<h1>임시 비밀번호를 입력해주세요. \n\n\n\n\n\n</h1>" + hashedPassword
+			html: "<h1>임시 비밀번호를 입력해주세요. \n\n\n\n\n\n</h1>" + randomPassword
 		};
 		const sentEmail = await transporter.sendMail(mailOptions);
 		transporter.close();
 		if(!sentEmail) {
-			throw new errorHandler("Internal Server Error", "이메일 전송 실패", 500);
+			throw new errorHandler("Internal Server Error", "이메일 전송 실패", { statusCode: 500 });
 		}
 		const updatedUser = await User.findOneAndUpdate(
 			{ email: email },
 			{ password: hashedPassword }, 
 			{ new: true }
 		);
-		return { updatedPassword: hashedPassword };
+		return { updatedPassword: randomPassword };
+	},
+
+	//아이디 찾기(이메일로 아이디 전송)
+	async sendId(email) {
+		const matchedUser = await User.findOne(
+			{ email: email },
+			{ userId: 1 }
+		);
+
+		if (!matchedUser) {
+			throw new errorHandler(commonErrors.resourceNotFoundError, "존재하지 않는 회원 정보입니다.", { statusCode: 404 });
+		}
+		const transporter = nodemailer.createTransport({
+			pool: true,
+			maxConnections: 1,
+			service: "naver",
+			host: "smtp.naver.com",
+			port: 587,
+			secure: false,
+			requireTLS: true,
+			auth: {
+				user: process.env.EMAIL_ID,
+				pass: process.env.EMAIL_PASSWORD,
+			},
+			tls: {
+				rejectUnauthorized: false
+			}
+		});
+		const mailOptions = {
+			from: process.env.EMAIL_ID,
+			to: email,
+			subject: "요청하신 아이디 찾기 관련 메일 입니다.",
+			html: "<h1>요청하신 아이디 입니다. \n\n\n\n\n\n</h1>" + matchedUser.userId
+		};
+		const sentEmail = await transporter.sendMail(mailOptions);
+		transporter.close();
+		if(!sentEmail) {
+			throw new errorHandler("Internal Server Error", "이메일 전송 실패", { statusCode: 500 });
+		}
 	}
 }
 

@@ -41,4 +41,6 @@ userRouter.get("/check-email", userController.checkUserEmail);
 //임시 비밀번호 발급
 userRouter.get("/help", userController.sendTemporaryPassword);
 
+userRouter.get("/find-id", userController.sendUserId);
+
 module.exports = userRouter;

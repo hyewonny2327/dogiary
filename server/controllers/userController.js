@@ -7,7 +7,7 @@ const userController = {
             const userData = req.body;
             const result = await userService.signUp(userData);
 
-            res.status(201).json({ message: "Data created successfully" });
+            res.status(201).json({ message: "회원가입이 완료되었습니다." });
         } catch (error) {
             next(error);
         }
@@ -52,7 +52,7 @@ const userController = {
 
             res.status(200).json({
                 error: null,
-                data: result,
+                data: result.matchedUser,
             });
         } catch (error) {
             next(error);
@@ -70,7 +70,7 @@ const userController = {
 
             res.status(200).json({
                 error: null,
-                data: result,
+                data: result.matchedUser,
             });
         } catch (error) {
             next(error);
@@ -83,6 +83,8 @@ const userController = {
             const userId = req.currentUserId;
 
             const result = await userService.deleteUserInfo(userId);
+
+            res.clearCookie("Authorization");
             res.status(204).send();
         } catch (error) {
             next(error);
@@ -162,6 +164,18 @@ const userController = {
                 error: null,
                 data: result,
             });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    //아이디 찾기
+    async sendUserId(req, res, next) {
+        try {
+            const { email } = req.body;
+
+            const result = await userService.sendId(email);
+            res.status(200).json({ message: "아이디 전송이 완료되었습니다." })
         } catch (error) {
             next(error);
         }
