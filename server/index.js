@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 dotenv.config();
 const mongoose = require("mongoose");
+const errorHandler = require("./middlewares/errorHandler");
 const cors = require("cors");
 const mapRouter = require("./routers/mapRouter.js");
 const dogRouter = require("./routers/dogRouter.js");
@@ -12,6 +13,7 @@ const foodRouter = require("./routers/foodRouter.js");
 const medicalRouter = require("./routers/medicalRouter.js");
 const { userRouter } = require("./routers/userRouter.js");
 const cookieParser = require("cookie-parser");
+const errorHandler = require("./middlewares/errorHandler.js");
 
 const app = express();
 app.use(express.json());
@@ -40,11 +42,29 @@ mongoose.connect(DB_URL);
 const db = mongoose.connection;
 
 db.on("connected", () => {
-	console.log("DB 연결 성공");
+  console.log("DB 연결 성공");
 });
 
 db.on("error", (error) => {
-	console.log("DB 연결 실패");
+  console.log("DB 연결 실패");
+});
+
+app.listen(8080, function () {
+  console.log("Server is now open!");
+});
+
+app.use((error, req, res, next) => {
+  console.log(error);
+  res.statusCode = error.httpCode ?? 500;
+  res.json({
+    data: null,
+    error: error.message,
+  });
+});
+console.log("express application 준비가 완료되었습니다.");
+
+app.listen(8080, function () {
+  console.log("Server is now open!");
 });
 
 app.listen(8080, function () {
