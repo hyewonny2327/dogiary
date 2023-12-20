@@ -1,11 +1,21 @@
-const medicalService = require("../services/medicalService.js");
+const errorHandler = require("../middlewares/errorHandler.js");
 
+const commonErrors = require("../middlewares/commonError.js");
+const medicalService = require("../services/medicalService.js");
 const medicalController = {
 	//post
-	async postMedical(req, res) {
-		const dogId = req.params.id;
-		const medicalData = req.body;
+	async postMedical(req, res, next) {
 		try {
+			const dogId = req.params.id;
+			const medicalData = req.body;
+			console.log(dogId, medicalData);
+			if (!dogId || !medicalData) {
+				throw new errorHandler(
+					commonErrors.argumentError,
+					"데이터를 받아오지 못했습니다.",
+					{ statusCode: 400 }
+				);
+			}
 			await medicalService.createMedical(dogId, medicalData, req.currentUserId);
 			res.status(201).json({ message: "Data created successfully" });
 		} catch (error) {
@@ -13,9 +23,16 @@ const medicalController = {
 		}
 	},
 	// get
-	async getMedicalById(req, res) {
-		const dogId = req.params.id;
+	async getMedicalById(req, res, next) {
 		try {
+			const dogId = req.params.id;
+			if (!dogId) {
+				throw new errorHandler(
+					commonErrors.argumentError,
+					"데이터를 받아오지 못했습니다.",
+					{ statusCode: 400 }
+				);
+			}
 			const medical = await medicalService.getMedicalById(
 				dogId,
 				req.currentUserId
@@ -26,11 +43,18 @@ const medicalController = {
 		}
 	},
 	//put
-	async putMedical(req, res) {
-		const dogId = req.params.id;
-		const medicalId = req.params.medicalId;
-		const updatedMedicalData = req.body;
+	async putMedical(req, res, next) {
 		try {
+			const dogId = req.params.id;
+			const medicalId = req.params.medicalId;
+			const updatedMedicalData = req.body;
+			if (!dogId || !medicalId || !updatedMedicalData) {
+				throw new errorHandler(
+					commonErrors.argumentError,
+					"데이터를 받아오지 못했습니다.",
+					{ statusCode: 400 }
+				);
+			}
 			await medicalService.updateMedical(
 				dogId,
 				medicalId,
@@ -44,13 +68,19 @@ const medicalController = {
 	},
 
 	//delete
-	async deleteMedical(req, res) {
-		const dogId = req.params.id;
-		const medicalId = req.params.medicalId;
-
+	async deleteMedical(req, res, next) {
 		try {
+			const dogId = req.params.id;
+			const medicalId = req.params.medicalId;
+			if (!dogId || !medicalId) {
+				throw new errorHandler(
+					commonErrors.argumentError,
+					"데이터를 받아오지 못했습니다.",
+					{ statusCode: 400 }
+				);
+			}
 			await medicalService.deleteMedical(dogId, medicalId, req.currentUserId);
-			res.status(204).json({ message: "Data deleted successfully" });
+			res.status(200).json({ message: "Data deleted successfully" });
 		} catch (error) {
 			next(error);
 		}

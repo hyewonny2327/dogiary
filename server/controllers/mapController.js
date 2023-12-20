@@ -1,62 +1,73 @@
 const mapService = require("../services/mapService.js");
-const jwt = require("jsonwebtoken");
+const errorHandler = require("../middlewares/errorHandler.js");
 
+const commonErrors = require("../middlewares/commonError.js");
 const mapController = {
-	async postMap(req, res) {
+	async postMap(req, res, next) {
 		try {
 			const mapData = req.body;
-			const mapProfile = await mapService.createMap(mapData, req.currentUserId);
+			if (!mapData) {
+				throw new errorHandler(
+					commonErrors.argumentError,
+					"데이터를 받아오지 못했습니다.",
+					{ statusCode: 400 }
+				);
+			}
+			await mapService.createMap(mapData, req.currentUserId);
 
 			res.status(201).json({ message: "Data created successfully" });
 		} catch (error) {
 			next(error);
 		}
 	},
-	async putMap(req, res) {
+	async putMap(req, res, next) {
+		console.log(typeof req.currentUserId);
 		try {
 			const mapData = req.body;
 			const id = req.params.id;
-			const updateMapProfile = await mapService.updatedMapProfile(
-				id,
-				mapData,
-				req.currentUserId
-			);
+			if (!mapData || !id) {
+				throw new errorHandler(
+					commonErrors.argumentError,
+					"데이터를 받아오지 못했습니다.",
+					{ statusCode: 400 }
+				);
+			}
+			await mapService.updatedMapProfile(id, mapData, req.currentUserId);
 
 			res.status(200).json({ message: "Data updated successfully" });
 		} catch (error) {
-			if (error.status === 404) {
-				res.status(404).json({
-					error: "해당 맵데이터가 존재하지 않습니다.",
-					data: null,
-				});
-			} else {
-				next(error);
-			}
+			next(error);
 		}
 	},
 
-	async deleteMap(req, res) {
+	async deleteMap(req, res, next) {
 		try {
 			const id = req.params.id;
-			const deleteMap = await mapService.deleteMap(id, req.currentUserId);
+			if (!id) {
+				throw new errorHandler(
+					commonErrors.argumentError,
+					"데이터를 받아오지 못했습니다.",
+					{ statusCode: 400 }
+				);
+			}
+			await mapService.deleteMap(id, req.currentUserId);
 			res.status(204).json({ message: "Data deleted successfully" });
 		} catch (error) {
-			if (error.status === 404) {
-				res.status(404).json({
-					error: "해당 맵 데이터가 존재하지 않습니다.",
-					data: null,
-				});
-			} else {
-				next(error);
-			}
+			next(error);
 		}
 	},
 
-	async getOneMap(req, res) {
+	async getOneMap(req, res, next) {
 		try {
 			const id = req.params.id;
+			if (!id) {
+				throw new errorHandler(
+					commonErrors.argumentError,
+					"데이터를 받아오지 못했습니다.",
+					{ statusCode: 400 }
+				);
+			}
 			const mapProfile = await mapService.getOneMap(id);
-
 			res.json({
 				error: null,
 				data: mapProfile,
@@ -66,7 +77,9 @@ const mapController = {
 		}
 	},
 
-	async getMaps(req, res) {
+	async getMaps(req, res, next) {
+		console.log(req.query);
+		const cursor = req.query.cursor;
 		try {
 			// 태그가 존재하면 태그별 조회, 없으면 전체 조회
 			if (req.query.tag) {
@@ -79,7 +92,7 @@ const mapController = {
 			} else if (req.query.myMaps) {
 				// 새로 추가한 부분: myMaps가 요청에 있을 때
 				const currentUserId = req.currentUserId;
-				const myMaps = await mapService.getMyMaps(currentUserId);
+				const myMaps = await mapService.getMyMaps(currentUserId, cursor);
 				res.json({
 					error: null,
 					data: myMaps,

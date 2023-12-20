@@ -12,7 +12,6 @@ const foodRouter = require("./routers/foodRouter.js");
 const medicalRouter = require("./routers/medicalRouter.js");
 const { userRouter } = require("./routers/userRouter.js");
 const cookieParser = require("cookie-parser");
-const errorHandler = require("./middlewares/errorHandler.js");
 
 const app = express();
 app.use(express.json());
@@ -27,7 +26,14 @@ app.use("/api/dogs", weightRouter, memoRouter, foodRouter, medicalRouter);
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use("/api/auth", userRouter);
-app.use(errorHandler);
+app.use((error, req, res, next) => {
+	console.log(error);
+	res.statusCode = error.httpCode ?? 500;
+	res.json({
+		data: null,
+		error: error.message,
+	});
+});
 
 const DB_URL = process.env.ATLAS_URL;
 mongoose.connect(DB_URL);

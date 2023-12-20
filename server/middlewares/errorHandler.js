@@ -1,23 +1,19 @@
-// errorHandler.js
-const errorHandler = (err, req, res, next) => {
-	// 기본적으로 500 Internal Server Error로 설정
-	let statusCode = 500;
-	let errorMessage = "Internal Server Error";
-
-	// 에러 객체에 상태 코드가 지정되어 있는지 확인하고 설정
-	if (err.statusCode) {
-		statusCode = err.statusCode;
-		errorMessage = err.message;
+class errorHandler extends Error {
+	constructor(name, description, options) {
+		if (options?.cause !== undefined && options?.cause !== null) {
+			super(description, { cause: options.cause });
+		} else {
+			super(description);
+		}
+		this.name = name;
+		this.statusCode = options?.statusCode ?? 500;
+		Error.captureStackTrace(this);
 	}
-
-	// 에러 로그 출력
-	console.error(err.stack);
-
-	// 클라이언트에게 에러 응답 전송
-	res.status(statusCode).json({
-		success: false,
-		message: errorMessage,
-	});
-};
+}
 
 module.exports = errorHandler;
+
+// // 예시
+// new AppError("Not Found Error", "해당 여행 정보가 존재하지 않습니다", {
+// 	statusCode: 404,
+// });

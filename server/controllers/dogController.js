@@ -1,27 +1,37 @@
 const dogService = require("../services/dogService.js");
 const jwt = require("jsonwebtoken");
-
+const errorHandler = require("../middlewares/errorHandler.js");
+const commonErrors = require("../middlewares/commonError.js");
 const dogController = {
-	async postDog(req, res) {
+	async postDog(req, res, next) {
 		try {
 			const dogData = req.body;
-			const dogObject = await dogService.createDog(dogData, req.currentUserId);
-
+			await dogService.createDog(dogData, req.currentUserId);
+			if (!dogData) {
+				throw new errorHandler(
+					commonErrors.argumentError,
+					"데이터를 받아오지 못했습니다.",
+					{ statusCode: 400 }
+				);
+			}
 			res.status(201).json({ message: "Data created successfully" });
 		} catch (error) {
 			next(error);
 		}
 	},
 
-	async putDog(req, res) {
+	async putDog(req, res, next) {
 		try {
 			const dogData = req.body;
 			const id = req.params.id;
-			const updateDogProfile = await dogService.updatedDogProfile(
-				id,
-				dogData,
-				req.currentUserId
-			);
+			if (!id) {
+				throw new errorHandler(
+					commonErrors.argumentError,
+					"id를 받아오지 못했습니다.",
+					{ statusCode: 400 }
+				);
+			}
+			await dogService.updatedDogProfile(id, dogData, req.currentUserId);
 
 			res.status(200).json({ message: "Data updated successfully" });
 		} catch (error) {
@@ -29,20 +39,27 @@ const dogController = {
 		}
 	},
 
-	async deleteDog(req, res) {
+	async deleteDog(req, res, next) {
 		try {
 			const id = req.params.id;
-			const deleteDog = await dogService.deletedDog(id, req.currentUserId);
-
-			res.status(204).json({ message: "Data deleted successfully" });
+			await dogService.deletedDog(id, req.currentUserId);
+			if (!id) {
+				throw new errorHandler(
+					commonErrors.argumentError,
+					"id를 받아오지 못했습니다.",
+					{ statusCode: 400 }
+				);
+			}
+			res.status(200).json({ message: "Data deleted successfully" });
 		} catch (error) {
 			next(error);
 		}
 	},
 
-	async getOneDog(req, res) {
+	async getOneDog(req, res, next) {
 		try {
 			const id = req.params.id;
+			console.log(id);
 			const dogProfile = await dogService.getOneDog(id, req.currentUserId);
 
 			res.json({

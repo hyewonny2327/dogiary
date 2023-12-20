@@ -6,9 +6,9 @@ const authenticateUser = require("../middlewares/authenticateUser.js");
 // POST: /dogs/:id/weights - 새로운 몸무게 추가
 router.post("/:id/medicals", authenticateUser, medicalController.postMedical);
 
-// GET: /dogs/:id/weights/:weightId - 특정 몸무게 조회
+// GET: /dogs/:id/medicals - 특정 몸무게 조회
 router.get(
-	"/:id/medicals/:medicalId",
+	"/:id/medicals/",
 	authenticateUser,
 	medicalController.getMedicalById
 );
