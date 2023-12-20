@@ -1,20 +1,19 @@
 const { Router } = require("express");
 const diaryController = require("../controllers/diaryController");
+const diaryAuthenticateUser = require("../middlewares/diaryAuthenticateUser");
+
 const router = Router();
 
-//다이어리 생성
-router.post("/diary", diaryController.diarySave);
+//일기 생성
+router.post("/", diaryAuthenticateUser, diaryController.postDiary);
 
-//다이어리 수정
-router.put(`/diary/:id`, diaryController.diaryUpdate);
+//일기 수정
+router.put(`/:id`, diaryAuthenticateUser, diaryController.putDiary);
 
-//다이어리 삭제
-router.delete(`/diary/:id`, diaryController.diaryDelete);
+//일기 삭제
+router.delete(`/:id`, diaryAuthenticateUser, diaryController.deleteDiary);
 
-//다이어리 모두 조회
-router.get("/diary", diaryController.diaryGetAll);
-
-//다이어리 월별 조회
-router.get("/diary/month", diaryController.diaryGetMonth);
+// 일기 조회
+router.get("/", diaryAuthenticateUser, diaryController.getDiaries);
 
 module.exports = router;

@@ -2,29 +2,31 @@ const express = require("express");
 const dotenv = require("dotenv");
 dotenv.config();
 const mongoose = require("mongoose");
+const errorHandler = require("./middlewares/errorHandler");
 const cors = require("cors");
 const mapRouter = require("./routers/mapRouter.js");
 const dogRouter = require("./routers/dogRouter.js");
 const diaryRouter = require("./routers/diaryRouter.js");
-const { userRouter } = require("./routers/userRouter.js");
+const weightRouter = require("./routers/weightRouter.js");
+const memoRouter = require("./routers/memoRouter.js");
+const foodRouter = require("./routers/foodRouter.js");
+const medicalRouter = require("./routers/medicalRouter.js");
+const userRouter = require("./routers/userRouter.js");
 const cookieParser = require("cookie-parser");
 
 const app = express();
 app.use(express.json());
 app.use(cors());
-const router = express.Router();
 
-router.use("/", mapRouter);
-router.use("/", dogRouter);
-router.use("/", diaryRouter);
+app.use("/api/maps", mapRouter);
+app.use("/api/diary", diaryRouter);
+app.use("/api/auth", userRouter);
+app.use("/api/dogs", dogRouter);
+app.use("/api/dogs", weightRouter, memoRouter, foodRouter, medicalRouter);
 
-app.use("/api", router);
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use("/api/auth", userRouter);
-app.listen(8080, function () {
-  console.log("severOpen");
-});
 
 const DB_URL = process.env.ATLAS_URL;
 mongoose.connect(DB_URL);
@@ -36,4 +38,17 @@ db.on("connected", () => {
 
 db.on("error", (error) => {
 	console.log("DB 연결 실패");
+});
+
+app.use((error, req, res, next) => {
+	console.log(error);
+	res.statusCode = error.httpCode ?? 500;
+	res.json({
+		data: null,
+		error: error.message,
+	});
+});
+console.log("express application 준비가 완료되었습니다.");
+app.listen(8080, function () {
+	console.log("Server is now open!");
 });
