@@ -33,23 +33,22 @@ mongoose.connect(DB_URL);
 const db = mongoose.connection;
 
 db.on("connected", () => {
-  console.log("DB 연결 성공");
+	console.log("DB 연결 성공");
 });
 
 db.on("error", (error) => {
-  console.log("DB 연결 실패");
+	console.log("DB 연결 실패");
 });
 
 app.use((error, req, res, next) => {
-  console.log(error);
-  res.statusCode = error.httpCode ?? 500;
-  res.json({
-    data: null,
-    error: error.message,
-  });
+	console.log(error);
+	res.statusCode = error.httpCode ?? 500;
+	res.json({
+		data: null,
+		error: error.message,
+	});
 });
 console.log("express application 준비가 완료되었습니다.");
-
 app.listen(8080, function () {
-  console.log("Server is now open!");
+	console.log("Server is now open!");
 });

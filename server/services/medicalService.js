@@ -7,7 +7,7 @@ const medicalService = {
 	async createMedical(dogId, medicalData, currentUserId) {
 		const dog = await Dog.findById(dogId);
 		if (dog.userId !== currentUserId) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.authorizationError,
 				"해당 사용자에게 권한이 없습니다.",
 				{ statusCode: 403 }
@@ -17,12 +17,11 @@ const medicalService = {
 		const updatedDog = await dog.save();
 		return updatedDog.medicals[updatedDog.medicals.length - 1]; // return the newly added medical record
 	},
-
 	// 진료기록 가져오기
 	async getMedicalById(dogId, currentUserId) {
 		const dog = await Dog.findById(dogId);
 		if (dog.userId !== currentUserId) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.authorizationError,
 				"해당 사용자에게 권한이 없습니다.",
 				{ statusCode: 403 }
@@ -32,7 +31,7 @@ const medicalService = {
 			(a, b) => new Date(b.date) - new Date(a.date)
 		);
 		if (!medical) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.resourceNotFoundError,
 				"해당 데이터를 찾을수없습니다.",
 				{ statusCode: 404 }
@@ -46,7 +45,7 @@ const medicalService = {
 	async updateMedical(dogId, medicalId, updatedWeightData, currentUserId) {
 		const dog = await Dog.findById(dogId);
 		if (dog.userId !== currentUserId) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.authorizationError,
 				"해당 사용자에게 권한이 없습니다.",
 				{ statusCode: 403 }
@@ -55,7 +54,7 @@ const medicalService = {
 		const medical = dog.medicals.id(medicalId);
 
 		if (!medical) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.resourceNotFoundError,
 				"해당 데이터를 찾을수없습니다.",
 				{ statusCode: 404 }
@@ -71,7 +70,7 @@ const medicalService = {
 	async deleteMedical(dogId, medicalId, currentUserId) {
 		const dog = await Dog.findById(dogId);
 		if (dog.userId !== currentUserId) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.authorizationError,
 				"해당 사용자에게 권한이 없습니다.",
 				{ statusCode: 403 }
@@ -82,7 +81,7 @@ const medicalService = {
 		);
 
 		if (medicalIndex === -1) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.resourceNotFoundError,
 				"해당 데이터를 찾을수없습니다.",
 				{ statusCode: 404 }

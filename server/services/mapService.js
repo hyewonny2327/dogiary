@@ -6,7 +6,7 @@ const mapService = {
 	// 마커 데이터 생성
 	async createMap(mapData, currentUserId) {
 		if (!currentUserId) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.argumentError,
 				"데이터를 받아오지 못했습니다.",
 				{ statusCode: 400 }
@@ -22,7 +22,7 @@ const mapService = {
 		// currentUserId;
 		const mapProfile = await Map.findById(id).lean();
 		if (!mapProfile) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.resourceNotFoundError,
 				"해당 데이터를 찾을수없습니다.",
 				{ statusCode: 404 }
@@ -30,7 +30,7 @@ const mapService = {
 		}
 
 		if (mapProfile.userId !== currentUserId) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.authorizationError,
 				"해당 사용자에게 권한이 없습니다.",
 				{ statusCode: 403 }
@@ -41,7 +41,7 @@ const mapService = {
 
 		if (updateResult.modifiedCount !== 1) {
 			// 업데이트된 문서의 수가 1이 아닌 경우 처리
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.configError,
 				"서버시스템에 문제로 인해 업데이트에 실패하였습니다..",
 				{ statusCode: 500 }
@@ -57,14 +57,14 @@ const mapService = {
 		try {
 			const mapToDelete = await Map.findById(id);
 			if (!mapToDelete) {
-				throw new AppError(
+				throw new errorHandler(
 					commonErrors.resourceNotFoundError,
 					"해당 데이터를 찾을수없습니다.",
 					{ statusCode: 404 }
 				);
 			}
 			if (mapToDelete.userId !== currentUserId) {
-				throw new AppError(
+				throw new errorHandler(
 					commonErrors.authorizationError,
 					"해당 사용자에게 권한이 없습니다.",
 					{ statusCode: 403 }
@@ -81,7 +81,7 @@ const mapService = {
 	async getOneMap(id) {
 		const mapProfile = await Map.findById(id).lean();
 		if (!mapProfile || mapProfile.length === 0) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.resourceNotFoundError,
 				"해당 데이터를 찾을수없습니다.",
 				{ statusCode: 404 }
@@ -94,7 +94,7 @@ const mapService = {
 	async getAllMaps() {
 		const allMaps = await Map.find().lean();
 		if (!allMaps || allMaps.length === 0) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.resourceNotFoundError,
 				"해당 데이터를 찾을수없습니다.",
 				{ statusCode: 404 }
@@ -111,7 +111,7 @@ const mapService = {
 		}
 		const mapsByTag = await Map.find({ tag: tagName }).lean();
 		if (!mapsByTag || mapsByTag.length === 0) {
-			throw new AppError(
+			throw new errorHandler(
 				commonErrors.resourceNotFoundError,
 				"해당 데이터를 찾을수없습니다.",
 				{ statusCode: 404 }
@@ -119,43 +119,39 @@ const mapService = {
 		}
 		return mapsByTag;
 	},
-	async getMyMaps(currentUserId) {
-		const mapsByUser = await Map.find({ userId: currentUserId }).lean();
-		if (!mapsByUser || mapsByUser.length === 0) {
-			throw new AppError(
-				commonErrors.resourceNotFoundError,
-				"해당 데이터를 찾을수없습니다.",
-				{ statusCode: 404 }
-			);
-		}
-		return mapsByUser;
-	},
-	// 가져오기 (커서 기반 페이지네이션 및 제한된 개수)
-	// async getMyMaps(currentUserId, cursor) {
-	// 	try {
-	// 		let query = { userId: currentUserId };
-	// 		if (cursor) {
-	// 			// 이전에 불러온 항목들의 createdAt 값보다 이후의 항목들을 조회
-	// 			query.createdAt = { $gt: cursor };
-	// 		}
-	// 		const myMaps = await Map.find(query)
-	// 			.sort({ createdAt: -1 })
-	// 			.limit(2)
-	// 			.lean();
-
-	// 		if (!myMaps || myMaps.length === 0) {
-	// 			throw new AppError(
-	// 				commonErrors.resourceNotFoundError,
-	// 				"해당 자료를 찾을 수 없습니다.",
-	// 				{ statusCode: 404 }
-	// 			);
-	// 		}
-	// 		return myMaps;
-	// 	} catch (error) {
-	// 		console.error(error);
-	// 		throw error;
+	// async getMyMaps(currentUserId) {
+	// 	const mapsByUser = await Map.find({ userId: currentUserId }).lean();
+	// 	if (!mapsByUser || mapsByUser.length === 0) {
+	// 		throw new errorHandler(
+	// 			commonErrors.resourceNotFoundError,
+	// 			"해당 데이터를 찾을수없습니다.",
+	// 			{ statusCode: 404 }
+	// 		);
 	// 	}
+	// 	return mapsByUser;
 	// },
+	// 가져오기 (커서 기반 페이지네이션 및 제한된 개수)
+	async getMyMaps(currentUserId, cursor) {
+		try {
+			let query = { userId: currentUserId };
+			if (cursor) {
+				// 이전에 불러온 항목들의 createdAt 값보다 이후의 항목들을 조회
+				query.createdAt = { $lt: cursor };
+			}
+			const myMaps = await Map.find(query)
+				.sort({ createdAt: -1 })
+				.limit(2)
+				.lean();
+
+			if (!myMaps || myMaps.length === 0) {
+				return null;
+			}
+			return myMaps;
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	},
 };
 
 function isValidTag(tagName) {
