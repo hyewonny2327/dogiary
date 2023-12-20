@@ -12,9 +12,9 @@ export function LongStrokedBtn({children,onClick}){
     )
 }
 
-export function SmallBtn({text}){
+export function SmallBtn({children,onClick}){
     return(
-        <SmallBtnStyle>{text}</SmallBtnStyle>
+        <SmallBtnStyle onClick={onClick}>{children}</SmallBtnStyle>
     )
 }
 const LongBtnStyle = styled.div`

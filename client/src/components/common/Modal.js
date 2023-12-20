@@ -41,9 +41,9 @@ export function Modal({ children,containerStyle }) {
   
   const ModalContentStyle = styled.div`
     
-    border-radius: 4px;
-    background: #FFF;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    // border-radius: 4px;
+    // background: #FFF;
+    // box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   
   `;
 

@@ -7,12 +7,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setSearchInput } from '../../slice/store';
 import closeBtn from '../../components/icons/closeBtn.svg'
 import imageIcon from '../../components/icons/imageIcon.svg'
+//!markers 초기화 시켜야함 (언마운트) clean up function (useEffect 내부에서) 언마운트 시점에 실행 
+//import { callMapApi } from '../../utils/callMapApi';
 
-//!이부분 수정  (mapApi 다 개별 파일로 만들어야하나?)
-import { callMapApi } from '../../utils/callMapApi';
-import { getAddress } from '../../utils/getAddress';
-import { registerMyPlace } from '../../utils/mapApi';
-//import { callMapApi, getAddress, callRegisterPlaceApi } from '../../utils'
+import { callMapApi, getAddress, registerMyPlace } from '../../utils'
 
 function RegisterPlace(){
     
@@ -130,7 +128,6 @@ function RegisterPlace(){
             "position": [selectedPlace.lng,selectedPlace.lat],
             "address": selectedPlace.address 
         };
-        //submitData 속 내용을 인자로 보내서 api 호출 (아직 구현 진행중 )
         registerMyPlace(submitData)
         console.log('클릭했음');
         navigate('/mapPage');
@@ -206,10 +203,8 @@ function RegisterPlace(){
                 </ContentContainerStyle>
             </ContainerBox>
             <BtnContainer>
-                <LongStrokedBtn text='취소하기'/>
-                <LongColoredBtn text='등록하기' onClick={handleSubmit
-                    
-                }/>
+                <LongStrokedBtn>취소하기</LongStrokedBtn>
+                <LongColoredBtn onClick={handleSubmit}>등록하기</LongColoredBtn>
             </BtnContainer>
         </RegisterPlaceContainer>
         

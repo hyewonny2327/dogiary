@@ -6,7 +6,7 @@ import MapRenderer from './MapRenderer';
 import MarkerList from './MarkerList';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMarkers } from '../../slice/store';
-import { callMapApi } from '../../utils/callMapApi';
+import { callMapApi } from '../../utils';
 
 const { kakao } = window;
 
