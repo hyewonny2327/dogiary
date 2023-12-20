@@ -14,35 +14,45 @@ function JoinPage() {
   const [pwdMsg, setPwdMsg] = useState("");
   const [confirmPwdMsg, setConfirmPwdMsg] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
-  const [isNicknameAvailable, setIsNicknameAvailable] = useState(true);
   const [nicknameCheckMsg, setNicknameCheckMsg] = useState("");
 
-  const handleChangeNickname = async () => {
-    console.log("확인");
+  const handleChangeNickname = (e) => {
+    setNickname(e.target.value);
+  };
+
+  const handleClickNickname = async () => {
     try {
-      const response = await axios.post(
+      console.log("나오라");
+      console.log(nickname);
+      const response = await axios.get(
         "http://localhost:8080/api/auth/check-nickname",
         {
           nickName: nickname,
         }
       );
 
-      const isAvailable = response.data.isAvailable;
-      setIsNicknameAvailable(isAvailable);
-
-      if (isAvailable) {
-        setNicknameCheckMsg("사용 가능한 닉네임입니다.");
+      console.log(response); // 확인용 로그
+      if (response.data === false) {
+        setNicknameCheckMsg("사용 가능한 아이디입니다.");
+        setNickname(response.data);
       } else {
-        setNicknameCheckMsg("이미 사용 중인 닉네임입니다. ");
+        setNicknameCheckMsg("중복된 아이디입니다. 다시 시도하세요.");
+        setNickname(response.data);
+        setNickname("");
       }
-    } catch (e) {
-      console.error("", e);
+      console.log("중복체크");
+    } catch (error) {
+      console.error("API 호출 중 에러 발생:", error);
     }
   };
 
   const handleChangeUserId = (e) => {
     setUser_Id(e.target.value);
   };
+
+  // const handleClickUserId = (user_Id) => {
+
+  // }
 
   const handleChangeEmail = (e) => {
     setEmail(e.target.value);
@@ -129,11 +139,18 @@ function JoinPage() {
                   name="nickname"
                   id="nickname"
                   placeholder="닉네임 입력"
-                  onChange={(e) => setNickname(e.target.value)}
+                  onChange={handleChangeNickname}
                 />
               </InputBox>
-              <SmallBtn text={"중복확인"} onClick={handleChangeNickname} />
+              <SmallBtn
+                onClick={(e) => {
+                  handleClickNickname();
+                }}
+              >
+                중복확인
+              </SmallBtn>
             </div>
+            <div className="message">{nicknameCheckMsg}</div>
             <div className="small-box-content">
               <InputBox>
                 <input
@@ -146,6 +163,13 @@ function JoinPage() {
                   onChange={handleChangeUserId}
                 />
               </InputBox>
+              {/* <SmallBtn
+                text={"중복확인"}
+                onClick={(e) => {
+                  handleClickUserId(e);
+                }
+              }
+              /> */}
               <SmallBtn text={"중복확인"} />
             </div>
             <div className="small-box-content">
