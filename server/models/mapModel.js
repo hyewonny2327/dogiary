@@ -11,9 +11,7 @@ const MapSchema = new mongoose.Schema(
 			required: true,
 		},
 		tag: {
-
-			type: [String], // 배열 형태로 여러 개의 문자열을 저장
-			default: [],
+			type: String,
 			required: true,
 		},
 		imageUrl: {
@@ -22,12 +20,19 @@ const MapSchema = new mongoose.Schema(
 		},
 		content: {
 			type: String,
-			// required: true,
+			required: true,
 		},
 		position: {
 			type: Array,
 			required: true,
 			default: [],
+		},
+		userId: {
+			type: String,
+		},
+		address: {
+			type: String,
+			required: true,
 		},
 	},
 	{
