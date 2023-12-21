@@ -8,8 +8,8 @@ import { Modal } from '../../components/common/Modal';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSearchInput, setMarkers } from '../../slice/store';
+import { showPlacesByTag } from '../../utils/mapApi';
 
-const categoryList = ['산책', '애견동반', '상점', '기타', '전체보기'];
 const TagList = [
   { label: '산책', id: 'tag0' },
   { label: '애견동반', id: 'tag1' },
@@ -61,6 +61,11 @@ function MyMapPage() {
 
       return updatedTags;
     });
+
+    showPlacesByTag(id).then((res) => {
+      console.log(res);
+    });
+    //console.log(placesDataByTag);
   }
 
   //아이콘 클릭

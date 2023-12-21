@@ -3,8 +3,9 @@ import { LogoBar, NavBar } from '../../components/common/Header';
 import seoulMap from '../../components/icons/seoulMap.svg';
 import { showMyPlaces } from '../../utils/mapApi';
 import { useEffect, useState } from 'react';
-import showMoreIcon from '../../components/icons/showMoreIcon.svg';
-
+import deleteIcon from '../../components/icons/deleteIcon.svg';
+import deleteIconHover from '../../components/icons/deleteIconHover.svg';
+import { deleteMyPlace } from '../../utils';
 export default function MyPlacePage() {
   const [myPlaces, setMyPlaces] = useState([]);
   useEffect(() => {
@@ -13,7 +14,6 @@ export default function MyPlacePage() {
       const placesData = res;
       setMyPlaces(placesData);
     });
-    // console.log('check', placesData);
   }, []);
 
   function getTagName(tag) {
@@ -31,11 +31,31 @@ export default function MyPlacePage() {
   }
   const [isPublicClicked, setIsPublicClicked] = useState(true);
   const [isPrivateClicked, setIsPrivateClicked] = useState(false);
+  const [isHover, setIsHover] = useState(Array(myPlaces.length).fill(false));
 
   function handleTabClick() {
     setIsPublicClicked(!isPublicClicked);
     setIsPrivateClicked(!isPrivateClicked);
   }
+  function handleMouseIn(index) {
+    setIsHover((prev) => {
+      const newHoverState = [...prev];
+      newHoverState[index] = true;
+      return newHoverState;
+    });
+  }
+  function handleMouseOut(index) {
+    setIsHover((prev) => {
+      const newHoverState = [...prev];
+      newHoverState[index] = false;
+      return newHoverState;
+    });
+  }
+  function handleDeleteClick(id) {
+    console.log(typeof id);
+    deleteMyPlace(id);
+  }
+
   return (
     <PageContainer>
       <LogoBar />
@@ -73,9 +93,12 @@ export default function MyPlacePage() {
                 ></img>
                 {/* <div className="image">이미지</div> */}
                 <img
-                  src={showMoreIcon}
-                  alt="삭제수정버튼"
-                  className="show-more-icon"
+                  src={isHover[index] ? deleteIconHover : deleteIcon}
+                  alt="삭제버튼"
+                  className="delete-icon"
+                  onMouseEnter={() => handleMouseIn(index)}
+                  onMouseLeave={() => handleMouseOut(index)}
+                  onClick={() => handleDeleteClick(item._id)}
                 ></img>
               </div>
             </div>
@@ -171,6 +194,10 @@ const ListContainer = styled.div`
   .right-container {
     display: flex;
     align-items: center;
+    .delete-icon {
+      margin: 0 10px 0px 20px;
+      width: 16px;
+    }
   }
   .image {
     width: 92px;
