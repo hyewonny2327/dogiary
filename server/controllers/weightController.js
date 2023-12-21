@@ -1,6 +1,6 @@
 const weightService = require("../services/weightService.js");
 const errorHandler = require("../middlewares/errorHandler.js");
-const commonErrors = require("../middlewares/commonError.js");
+const commonErrors = require("../middlewares/commonErrors.js");
 const weightController = {
 	async postWeight(req, res, next) {
 		try {
@@ -21,6 +21,7 @@ const weightController = {
 	},
 	// 몸무게데이터 가져오기
 	async getWeightById(req, res, next) {
+		const cursor = req.query.cursor;
 		try {
 			const dogId = req.params.id;
 			if (!dogId) {
@@ -30,11 +31,27 @@ const weightController = {
 					{ statusCode: 400 }
 				);
 			}
-			const weight = await weightService.getWeightById(
-				dogId,
-				req.currentUserId
-			);
-			res.json(weight);
+			if (req.query.limit) {
+				const weight = await weightService.getWeight5ById(
+					dogId,
+					req.currentUserId,
+					req.limit
+				);
+				res.json({
+					error: null,
+					data: weight,
+				});
+			} else {
+				const weight = await weightService.getWeightById(
+					dogId,
+					req.currentUserId,
+					cursor
+				);
+				res.json({
+					error: null,
+					data: weight,
+				});
+			}
 		} catch (error) {
 			next(error);
 		}
