@@ -77,7 +77,6 @@ const dogService = {
 	// 강아지 조회
 	async getOneDog(id, currentUserId) {
 		const dog = await Dog.findById(id).lean();
-		console.log(dog);
 		if (!dog || dog.length === 0) {
 			throw new errorHandler(
 				commonErrors.resourceNotFoundError,

@@ -13,15 +13,13 @@ const mapController = {
 					{ statusCode: 400 }
 				);
 			}
-			const a = await mapService.createMap(mapData, req.currentUserId);
-			console.log(a);
+			await mapService.createMap(mapData, req.currentUserId);
 			res.status(201).json({ message: "Data created successfully" });
 		} catch (error) {
 			next(error);
 		}
 	},
 	async putMap(req, res, next) {
-		console.log(typeof req.currentUserId);
 		try {
 			const mapData = req.body;
 			const id = req.params.id;
@@ -78,7 +76,6 @@ const mapController = {
 	},
 	async getMaps(req, res, next) {
 		const cursor = req.query.cursor;
-		console.log(cursor, 1);
 		try {
 			// 태그가 존재하면 태그별 조회, 없으면 전체 조회
 			if (req.query.tag) {

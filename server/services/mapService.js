@@ -32,7 +32,6 @@ const mapService = {
 		}
 		const mapProfile = await Map.create(mapData);
 		const mapObject = mapProfile.toObject();
-		console.log(mapObject);
 		return mapObject;
 	},
 	// 마커 정보 수정
@@ -153,7 +152,6 @@ const mapService = {
 			}
 			return myMaps;
 		} catch (error) {
-			console.error(error);
 			throw error;
 		}
 	},

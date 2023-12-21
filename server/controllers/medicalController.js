@@ -8,7 +8,6 @@ const medicalController = {
 		try {
 			const dogId = req.params.id;
 			const medicalData = req.body;
-			console.log(dogId, medicalData);
 			if (!dogId || !medicalData) {
 				throw new errorHandler(
 					commonErrors.argumentError,

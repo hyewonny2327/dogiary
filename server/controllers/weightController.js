@@ -22,7 +22,6 @@ const weightController = {
 	// 몸무게데이터 가져오기
 	async getWeightById(req, res, next) {
 		const cursor = req.query.cursor;
-		console.log(cursor);
 		try {
 			const dogId = req.params.id;
 			if (!dogId) {

@@ -20,7 +20,7 @@ const MapSchema = new mongoose.Schema(
 		},
 		content: {
 			type: String,
-			// required: true,
+			required: true,
 		},
 		position: {
 			type: Array,

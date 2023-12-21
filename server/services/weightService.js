@@ -5,7 +5,6 @@ const weightService = {
 	// 몸무게 추가
 	async createWeight(dogId, weightData, currentUserId) {
 		const dog = await Dog.findById(dogId);
-		console.log(dog);
 		weightData.userId = currentUserId;
 		dog.weights.push(weightData);
 		const updatedDog = await dog.save();
