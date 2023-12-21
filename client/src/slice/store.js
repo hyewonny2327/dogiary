@@ -4,7 +4,7 @@ import { configureStore, createSlice } from '@reduxjs/toolkit';
 const mapSlice = createSlice({
     name:'map',
     initialState:{
-        searchInput:'이태원 맛집',
+        searchInput:'서울시청',
         markers:[],
     },
     reducers: {

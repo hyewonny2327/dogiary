@@ -10,40 +10,39 @@ const { kakao } = window;
 function MapRenderer() {
   const markers = useSelector((state)=>state.map.markers);
   const [map, setMap] = useState();
-  const [isMarkerClicked, setIsMarkerClicked] = useState();
+  const [isMarkerClicked, setIsMarkerClicked] = useState([]);
+  
+   useEffect(() => {
+     if (!map) return;
 
-  useEffect(() => {
-    if (!map) return;
+     const bounds = new kakao.maps.LatLngBounds();
+     markers.forEach((marker) => {
+       bounds.extend(new kakao.maps.LatLng(marker.position.lat, marker.position.lng));
+     });
 
-    const bounds = new kakao.maps.LatLngBounds();
-    markers.forEach((marker) => {
-      bounds.extend(new kakao.maps.LatLng(marker.position.lat, marker.position.lng));
-    });
-
-    map.setBounds(bounds);
-  }, [map, markers]);
+     map.setBounds(bounds);
+   }, [map, markers]);
 
   const [positions, setPositions] = useState([]);
-  const [contents, setContents] = useState([]);
-  useEffect(() => {
-    // 모든 장소 정보 조회 API 호출 
-    // 좌표값만 추출
-    showAllPlaces().then((response, index) => {
-      const placesData = response.data.data;  
-      console.log(placesData);
-        const _positions = placesData.map(place => ({
-          lat: place.position[1], 
-          lng: place.position[0]  
+  const [titles, setTitles] = useState([]);
+  const [dataFetched, setDataFetched] = useState(false)
+  useEffect(() => {  
+      showAllPlaces().then((response) => {
+        const placesData = response.data.data;
+        console.log(placesData);
+  
+        const _positions = placesData.map((place) => ({
+          lat: place.position[1],
+          lng: place.position[0],
         }));
-        
-        const _contents = placesData.map(place => place.content);
+        const _titles = placesData.map((place) => place.title);
         setPositions(_positions);
-        setContents(_contents);
-        
+        setTitles(_titles);
         setIsMarkerClicked(Array(_positions.length).fill(false));
-      
-    }); 
+        setDataFetched(true);
+      });
   }, []);
+  
 
   //마커 클릭하면 장소이름 보여주기
   
@@ -63,13 +62,14 @@ function MapRenderer() {
           lat: 37.566826,
           lng: 126.9786567,
         }}
+
         level={3}
         onCreate={setMap}
       >
         {
           positions.map((position,index)=>(
             <MapMarker
-            key={`marker-${contents[index]}-${position.lat},${position.lng}-${index}`}
+            key={`marker-${titles[index]}-${position.lat},${position.lng}-${index}`}
             position={{ lat: position.lat, lng: position.lng }}
             image={{
               src: markerIcon,
@@ -83,7 +83,7 @@ function MapRenderer() {
             
           {isMarkerClicked[index] && (
             <div>
-              {contents[index]}
+              {titles[index]}
             </div>
           )}
 
