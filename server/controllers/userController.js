@@ -179,6 +179,17 @@ const userController = {
         } catch (error) {
             next(error);
         }
+    },
+
+    //이미지 업로드
+    async uploadImages(req, res, next) {
+        try {
+            console.log(req.file);
+            const imageUrl = req.
+            res.status(200).json({ message: "이미지 업로드가 완료되었습니다." })
+        } catch (error) {
+            next(error);
+        }
     }
 }
 
