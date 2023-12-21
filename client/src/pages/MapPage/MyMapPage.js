@@ -10,7 +10,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setSearchInput, setMarkers } from '../../slice/store';
 
 const categoryList = ['산책', '애견동반', '상점', '기타', '전체보기'];
-
+const TagList = [
+  { label: '산책', id: 'tag0' },
+  { label: '애견동반', id: 'tag1' },
+  { label: '상점', id: 'tag2' },
+  { label: '기타', id: 'tag3' },
+  { label: '전체보기', id: 'tag4' },
+];
 function MyMapPage() {
   const dispatch = useDispatch();
   const searchInput = useSelector((state) => state.map.searchInput);
@@ -30,24 +36,31 @@ function MyMapPage() {
     dispatch(setSearchInput(searchInput));
   }, [dispatch, searchInput]);
 
-  //필터
-  //id로 관리
-  const [isFilterClicked, setIsFilterClicked] = useState(
-    Array(categoryList.length).fill(false),
-  );
-
-  function getFilterClassName(index) {
-    //필터 버튼의 class name을 반환하는 함수.
-    //isFilterClicked의 값에 따라 달라진다. clicked 클래스가 되면 스타일이 달라짐
-    return isFilterClicked[index] ? 'clicked' : '';
+  function getFilterClassName(id) {
+    // 필터 버튼의 class name을 반환하는 함수.
+    // isFilterClicked의 값에 따라 달라진다. clicked 클래스가 되면 스타일이 달라짐
+    return tags[id] ? 'clicked' : '';
   }
-  function handleFilterClick(index) {
-    //버튼을 클릭할때 index번호를 기준으로 boolean 값을 바꿔줌
-    //! 여기 수정 (오피스아워)
+  const [tags, setTags] = useState({
+    tag0: false,
+    tag1: false,
+    tag2: false,
+    tag3: false,
+    tag4: true,
+  });
+  function handleFilterClick(id) {
+    setTags((prev) => {
+      const updatedTags = { ...prev, [id]: !prev[id] };
 
-    const updatedFilterClicked = Array(categoryList.length).fill(false);
-    updatedFilterClicked[index] = !updatedFilterClicked[index];
-    setIsFilterClicked(updatedFilterClicked);
+      // 나머지 키들을 false로 설정
+      for (const key in updatedTags) {
+        if (key !== id) {
+          updatedTags[key] = false;
+        }
+      }
+
+      return updatedTags;
+    });
   }
 
   //아이콘 클릭
@@ -80,25 +93,25 @@ function MyMapPage() {
             </button>
           </SearchContainer>
           <FilterContainer>
-            {categoryList.map((item, index) => (
+            {TagList.map(({ label, id }, item) => (
               <FilterBtn
-                key={index}
-                text={item}
-                className={getFilterClassName(index)}
-                onClick={() => handleFilterClick(index)}
+                key={id}
+                text={label}
+                className={getFilterClassName(id)}
+                onClick={() => handleFilterClick(id)}
               />
             ))}
           </FilterContainer>
 
           <MyMapIcon>
-            <img src={myMapIcon} onClick={handleModal}></img>
+            <img src={myMapIcon} onClick={handleModal} alt="맵아이콘"></img>
             {isMyMapClicked && (
               <ModalContainerStyle>
                 <div
                   className="text"
                   onClick={(e) => {
                     e.stopPropagation();
-                    navigate('/myPlace');
+                    navigate('/mapPage/myPlace');
                   }}
                 >
                   내 장소 보기 (32)
@@ -108,7 +121,7 @@ function MyMapPage() {
                   className="text"
                   onClick={(e) => {
                     e.stopPropagation();
-                    navigate('/registerPlace');
+                    navigate('/mapPage/registerPlace');
                   }}
                 >
                   장소 등록하기

@@ -184,6 +184,7 @@ function RegisterPlace() {
               <img
                 src={uploadedImage ? uploadedImage : imageIcon}
                 style={{ width: '109px', height: '96px', objectFit: 'contain' }}
+                alt="이미지를 업로드하세요"
               ></img>
               <input
                 className="add-photo"

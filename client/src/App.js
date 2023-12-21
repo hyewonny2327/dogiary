@@ -14,6 +14,7 @@ const MyFeed = React.lazy(() => import('./pages/myFeedPage/MyFeed'));
 const MyFeedPostPage = React.lazy(
   () => import('./pages/myFeedPage/MyFeedPostPage'),
 );
+const MyPlacePage = React.lazy(() => import('./pages/MapPage/MyPlacePage'));
 
 function App() {
   return (
@@ -22,7 +23,8 @@ function App() {
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/mapPage" element={<MyMapPage />} />
-          <Route path="/registerPlace" element={<RegisterPlace />} />
+          <Route path="/mapPage/myPlace" element={<MyPlacePage />} />
+          <Route path="/mapPage/registerPlace" element={<RegisterPlace />} />
           <Route path="/LoginPage" element={<LoginPage />} />
           <Route path="/JoinPage" element={<JoinPage />} />
           <Route path="/myFeed" element={<MyFeed />} />
