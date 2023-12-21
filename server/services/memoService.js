@@ -1,8 +1,7 @@
 const Dog = require("../models/dogModel.js");
 const errorHandler = require("../middlewares/errorHandler.js");
+const commonErrors = require("../middlewares/commonErrors.js");
 
-const commonErrors = require("../middlewares/commonErrors.js");
-const commonErrors = require("../middlewares/commonErrors.js");
 const memoService = {
   // 추가
   async createMemo(dogId, memoData, currentUserId) {
