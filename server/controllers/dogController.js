@@ -56,11 +56,10 @@ const dogController = {
     }
   },
 
-  async getOneDog(req, res, next) {
-    try {
-      const id = req.params.id;
-      console.log(id);
-      const dogProfile = await dogService.getOneDog(id, req.currentUserId);
+	async getOneDog(req, res, next) {
+		try {
+			const id = req.params.id;
+			const dogProfile = await dogService.getOneDog(id, req.currentUserId);
 
       res.json({
         error: null,

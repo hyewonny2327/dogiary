@@ -12,6 +12,7 @@ const memoRouter = require("./routers/memoRouter.js");
 const foodRouter = require("./routers/foodRouter.js");
 const medicalRouter = require("./routers/medicalRouter.js");
 const userRouter = require("./routers/userRouter.js");
+const rankRouter = require("./routers/rankRouter.js");
 const cookieParser = require("cookie-parser");
 
 const app = express();
@@ -23,7 +24,7 @@ app.use("/api/diaries", diaryRouter);
 app.use("/api/auth", userRouter);
 app.use("/api/dogs", dogRouter);
 app.use("/api/dogs", weightRouter, memoRouter, foodRouter, medicalRouter);
-
+app.use("/api/rank", rankRouter);
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use("/api/auth", userRouter);

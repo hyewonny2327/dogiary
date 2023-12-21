@@ -24,6 +24,7 @@ const foodController = {
 
   // get
   async getFoodById(req, res, next) {
+    const cursor = req.query.cursor;
     try {
       const dogId = req.params.id;
       if (!dogId) {
@@ -33,8 +34,21 @@ const foodController = {
           { statusCode: 400 }
         );
       }
-      const food = await foodService.getFoodById(dogId, req.currentUserId);
-      res.status(200).json({ error: null, data: food });
+      if (req.query.limit) {
+        const food = await foodService.getFood3ById(
+          dogId,
+          req.currentUserId,
+          req.query.limit
+        );
+        res.status(200).json({ error: null, data: food });
+      } else {
+        const food = await foodService.getFoodById(
+          dogId,
+          req.currentUserId,
+          cursor
+        );
+        res.status(200).json({ error: null, data: food });
+      }
     } catch (error) {
       next(error);
     }
