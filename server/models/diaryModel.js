@@ -7,15 +7,23 @@ const diarySchema = new Schema(
       type: String,
       required: true,
     },
-    imageUrl: {
-      type: String,
-      required: true,
-    },
+    imageUrl: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
     title: {
       type: String,
       required: true,
     },
-    content: {
+    content: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
+    date: {
       type: String,
       required: true,
     },
