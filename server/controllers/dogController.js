@@ -1,7 +1,7 @@
 const dogService = require("../services/dogService.js");
 const jwt = require("jsonwebtoken");
 const errorHandler = require("../middlewares/errorHandler.js");
-const commonErrors = require("../middlewares/commonError.js");
+const commonErrors = require("../middlewares/commonErrors.js");
 const dogController = {
 	async postDog(req, res, next) {
 		try {

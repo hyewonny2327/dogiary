@@ -1,7 +1,7 @@
 const mapService = require("../services/mapService.js");
 const errorHandler = require("../middlewares/errorHandler.js");
-
-const commonErrors = require("../middlewares/commonError.js");
+const rankService = require("../services/rankService.js");
+const commonErrors = require("../middlewares/commonErrors.js");
 const mapController = {
 	async postMap(req, res, next) {
 		try {
@@ -13,8 +13,8 @@ const mapController = {
 					{ statusCode: 400 }
 				);
 			}
-			await mapService.createMap(mapData, req.currentUserId);
-
+			const a = await mapService.createMap(mapData, req.currentUserId);
+			console.log(a);
 			res.status(201).json({ message: "Data created successfully" });
 		} catch (error) {
 			next(error);
@@ -51,7 +51,7 @@ const mapController = {
 				);
 			}
 			await mapService.deleteMap(id, req.currentUserId);
-			res.status(204).json({ message: "Data deleted successfully" });
+			res.status(200).json({ message: "Data deleted successfully" });
 		} catch (error) {
 			next(error);
 		}
@@ -76,10 +76,9 @@ const mapController = {
 			next(error);
 		}
 	},
-
 	async getMaps(req, res, next) {
-		console.log(req.query);
 		const cursor = req.query.cursor;
+		console.log(cursor, 1);
 		try {
 			// 태그가 존재하면 태그별 조회, 없으면 전체 조회
 			if (req.query.tag) {
@@ -104,6 +103,18 @@ const mapController = {
 					data: allMaps,
 				});
 			}
+		} catch (error) {
+			next(error);
+		}
+	},
+	async getRank(req, res, next) {
+		try {
+			const currentUserId = req.currentUserId;
+			const rank = await rankService.getRank(currentUserId);
+			res.json({
+				error: null,
+				data: rank,
+			});
 		} catch (error) {
 			next(error);
 		}

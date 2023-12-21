@@ -7,7 +7,7 @@ const authenticateUser = require("../middlewares/authenticateUser.js");
 router.post("/:id/weights", authenticateUser, weightController.postWeight);
 
 // GET: /dogs/:id/weights/:weightId - 몸무게리스트 조회
-router.get("/:id/weights/", authenticateUser, weightController.getWeightById);
+router.get("/:id/weights", authenticateUser, weightController.getWeightById);
 
 // PUT: /dogs/:id/weights/:weightId - 몸무게 정보 업데이트
 router.put(

@@ -1,6 +1,6 @@
 const errorHandler = require("../middlewares/errorHandler.js");
 
-const commonErrors = require("../middlewares/commonError.js");
+const commonErrors = require("../middlewares/commonErrors.js");
 const medicalService = require("../services/medicalService.js");
 const medicalController = {
 	//post
@@ -24,6 +24,7 @@ const medicalController = {
 	},
 	// get
 	async getMedicalById(req, res, next) {
+		const cursor = req.query.cursor;
 		try {
 			const dogId = req.params.id;
 			if (!dogId) {
@@ -33,11 +34,27 @@ const medicalController = {
 					{ statusCode: 400 }
 				);
 			}
-			const medical = await medicalService.getMedicalById(
-				dogId,
-				req.currentUserId
-			);
-			res.json(medical);
+			if (req.query.limit) {
+				const medical = await medicalService.getMedical3ById(
+					dogId,
+					req.currentUserId,
+					limit
+				);
+				res.json({
+					error: null,
+					data: medical,
+				});
+			} else {
+				const medical = await medicalService.getMedicalById(
+					dogId,
+					req.currentUserId,
+					cursor
+				);
+				res.json({
+					error: null,
+					data: medical,
+				});
+			}
 		} catch (error) {
 			next(error);
 		}
