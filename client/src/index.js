@@ -1,28 +1,15 @@
-<<<<<<< Updated upstream:client/src/index.js
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { BrowserRouter } from 'react-router-dom';
-=======
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
->>>>>>> Stashed changes:src/index.js
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-<<<<<<< Updated upstream:client/src/index.js
-    <App />
-=======
       <App />
->>>>>>> Stashed changes:src/index.js
     </BrowserRouter>
   </React.StrictMode>
 );
