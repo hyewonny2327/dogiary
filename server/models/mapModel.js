@@ -30,6 +30,10 @@ const MapSchema = new mongoose.Schema(
 		userId: {
 			type: String,
 		},
+		address: {
+			type: String,
+			required: true,
+		},
 	},
 	{
 		collection: "Maps",
