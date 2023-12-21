@@ -4,7 +4,7 @@ const nodemailer = require("nodemailer");
 const mail = require("../utils/mail");
 const User = require("../models/userModel");
 const errorHandler = require("../middlewares/errorHandler");
-const commonErrors = require("../middlewares/commonError");
+const commonErrors = require("../middlewares/commonErrors");
 
 const userService = {
 	//회원가입
