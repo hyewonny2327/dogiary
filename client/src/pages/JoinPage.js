@@ -15,15 +15,36 @@ function JoinPage() {
   const [confirmPwdMsg, setConfirmPwdMsg] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
   const [nicknameCheckMsg, setNicknameCheckMsg] = useState("");
+  const [UserIdCheckMsg, setUserIdCheckMsg] = useState("");
+  const [EmailCheckMsg, setEmailCheckMsg] = useState("");
 
   const handleChangeNickname = (e) => {
     setNickname(e.target.value);
   };
 
+  // const handleClickNickname = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       "http://localhost:8080/api/auth/check-nickname",
+  //       {
+  //         nickName: nickname,
+  //       }
+  //     );
+
+  //     console.log(response); // 확인용 로그
+  //     if (response.data.check === false) {
+  //       setNicknameCheckMsg("중복된 닉네임입니다.");
+  //     } else {
+  //       setNicknameCheckMsg("사용 가능한 닉네임 입니다.");
+  //     }
+  //     console.log("닉네임 중복체크");
+  //   } catch (error) {
+  //     console.error("API 호출 중 에러 발생:", error);
+  //   }
+  // };
+
   const handleClickNickname = async () => {
     try {
-      console.log("나오라");
-      console.log(nickname);
       const response = await axios.get(
         "http://localhost:8080/api/auth/check-nickname",
         {
@@ -31,16 +52,14 @@ function JoinPage() {
         }
       );
 
-      console.log(response); // 확인용 로그
-      if (response.data === false) {
-        setNicknameCheckMsg("사용 가능한 아이디입니다.");
-        setNickname(response.data);
+      console.log(response);
+      console.log(nickname); // 확인용 로그
+      if (response.data.check === false) {
+        setNicknameCheckMsg("중복된 닉네임입니다.");
       } else {
-        setNicknameCheckMsg("중복된 아이디입니다. 다시 시도하세요.");
-        setNickname(response.data);
-        setNickname("");
+        setNicknameCheckMsg("사용 가능한 닉네임입니다.");
       }
-      console.log("중복체크");
+      console.log("닉네임 중복체크");
     } catch (error) {
       console.error("API 호출 중 에러 발생:", error);
     }
@@ -50,12 +69,48 @@ function JoinPage() {
     setUser_Id(e.target.value);
   };
 
-  // const handleClickUserId = (user_Id) => {
+  const handleClickUserId = async () => {
+    console.log(typeof user_Id);
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/api/auth/check-id",
+        {
+          userId: user_Id,
+        }
+      );
 
-  // }
+      console.log(response);
+      if (response.data.check === false) {
+        setUserIdCheckMsg("중복된 아이디입니다.");
+      } else {
+        setUserIdCheckMsg("사용 가능한 아이디 입니다.");
+      }
+      console.log("아이디 중복체크");
+    } catch (error) {
+      console.error("API 호출 중 에러 발생:", error);
+    }
+  };
 
   const handleChangeEmail = (e) => {
     setEmail(e.target.value);
+  };
+
+  const handleClickEmail = async () => {
+    console.log(email);
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/api/auth/check-email",
+        {
+          email: email,
+        }
+      );
+      console.log(response);
+      if (response.status === 200) {
+        console.log("Okay");
+      }
+    } catch (error) {
+      console.error("API 호출 중 에러 발생:", error);
+    }
   };
 
   const handleChangeVerificationCode = (e) => {
@@ -71,10 +126,14 @@ function JoinPage() {
     const currPassword = e.target.value;
     setPassword(currPassword);
 
-    if (!PasswordValid(currPassword)) {
-      setPwdMsg("영문, 숫자가 포함된 6자리 이상");
+    if (currPassword !== "") {
+      if (!PasswordValid(currPassword)) {
+        setPwdMsg("영문, 숫자가 포함된 6자리 이상");
+      } else {
+        setPwdMsg("안전한 비밀번호입니다.");
+      }
     } else {
-      setPwdMsg("안전한 비밀번호입니다.");
+      setPwdMsg(""); // 입력이 비어 있을 때 오류 메시지를 지웁니다.
     }
   }, []);
 
@@ -83,29 +142,20 @@ function JoinPage() {
       const CheckPassword = e.target.value;
       setCheckPassword(CheckPassword);
 
-      if (CheckPassword !== password) {
-        setConfirmPwdMsg("비밀번호가 일치하지 않습니다.");
+      if (CheckPassword !== "") {
+        if (CheckPassword !== password) {
+          setConfirmPwdMsg("비밀번호가 일치하지 않습니다.");
+        } else {
+          setConfirmPwdMsg("비밀번호가 일치합니다.");
+        }
       } else {
-        setConfirmPwdMsg("비밀번호가 일치합니다.");
+        setConfirmPwdMsg(""); // 입력이 비어 있을 때 오류 메시지를 지웁니다.
       }
     },
     [password]
   );
 
   const handleJoin = async () => {
-    console.log("함수 시작");
-    if (!PasswordValid(password)) {
-      setPwdMsg("영문, 숫자가 포함된 6자리 이상");
-      console.log("이프1");
-      return;
-    }
-
-    if (password !== CheckPassword) {
-      setConfirmPwdMsg("비밀번호가 일치하지 않습니다.");
-      console.log("이프2");
-      return;
-    }
-
     try {
       await axios.post("http://localhost:8080/api/auth/sign-up", {
         email,
@@ -163,15 +213,16 @@ function JoinPage() {
                   onChange={handleChangeUserId}
                 />
               </InputBox>
-              {/* <SmallBtn
-                text={"중복확인"}
+
+              <SmallBtn
                 onClick={(e) => {
-                  handleClickUserId(e);
-                }
-              }
-              /> */}
-              <SmallBtn text={"중복확인"} />
+                  handleClickUserId();
+                }}
+              >
+                중복확인
+              </SmallBtn>
             </div>
+            <div className="message">{UserIdCheckMsg}</div>
             <div className="small-box-content">
               <InputBox>
                 <input
@@ -184,8 +235,15 @@ function JoinPage() {
                   onChange={handleChangeEmail}
                 />
               </InputBox>
-              <SmallBtn text={"인증번호"} />
+              <SmallBtn
+                onClick={(e) => {
+                  handleClickEmail(e);
+                }}
+              >
+                인증번호
+              </SmallBtn>
             </div>
+            <div className="message">{EmailCheckMsg}</div>
             <div className="small-box-content">
               <InputBox>
                 <input
@@ -198,7 +256,7 @@ function JoinPage() {
                   onChange={handleChangeVerificationCode}
                 />
               </InputBox>
-              <SmallBtn text={"인증"} />
+              <SmallBtn>인증</SmallBtn>
             </div>
             <InputBox>
               <input
