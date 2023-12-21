@@ -3,6 +3,7 @@ import { LogoBar, NavBar } from '../../components/common/Header';
 import seoulMap from '../../components/icons/seoulMap.svg';
 import { showMyPlaces } from '../../utils/mapApi';
 import { useEffect, useState } from 'react';
+import showMoreIcon from '../../components/icons/showMoreIcon.svg';
 
 export default function MyPlacePage() {
   const [myPlaces, setMyPlaces] = useState([]);
@@ -71,6 +72,11 @@ export default function MyPlacePage() {
                   className="image"
                 ></img>
                 {/* <div className="image">이미지</div> */}
+                <img
+                  src={showMoreIcon}
+                  alt="삭제수정버튼"
+                  className="show-more-icon"
+                ></img>
               </div>
             </div>
           ))}
@@ -161,6 +167,10 @@ const ListContainer = styled.div`
       justify-content: center;
       font-weight: 500;
     }
+  }
+  .right-container {
+    display: flex;
+    align-items: center;
   }
   .image {
     width: 92px;
