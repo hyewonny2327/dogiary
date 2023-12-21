@@ -21,6 +21,6 @@ router.get("/", authenticateUser, diaryController.getDiaries);
 router.get("/month", authenticateUser, diaryController.getMonthDiaries);
 
 //커서 기반 페이징
-router.get("/paging", authenticateUser, diaryController.getCrossrDiaries);
+router.get("/paging", authenticateUser, diaryController.getCurosrDiaries);
 
 module.exports = router;

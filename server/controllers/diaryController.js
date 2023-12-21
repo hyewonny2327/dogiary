@@ -155,7 +155,7 @@ exports.getMonthDiaries = async (req, res, next) => {
 };
 
 //커서 기반 페이징
-exports.getCrossrDiaries = async (req, res, next) => {
+exports.getCurosrDiaries = async (req, res, next) => {
   try {
     const userId = req.currentUserId;
     const { cursor } = req.query;
