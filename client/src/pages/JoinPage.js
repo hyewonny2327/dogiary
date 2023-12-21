@@ -13,7 +13,7 @@ function JoinPage() {
   const [CheckPassword, setCheckPassword] = useState("");
   const [pwdMsg, setPwdMsg] = useState("");
   const [confirmPwdMsg, setConfirmPwdMsg] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");
+  const [AuthNumber, setAuthNumber] = useState("");
   const [nicknameCheckMsg, setNicknameCheckMsg] = useState("");
   const [UserIdCheckMsg, setUserIdCheckMsg] = useState("");
   const [EmailCheckMsg, setEmailCheckMsg] = useState("");
@@ -21,27 +21,6 @@ function JoinPage() {
   const handleChangeNickname = (e) => {
     setNickname(e.target.value);
   };
-
-  // const handleClickNickname = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       "http://localhost:8080/api/auth/check-nickname",
-  //       {
-  //         nickName: nickname,
-  //       }
-  //     );
-
-  //     console.log(response); // 확인용 로그
-  //     if (response.data.check === false) {
-  //       setNicknameCheckMsg("중복된 닉네임입니다.");
-  //     } else {
-  //       setNicknameCheckMsg("사용 가능한 닉네임 입니다.");
-  //     }
-  //     console.log("닉네임 중복체크");
-  //   } catch (error) {
-  //     console.error("API 호출 중 에러 발생:", error);
-  //   }
-  // };
 
   const handleClickNickname = async () => {
     try {
@@ -54,6 +33,7 @@ function JoinPage() {
 
       console.log(response);
       console.log(nickname); // 확인용 로그
+
       if (response.data.check === false) {
         setNicknameCheckMsg("중복된 닉네임입니다.");
       } else {
@@ -113,8 +93,26 @@ function JoinPage() {
     }
   };
 
-  const handleChangeVerificationCode = (e) => {
-    setVerificationCode(e.target.value);
+  const handleChangeAuthNumber = (e) => {
+    setAuthNumber(e.target.value);
+  };
+
+  const handleClickAuthNumber = async () => {
+    console.log(AuthNumber);
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/auth/check-email",
+        {
+          email: email,
+        }
+      );
+      console.log(response);
+      if (response.status === 200) {
+        console.log("Okay");
+      }
+    } catch (error) {
+      console.error("API 호출 중 에러 발생:", error);
+    }
   };
 
   const PasswordValid = (Password) => {
@@ -248,15 +246,22 @@ function JoinPage() {
               <InputBox>
                 <input
                   className="form-input-small"
-                  value={verificationCode}
+                  value={AuthNumber}
                   type="text"
-                  name="verificationCode"
-                  id="verificationCode"
+                  name="AuthNumber"
+                  s
+                  id="AuthNumber"
                   placeholder="인증번호 입력"
-                  onChange={handleChangeVerificationCode}
+                  onChange={handleChangeAuthNumber}
                 />
               </InputBox>
-              <SmallBtn>인증</SmallBtn>
+              <SmallBtn
+                onClick={(e) => {
+                  handleClickAuthNumber(e);
+                }}
+              >
+                인증
+              </SmallBtn>
             </div>
             <InputBox>
               <input
