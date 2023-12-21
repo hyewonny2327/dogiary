@@ -73,7 +73,7 @@ exports.getDailyDiaries = async (userId, date) => {
       userId,
       createdAt: { $gte: startDate, $lt: endDate },
     },
-    `_id createdAt imageUrl title content`
+    `_id createdAt imageUrl title content date`
   );
 
   return result;
@@ -91,6 +91,7 @@ exports.getMonthDiaries = async (userId, year, month) => {
   })
     //내림차순
     .sort({ createdAt: -1 })
+    .select("_id createdAt imageUrl title content date")
     .exec();
 
   return result;
@@ -128,6 +129,7 @@ exports.getCurosrDiaries = async (userId, cursor, pageSize) => {
   const result = await Diary.find(query)
     .sort({ createdAt: -1 })
     .limit(pageSize)
+    .select("_id createdAt imageUrl title content date")
     .exec();
 
   return result;

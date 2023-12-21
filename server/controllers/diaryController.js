@@ -110,15 +110,15 @@ exports.getDiaries = async (req, res, next) => {
       : await getDiaries(req.currentUserId);
 
     const message = createdAt
-      ? `${createdAt} view retrieved successfully.`
-      : "All views retrieved successfully.";
+      ? `${createdAt} 조회가 성공적으로 완료되었습니다.`
+      : "전체 조회가 성공적으로 완료되었습니다.";
     res.status(200).json(successResponse(result, message));
   } catch (err) {
     next(err);
   }
 };
 
-//  월간 일기 조회
+// 월간 일기 조회
 exports.getMonthDiaries = async (req, res, next) => {
   try {
     // 사용자 ID
@@ -146,7 +146,9 @@ exports.getMonthDiaries = async (req, res, next) => {
 
     const result = await getMonthDiaries(userId, year, month);
 
-    res.status(200).json(successResponse(result));
+    const message = `${validatedYear}년 ${validatedMonth}월의 월간 조회가 성공적으로 완료되었습니다.`;
+
+    res.status(200).json(successResponse(result, message));
   } catch (err) {
     next(err);
   }
@@ -168,7 +170,9 @@ exports.getCrossrDiaries = async (req, res, next) => {
 
     const result = await getCurosrDiaries(userId, currentDate, pageSize);
 
-    res.status(200).json(successResponse(result));
+    const message = `${cursor}을 기준으로 다이어리 목록을 성공적으로 불러왔습니다.`;
+
+    res.status(200).json(successResponse(result, message));
   } catch (err) {
     next(err);
   }
