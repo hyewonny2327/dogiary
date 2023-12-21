@@ -1,7 +1,7 @@
 const express = require("express");
-const mapController = require("../controllers/mapController.js");
+const mapController = require("../controllers/mapController");
 const router = express.Router();
-const authenticateUser = require("../middlewares/authenticateUser.js");
+const authenticateUser = require("../middlewares/authenticateUser");
 // GET: /maps/myMaps - 내 맵 정보 가져오기
 // router.get("/", authenticateUser, mapController.getMyMaps);
 

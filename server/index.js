@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/api/maps", mapRouter);
-app.use("/api/diary", diaryRouter);
+app.use("/api/diaries", diaryRouter);
 app.use("/api/auth", userRouter);
 app.use("/api/dogs", dogRouter);
 app.use("/api/dogs", weightRouter, memoRouter, foodRouter, medicalRouter);
@@ -49,7 +49,6 @@ app.use((error, req, res, next) => {
   });
 });
 console.log("express application 준비가 완료되었습니다.");
-
 app.listen(8080, function () {
   console.log("Server is now open!");
 });
