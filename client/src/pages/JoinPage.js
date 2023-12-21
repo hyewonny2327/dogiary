@@ -17,6 +17,7 @@ function JoinPage() {
   const [nicknameCheckMsg, setNicknameCheckMsg] = useState("");
   const [UserIdCheckMsg, setUserIdCheckMsg] = useState("");
   const [EmailCheckMsg, setEmailCheckMsg] = useState("");
+  const [AuthNumberCheckMsg, setAuthNumberCheckMsg] = useState("");
 
   const handleChangeNickname = (e) => {
     setNickname(e.target.value);
@@ -86,7 +87,12 @@ function JoinPage() {
       );
       console.log(response);
       if (response.status === 200) {
-        console.log("Okay");
+        if (response.data.check === false) {
+          setEmailCheckMsg("중복된 이메일입니다.");
+        } else {
+          setEmailCheckMsg("해당 이메일로 인증번호를 보냈습니다.");
+        }
+        console.log("ok");
       }
     } catch (error) {
       console.error("API 호출 중 에러 발생:", error);
@@ -108,7 +114,12 @@ function JoinPage() {
       );
       console.log(response);
       if (response.status === 200) {
-        console.log("Okay");
+        if (response.data.check === false) {
+          setAuthNumberCheckMsg("인증번호가 틀렸습니다.");
+        } else {
+          setAuthNumberCheckMsg("인증번호가 확인되었습니다.");
+        }
+        console.log("ok");
       }
     } catch (error) {
       console.error("API 호출 중 에러 발생:", error);
@@ -116,7 +127,7 @@ function JoinPage() {
   };
 
   const PasswordValid = (Password) => {
-    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,25}$/;
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,20}$/;
     return passwordRegex.test(password);
   };
 
@@ -154,6 +165,50 @@ function JoinPage() {
   );
 
   const handleJoin = async () => {
+    // 필수 입력 값 확인
+    if (
+      !nickname ||
+      !user_Id ||
+      !email ||
+      !password ||
+      !CheckPassword ||
+      !AuthNumber
+    ) {
+      console.error("모든 항목을 입력해주세요.");
+      return;
+    }
+
+    // 중복 체크 여부 확인
+    if (nicknameCheckMsg !== "사용 가능한 닉네임입니다.") {
+      console.error("닉네임이 유효하지 않습니다.");
+      return;
+    }
+
+    if (UserIdCheckMsg !== "사용 가능한 아이디 입니다.") {
+      console.error("아이디가 유효하지 않습니다.");
+      return;
+    }
+
+    if (EmailCheckMsg !== "해당 이메일로 인증번호를 보냈습니다.") {
+      console.error("이메일 또는 이메일 인증이 유효하지 않습니다.");
+      return;
+    }
+
+    if (AuthNumberCheckMsg !== "인증번호가 확인되었습니다.") {
+      console.error("인증번호가 유효하지 않습니다.");
+      return;
+    }
+
+    // 비밀번호 일치 여부 확인
+    if (
+      pwdMsg !== "안전한 비밀번호입니다." ||
+      confirmPwdMsg !== "비밀번호가 일치합니다."
+    ) {
+      console.error("비밀번호 또는 비밀번호 확인이 유효하지 않습니다.");
+      return;
+    }
+
+    // 회원가입 요청
     try {
       await axios.post("http://localhost:8080/api/auth/sign-up", {
         email,
@@ -162,8 +217,8 @@ function JoinPage() {
         password,
       });
       console.log("회원가입 성공");
-    } catch (e) {
-      console.error("회원가입에 실패했습니다.", e);
+    } catch (error) {
+      console.error("회원가입에 실패했습니다.", error);
     }
   };
 
@@ -263,6 +318,7 @@ function JoinPage() {
                 인증
               </SmallBtn>
             </div>
+            <div className="message">{AuthNumberCheckMsg}</div>
             <InputBox>
               <input
                 className="form-input"
