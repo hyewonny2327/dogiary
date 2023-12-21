@@ -45,7 +45,7 @@ function JoinPage() {
 
   const handleClickNickname = async () => {
     try {
-      const response = await axios.get(
+      const response = await axios.post(
         "http://localhost:8080/api/auth/check-nickname",
         {
           nickName: nickname,
@@ -72,7 +72,7 @@ function JoinPage() {
   const handleClickUserId = async () => {
     console.log(typeof user_Id);
     try {
-      const response = await axios.get(
+      const response = await axios.post(
         "http://localhost:8080/api/auth/check-id",
         {
           userId: user_Id,
@@ -98,7 +98,7 @@ function JoinPage() {
   const handleClickEmail = async () => {
     console.log(email);
     try {
-      const response = await axios.get(
+      const response = await axios.post(
         "http://localhost:8080/api/auth/check-email",
         {
           email: email,
