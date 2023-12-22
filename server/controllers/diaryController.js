@@ -121,9 +121,6 @@ exports.getDiaries = async (req, res, next) => {
 // 월간 일기 조회
 exports.getMonthDiaries = async (req, res, next) => {
   try {
-    // 사용자 ID
-    const userId = req.currentUserId;
-
     // 년도 및 월 가져오기
     const { year, month } = req.query;
     //year = 1000~9999 입력
@@ -144,7 +141,7 @@ exports.getMonthDiaries = async (req, res, next) => {
       });
     }
 
-    const result = await getMonthDiaries(userId, year, month);
+    const result = await getMonthDiaries(req.currentUserId, year, month);
 
     const message = `${validatedYear}년 ${validatedMonth}월의 월간 조회가 성공적으로 완료되었습니다.`;
 
@@ -157,7 +154,6 @@ exports.getMonthDiaries = async (req, res, next) => {
 //커서 기반 페이징
 exports.getCurosrDiaries = async (req, res, next) => {
   try {
-    const userId = req.currentUserId;
     const { cursor } = req.query;
     const currentDate = new Date(cursor);
 
@@ -168,7 +164,11 @@ exports.getCurosrDiaries = async (req, res, next) => {
     }
     const pageSize = 10;
 
-    const result = await getCurosrDiaries(userId, currentDate, pageSize);
+    const result = await getCurosrDiaries(
+      req.currentUserId,
+      currentDate,
+      pageSize
+    );
 
     const message = `${cursor}을 기준으로 다이어리 목록을 성공적으로 불러왔습니다.`;
 
