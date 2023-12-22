@@ -20,14 +20,12 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
-<<<<<<< HEAD
-=======
+
 // const corsOptions = {
 //   origin: "http://localhost:3000",
 //   credentials: true,
 // };
 // app.use(cors(corsOptions));
->>>>>>> 536ec33fbff50c90d8b0914172ce7e0797827ad2
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
@@ -66,8 +64,4 @@ connectToDatabase().then(() => {
   app.listen(PORT, () => {
     console.log(`🚀 Server is now open on port ${PORT} `);
   });
-<<<<<<< HEAD
 });
-=======
-});
->>>>>>> 536ec33fbff50c90d8b0914172ce7e0797827ad2

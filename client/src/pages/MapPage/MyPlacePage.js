@@ -2,29 +2,52 @@ import styled from 'styled-components';
 import { LogoBar, NavBar } from '../../components/common/Header';
 import seoulMap from '../../components/icons/seoulMap.svg';
 import { showMyPlaces } from '../../utils/mapApi';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import deleteIcon from '../../components/icons/deleteIcon.svg';
 import deleteIconHover from '../../components/icons/deleteIconHover.svg';
 import { deleteMyPlace } from '../../utils';
+import useInfinityScroll from '../../hooks/useInfinityScroll';
+
 export default function MyPlacePage() {
   const [myPlaces, setMyPlaces] = useState([]);
+  const getData = async () => {
+    try {
+      const res = await showMyPlaces();
+      console.log(res);
+
+      //array인지 체크, 개수보다 이하이면 =>
+      if (!res || res.length === 0) {
+        // 데이터가 없을 때의 처리
+        console.log('No data available (MY PLACE PAGE)');
+        setMoreData(false); // 더 이상 데이터가 없다고 표시
+        return;
+      }
+
+      //가져오는 개수 보다 작으면 끝내야함 +추가
+
+      setMyPlaces((prev) => [...prev, ...res]); // 기존 데이터와 새로운 데이터 합치기
+    } catch (error) {
+      console.error('Error fetching data in MyPlacePage:', error);
+    }
+  };
+
+  const { setTargetRef } = useInfinityScroll(handleIntersect);
+  const targetRef = useRef(null);
+  const [moreData, setMoreData] = useState(true);
+  //moreData false 추가
   useEffect(() => {
-    showMyPlaces()
-      .then((res) => {
-        console.log(res);
-        if (!res) {
-          // 데이터가 없을 때의 처리
-          console.log('No data available');
-          // 예를 들어, 사용자에게 메시지를 표시하거나 다른 조치를 취할 수 있습니다.
-          return;
-        }
-        const placesData = res;
-        setMyPlaces(placesData);
-      })
-      .catch((error) => {
-        console.error('show my places error in myPlacePage.js', error);
-      });
+    setTargetRef(targetRef.current); // targetRef.current를 전달
   }, []);
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  async function handleIntersect() {
+    if (moreData) {
+      await getData();
+    }
+  }
 
   function getTagName(tag) {
     if (tag === 'tag0') {
@@ -113,6 +136,10 @@ export default function MyPlacePage() {
               </div>
             </div>
           ))}
+          {/* 여기에 타겟? */}
+          {moreData ? (
+            <div ref={targetRef} onIntersect={handleIntersect}></div>
+          ) : null}
         </ListContainer>
       </MyPlaceContainer>
     </PageContainer>

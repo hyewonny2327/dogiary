@@ -14,6 +14,7 @@ const mapController = {
         );
       }
       await mapService.createMap(mapData, req.currentUserId);
+      // await mapService.createMap(mapData, "user1");
       res.status(201).json({ message: "Data created successfully" });
     } catch (error) {
       next(error);
@@ -31,6 +32,7 @@ const mapController = {
         );
       }
       await mapService.updatedMapProfile(id, mapData, req.currentUserId);
+      // await mapService.updatedMapProfile(id, mapData, "user1");
 
       res.status(200).json({ message: "Data updated successfully" });
     } catch (error) {
@@ -49,6 +51,7 @@ const mapController = {
         );
       }
       await mapService.deleteMap(id, req.currentUserId);
+      // await mapService.deleteMap(id, "user1");
       res.status(200).json({ message: "Data deleted successfully" });
     } catch (error) {
       next(error);
