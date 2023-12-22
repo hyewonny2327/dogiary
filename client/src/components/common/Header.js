@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-
+import menuIcon from '../icons/menuIcon.svg'
 
 //로고, 마이페이지 버튼이 있는 상단 로고 bar
 export function LogoBar(){
@@ -9,9 +9,9 @@ export function LogoBar(){
         <LogoBarStyle>
             <Logo>Dogiary</Logo>
             <svg className='myPage-icon' xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
-            <path d="M18 1C8.61116 1 1 8.61116 1 18C1 27.3888 8.61116 35 18 35C27.3888 35 35 27.3888 35 18C35 8.61116 27.3888 1 18 1Z" stroke="#5F5013" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M4.86066 28.7879C4.86066 28.7879 8.64999 23.9502 18 23.9502C27.35 23.9502 31.1394 28.7879 31.1394 28.7879" stroke="#5F5013" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M18 17.9998C20.8168 17.9998 23.1 15.7165 23.1 12.8998C23.1 10.0832 20.8168 7.7998 18 7.7998C15.1833 7.7998 12.9 10.0832 12.9 12.8998C12.9 15.7165 15.1833 17.9998 18 17.9998Z" stroke="#5F5013" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M18 1C8.61116 1 1 8.61116 1 18C1 27.3888 8.61116 35 18 35C27.3888 35 35 27.3888 35 18C35 8.61116 27.3888 1 18 1Z" stroke="#5F5013" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M4.86066 28.7879C4.86066 28.7879 8.64999 23.9502 18 23.9502C27.35 23.9502 31.1394 28.7879 31.1394 28.7879" stroke="#5F5013" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M18 17.9998C20.8168 17.9998 23.1 15.7165 23.1 12.8998C23.1 10.0832 20.8168 7.7998 18 7.7998C15.1833 7.7998 12.9 10.0832 12.9 12.8998C12.9 15.7165 15.1833 17.9998 18 17.9998Z" stroke="#5F5013" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
         </LogoBarStyle>
     )
@@ -44,13 +44,7 @@ export function NavBar(){
 
     return(
         <NavBarStyle>
-            <div className='menu-icon' onClick={()=>setIsIconClicked(!isIconClicked)}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="18" viewBox="0 0 23 18" fill="none">
-                <path d="M1 1H21.5714" stroke="#BDAF74" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M1 9H21.5714" stroke="#BDAF74" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M1 17H21.5714" stroke="#BDAF74" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div>
+            <img src={menuIcon} className='menu-icon' onClick={()=>setIsIconClicked(!isIconClicked)} />
             {isIconClicked && (
                 <CategoryContainer>
                     {categories.map((category, index) => (
@@ -103,6 +97,7 @@ position:relative;
 
 .menu-icon{
     cursor:pointer;
+    padding:10px 0;
 }
 
 `

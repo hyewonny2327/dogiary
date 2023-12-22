@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
 export function LongColoredBtn({ children, onClick }) {
   return (
@@ -16,7 +16,7 @@ export function LongStrokedBtn({ children, onClick }) {
   );
 }
 
-export function SmallBtn({ children ,onClick}) {
+export function SmallBtn({ children, onClick }) {
   return <SmallBtnStyle onClick={onClick}>{children}</SmallBtnStyle>;
 }
 const LongBtnStyle = styled.div`

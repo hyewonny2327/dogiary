@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { LogoBar, NavBar } from '../components/common/Header';
 import { LongColoredBtn, LongStrokedBtn } from '../components/common/Buttons';
-import { ContainerBox, InputBox } from '../components/common/Boxes';  // Removed StyledContainerBox
+import { ContainerBox, InputBox } from '../components/common/Boxes'; // Removed StyledContainerBox
 import styled from 'styled-components';
 
 function LoginPage() {
@@ -15,7 +15,6 @@ function LoginPage() {
   const handleChangePassword = (e) => {
     setPassword(e.target.value);
   };
-
 
   return (
     <div className="main">
@@ -82,11 +81,10 @@ const LoginContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width:80%;
-    height:90px;
+    width: 80%;
+    height: 90px;
     justify-content: space-between;
   }
-
 
   display: flex;
   flex-direction: column;

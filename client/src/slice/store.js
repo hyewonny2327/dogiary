@@ -4,7 +4,7 @@ import { configureStore, createSlice } from '@reduxjs/toolkit';
 const mapSlice = createSlice({
     name:'map',
     initialState:{
-        searchInput:'이태원 맛집',
+        searchInput:'서울시청',
         markers:[],
     },
     reducers: {
@@ -19,15 +19,29 @@ const mapSlice = createSlice({
     },
 });
 
+const modalSlice = createSlice({
+    name:'modal',
+    initialState:{
+        isOpen:false,
+    },
+    reducers:{
+        setIsOpen:(state,action)=>{
+            state.isOpen = action.payload;
+        }
+    }
+})
+
 
 
 //액션 및 리듀서 내보내기
 //configureStore를 사용해서 리듀서들을 전달함 (createStore같은것. 저장공간생성)
 export const {setSearchInput,setMarkers} = mapSlice.actions;
+export const {setIsOpen} = modalSlice.actions;
 
 
 export default configureStore({
     reducer:{
         map:mapSlice.reducer,
+        modal:modalSlice.reducer,
     },
 });
