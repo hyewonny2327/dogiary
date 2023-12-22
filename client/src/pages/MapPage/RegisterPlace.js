@@ -122,7 +122,7 @@ function RegisterPlace() {
     const submitData = {
       title: selectedPlace.placename,
       toggle: selectedToggle,
-      tag: [selectedTag],
+      tag: selectedTag,
       content: textContent,
       imageUrl: uploadedImage,
       position: [selectedPlace.lng, selectedPlace.lat],
@@ -153,10 +153,10 @@ function RegisterPlace() {
             <DropdownStyle>
               <select value={selectedTag} onChange={handleTagChange}>
                 <option value="카테고리 선택">카테고리 선택</option>
-                <option value="tag1">산책</option>
-                <option value="tag2">애견동반</option>
-                <option value="tag3">상점</option>
-                <option value="tag4">기타</option>
+                <option value="tag0">산책</option>
+                <option value="tag1">애견동반</option>
+                <option value="tag2">상점</option>
+                <option value="tag3">기타</option>
               </select>
             </DropdownStyle>
 

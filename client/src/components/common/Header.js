@@ -68,8 +68,16 @@ export function NavBar() {
     '내 반려견 페이지',
     '마이페이지',
     '마이맵',
+    '로그인',
   ];
-  const links = ['registerPuppy', 'myFeed', 'myPuppyPage', 'myPage', 'myMap'];
+  const links = [
+    'registerPuppy',
+    'myFeed',
+    'myPuppyPage',
+    'myPage',
+    'mapPage',
+    'LoginPage',
+  ];
 
   return (
     <NavBarStyle>

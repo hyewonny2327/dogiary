@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSearchInput, setMarkers } from '../../slice/store';
 import { showPlacesByTag } from '../../utils/mapApi';
+import { setTag } from '../../slice/store';
 
 const TagList = [
   { label: '산책', id: 'tag0' },
@@ -48,6 +49,7 @@ function MyMapPage() {
     tag3: false,
     tag4: true,
   });
+
   function handleFilterClick(id) {
     setTags((prev) => {
       const updatedTags = { ...prev, [id]: !prev[id] };
@@ -62,10 +64,9 @@ function MyMapPage() {
       return updatedTags;
     });
 
-    showPlacesByTag(id).then((res) => {
-      console.log(res);
-    });
-    //console.log(placesDataByTag);
+    //!밑에 지우고 태그값 redux에 저장
+    //받아온 태그값 기준으로 data 요청, state에 저장
+    dispatch(setTag(id));
   }
 
   //아이콘 클릭

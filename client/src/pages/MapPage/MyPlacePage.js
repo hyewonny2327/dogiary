@@ -9,11 +9,21 @@ import { deleteMyPlace } from '../../utils';
 export default function MyPlacePage() {
   const [myPlaces, setMyPlaces] = useState([]);
   useEffect(() => {
-    showMyPlaces().then((res) => {
-      console.log(res);
-      const placesData = res;
-      setMyPlaces(placesData);
-    });
+    showMyPlaces()
+      .then((res) => {
+        console.log(res);
+        if (!res) {
+          // 데이터가 없을 때의 처리
+          console.log('No data available');
+          // 예를 들어, 사용자에게 메시지를 표시하거나 다른 조치를 취할 수 있습니다.
+          return;
+        }
+        const placesData = res;
+        setMyPlaces(placesData);
+      })
+      .catch((error) => {
+        console.error('show my places error in myPlacePage.js', error);
+      });
   }, []);
 
   function getTagName(tag) {
