@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema(
 		},
 		imageUrl: {
 			type: String,
-			default: path.join(__dirname, "../public/defaultImage.png"),
+			default: path.join(__dirname, "../public/images/defaultImage.png"),
 		},
 		count: {
 			type: Number,
