@@ -41,7 +41,6 @@ function Ranking() {
 
   const fetchRankingData = async () => {
     try {
-     
       const response = await axios.get('http://localhost8080/api/rank');
       const data = response.data.data;
       setRankings(data);
@@ -62,9 +61,9 @@ function Ranking() {
           </StyledBox>
         </div>
         <div class="myrank">{currentMonth}월 TOP 5</div>
-       
+
         {rankings.map((ranking, index) => (
-          <div class="Toprank" key={index}>
+          <div class="Toprank" key={`Toprank${index}`}>
             <RankingBox>
               <RankingDisplay ranking={ranking} />
             </RankingBox>
@@ -72,7 +71,7 @@ function Ranking() {
         ))}
 
         <div
-          className="movemap"
+          className="move-map"
           onClick={() => {
             navigate('/MapPage/MyMapPage');
           }}
@@ -83,7 +82,6 @@ function Ranking() {
     </Container>
   );
 }
-
 
 const Container = styled.div`
   .title {
@@ -98,7 +96,7 @@ const Container = styled.div`
     text-align: center;
   }
 
-  .movemap {
+  .move-map {
     display: flex;
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 20px;
@@ -120,5 +118,6 @@ const Container = styled.div`
     margin-top: 30px;
   }
 `;
-
+//스타일드 컴포넌트 한곳에 몰고(완 -> 적용시키기위해 노력중)  
+// api 독스 코드 연결하기 /rankingdisplay에있는 애들 객체화 시키고 데이터값 받기(발바닥은 신경쓰기)
 export default Ranking;
