@@ -1,13 +1,17 @@
 const multer = require("multer");
 const fs = require("fs");
+const uuid4 = require("uuid4");
+const path = require("path");
 
 const storageOptions = multer.diskStorage({
     filename: function (req, file, callback) {
-        const extension = file.originalname.split(".").pop();
-        callback(null, Date.now() + "." + extension);
+        const randomId = uuid4();
+        const extension = path.extname(file.originalname);
+        const filename = randomId + extension;
+        callback(null, filename);
     },
     destination: function (req, file, callback) {
-        callback(null, "public/images");
+        callback(null, path.join(__dirname, "../public/images"));
     },
 });
 

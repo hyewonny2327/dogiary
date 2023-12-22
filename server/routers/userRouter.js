@@ -22,7 +22,7 @@ userRouter.post("/logout", userController.signOutUser);
 userRouter.get("/my-page", authenticateUser, userController.getUserInformation);
 
 //내 정보 수정
-userRouter.put("/my-page", authenticateUser, userController.updateUserInformation);
+userRouter.put("/my-page", authenticateUser, upload.single("imageUrl"), userController.updateUserInformation);
 
 //회원탈퇴
 userRouter.delete("/my-page", authenticateUser, userController.deleteUserInfomation);
@@ -44,8 +44,5 @@ userRouter.post("/help", userController.sendTemporaryPassword);
 
 //아이디 찾기
 userRouter.post("/find-id", userController.sendUserId);
-
-//이미지 업로드
-userRouter.post("/upload", upload.single("imageUrl"), userController.uploadImages);
 
 module.exports = userRouter;

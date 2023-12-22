@@ -61,14 +61,25 @@ const userService = {
 	},
 
 	//내 정보 수정
-	async updateUserInfo(userId, updatedProfile) {
-		const hashedPassword = await bcrypt.hash(updatedProfile.password, 10);
+	async updateUserInfo(userId, userData) {
+		if (userData.password === undefined){
+			const matchedUser = await User.findOneAndUpdate(
+				{ userId: userId },
+				{
+					nickName: userData.nickName,
+					imageUrl: userData.imageUrl,
+				},
+				{ new: true }
+			);
+			return { matchedUser };
+		}
+		const hashedPassword = await bcrypt.hash(userData.password, 10);
 		const matchedUser = await User.findOneAndUpdate(
 			{ userId: userId },
 			{
-				nickName: updatedProfile.nickName,
+				nickName: userData.nickName,
 				password: hashedPassword,
-				imageUrl: updatedProfile.imageUrl,
+				imageUrl: userData.imageUrl,
 			},
 			{ new: true }
 		);
