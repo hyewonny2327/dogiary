@@ -9,15 +9,16 @@ function JoinPage() {
   const [nickname, setNickname] = useState("");
   const [user_Id, setUser_Id] = useState("");
   const [email, setEmail] = useState("");
+  const [Number, setNumber] = useState("");
   const [password, setPassword] = useState("");
   const [CheckPassword, setCheckPassword] = useState("");
   const [pwdMsg, setPwdMsg] = useState("");
   const [confirmPwdMsg, setConfirmPwdMsg] = useState("");
-  const [AuthNumber, setAuthNumber] = useState("");
   const [nicknameCheckMsg, setNicknameCheckMsg] = useState("");
   const [UserIdCheckMsg, setUserIdCheckMsg] = useState("");
   const [EmailCheckMsg, setEmailCheckMsg] = useState("");
-  const [AuthNumberCheckMsg, setAuthNumberCheckMsg] = useState("");
+  const [NumberCheckMsg, setNumberCheckMsg] = useState("");
+  const [StayNumber, setStayNumber] = useState("");
 
   const handleChangeNickname = (e) => {
     setNickname(e.target.value);
@@ -91,6 +92,7 @@ function JoinPage() {
           setEmailCheckMsg("중복된 이메일입니다.");
         } else {
           setEmailCheckMsg("해당 이메일로 인증번호를 보냈습니다.");
+          setStayNumber(parseInt(response.data.authNumber, 10));
         }
         console.log("ok");
       }
@@ -99,36 +101,26 @@ function JoinPage() {
     }
   };
 
-  const handleChangeAuthNumber = (e) => {
-    setAuthNumber(e.target.value);
+  const handleChangeNumber = (e) => {
+    setNumber(e.target.value);
   };
 
-  const handleClickAuthNumber = async () => {
-    console.log(AuthNumber);
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/api/auth/check-email",
-        {
-          email: email,
-        }
-      );
-      console.log(response);
-      if (response.status === 200) {
-        if (response.data.check === false) {
-          setAuthNumberCheckMsg("인증번호가 틀렸습니다.");
-        } else {
-          setAuthNumberCheckMsg("인증번호가 확인되었습니다.");
-        }
-        console.log("ok");
-      }
-    } catch (error) {
-      console.error("API 호출 중 에러 발생:", error);
+  const handleClickNumber = () => {
+    console.log(Number);
+    console.log(StayNumber);
+    if (Number === StayNumber) {
+      setNumberCheckMsg("인증번호가 확인되었습니다.");
+      console.log("ok");
+    } else {
+      setNumberCheckMsg("인증번호가 틀렸습니다.");
     }
   };
 
   const PasswordValid = (Password) => {
     const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,20}$/;
-    return passwordRegex.test(password);
+    const isValid = passwordRegex.test(Password);
+    console.log(`Password: ${Password}, isValid: ${isValid}`); //디버깅 확인하려고 넣은 것
+    return isValid;
   };
 
   const handleChangePassword = useCallback((e) => {
@@ -142,7 +134,7 @@ function JoinPage() {
         setPwdMsg("안전한 비밀번호입니다.");
       }
     } else {
-      setPwdMsg(""); // 입력이 비어 있을 때 오류 메시지를 지웁니다.
+      setPwdMsg("");
     }
   }, []);
 
@@ -170,9 +162,9 @@ function JoinPage() {
       !nickname ||
       !user_Id ||
       !email ||
+      !Number ||
       !password ||
-      !CheckPassword ||
-      !AuthNumber
+      !CheckPassword
     ) {
       console.error("모든 항목을 입력해주세요.");
       return;
@@ -194,7 +186,7 @@ function JoinPage() {
       return;
     }
 
-    if (AuthNumberCheckMsg !== "인증번호가 확인되었습니다.") {
+    if (NumberCheckMsg !== "인증번호가 확인되었습니다.") {
       console.error("인증번호가 유효하지 않습니다.");
       return;
     }
@@ -301,24 +293,23 @@ function JoinPage() {
               <InputBox>
                 <input
                   className="form-input-small"
-                  value={AuthNumber}
+                  value={Number}
                   type="text"
-                  name="AuthNumber"
-                  s
-                  id="AuthNumber"
+                  name="Number"
+                  id="Number"
                   placeholder="인증번호 입력"
-                  onChange={handleChangeAuthNumber}
+                  onChange={handleChangeNumber}
                 />
               </InputBox>
               <SmallBtn
                 onClick={(e) => {
-                  handleClickAuthNumber(e);
+                  handleClickNumber(e);
                 }}
               >
                 인증
               </SmallBtn>
             </div>
-            <div className="message">{AuthNumberCheckMsg}</div>
+            <div className="message">{NumberCheckMsg}</div>
             <InputBox>
               <input
                 className="form-input"
