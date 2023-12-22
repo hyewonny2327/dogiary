@@ -9,7 +9,7 @@ function JoinPage() {
   const [nickname, setNickname] = useState("");
   const [user_Id, setUser_Id] = useState("");
   const [email, setEmail] = useState("");
-  const [Number, setNumber] = useState("");
+  const [number, setNumber] = useState("");
   const [password, setPassword] = useState("");
   const [CheckPassword, setCheckPassword] = useState("");
   const [pwdMsg, setPwdMsg] = useState("");
@@ -86,13 +86,12 @@ function JoinPage() {
           email: email,
         }
       );
-      console.log(response);
       if (response.status === 200) {
-        if (response.data.check === false) {
+        if (response.data === null) {
           setEmailCheckMsg("중복된 이메일입니다.");
         } else {
           setEmailCheckMsg("해당 이메일로 인증번호를 보냈습니다.");
-          setStayNumber(parseInt(response.data.authNumber, 10));
+          setStayNumber(response.data.data.authNumber);
         }
         console.log("ok");
       }
@@ -106,9 +105,9 @@ function JoinPage() {
   };
 
   const handleClickNumber = () => {
-    console.log(Number);
+    console.log(number);
     console.log(StayNumber);
-    if (Number === StayNumber) {
+    if (Number(number) === Number(StayNumber)) {
       setNumberCheckMsg("인증번호가 확인되었습니다.");
       console.log("ok");
     } else {
@@ -293,7 +292,7 @@ function JoinPage() {
               <InputBox>
                 <input
                   className="form-input-small"
-                  value={Number}
+                  value={number}
                   type="text"
                   name="Number"
                   id="Number"
