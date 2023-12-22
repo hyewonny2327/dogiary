@@ -3,7 +3,22 @@ import { LogoBar, NavBar } from '../components/common/Header';
 import { LongColoredBtn, LongStrokedBtn } from '../components/common/Buttons';
 import { ContainerBox, InputBox } from '../components/common/Boxes'; // Removed StyledContainerBox
 import styled from 'styled-components';
+import axios from 'axios';
 
+async function UserLogin(id, pw) {
+  try {
+    console.log(id, pw);
+    const response = await axios.post('http://localhost:8080/api/auth/login', {
+      userId: id,
+      password: pw,
+    });
+    let token = response.data.data.token;
+    localStorage.setItem('userToken', token);
+    console.log('로그인성공', response.data.data.token);
+  } catch (error) {
+    console.log('로그인실패', error);
+  }
+}
 function LoginPage() {
   const [user_Id, setUser_Id] = useState('');
   const [password, setPassword] = useState('');
@@ -15,6 +30,11 @@ function LoginPage() {
   const handleChangePassword = (e) => {
     setPassword(e.target.value);
   };
+
+  function handleLogin() {
+    console.log(typeof user_Id, typeof password);
+    UserLogin(user_Id, password);
+  }
 
   return (
     <div className="main">
@@ -53,7 +73,9 @@ function LoginPage() {
               </InputBox>
             </div>
             <div className="btn-box">
-              <LongColoredBtn text={'로그인하기'} className="long-btn" />
+              <LongColoredBtn className="long-btn" onClick={handleLogin}>
+                로그인하기
+              </LongColoredBtn>
               <LongStrokedBtn text={'회원가입'} className="long-btn" />
             </div>
           </LoginContainer>

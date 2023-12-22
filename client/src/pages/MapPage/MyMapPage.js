@@ -8,8 +8,9 @@ import { Modal } from '../../components/common/Modal';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSearchInput, setMarkers } from '../../slice/store';
-
-const categoryList = ['산책', '애견동반', '상점', '기타', '전체보기'];
+import { showPlacesByTag } from '../../utils/mapApi';
+import { setTag } from '../../slice/store';
+import useInfinityScroll from '../../hooks/useInfinityScroll';
 const TagList = [
   { label: '산책', id: 'tag0' },
   { label: '애견동반', id: 'tag1' },
@@ -48,6 +49,7 @@ function MyMapPage() {
     tag3: false,
     tag4: true,
   });
+
   function handleFilterClick(id) {
     setTags((prev) => {
       const updatedTags = { ...prev, [id]: !prev[id] };
@@ -61,6 +63,9 @@ function MyMapPage() {
 
       return updatedTags;
     });
+
+    //받아온 태그값으로 redux store에 태그 저장
+    dispatch(setTag(id));
   }
 
   //아이콘 클릭

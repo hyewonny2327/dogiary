@@ -4,13 +4,45 @@ import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import markerIcon from '../icons/markerIcon.svg';
 import { useSelector } from 'react-redux';
 import { showAllPlaces } from '../../utils/mapApi';
-
+import { showPlacesByTag } from '../../utils/mapApi';
 const { kakao } = window;
 
 function MapRenderer() {
   const markers = useSelector((state) => state.map.markers);
   const [map, setMap] = useState();
   const [isMarkerClicked, setIsMarkerClicked] = useState([]);
+  const clickedTag = useSelector((state) => state.map.tag);
+
+  //태그가 바뀔때마다 api 호출
+  useEffect(() => {
+    if (clickedTag === 'tag4') {
+      fetchShowAllPlaces();
+      return;
+    }
+
+    showPlacesByTag(clickedTag)
+      .then((placesData) => {
+        console.log(placesData);
+        if (!placesData) {
+          // 데이터가 없을 때의 처리
+          console.log('No data available');
+          setPositions([]);
+          setTitles([]);
+          return;
+        }
+        const _positions = placesData.map((place) => ({
+          lat: place.position[1],
+          lng: place.position[0],
+        }));
+        const _titles = placesData.map((place) => place.title);
+        setPositions(_positions);
+        setTitles(_titles);
+        setIsMarkerClicked(Array(_positions.length).fill(false));
+      })
+      .catch((error) => {
+        console.error('showAllPlaces 오류 in MapRenderer');
+      });
+  }, [clickedTag]);
 
   useEffect(() => {
     if (!map) return;
@@ -27,21 +59,29 @@ function MapRenderer() {
 
   const [positions, setPositions] = useState([]);
   const [titles, setTitles] = useState([]);
-  useEffect(() => {
-    showAllPlaces().then((response) => {
-      const placesData = response.data.data;
-      console.log(placesData);
 
-      const _positions = placesData.map((place) => ({
-        lat: place.position[1],
-        lng: place.position[0],
-      }));
-      const _titles = placesData.map((place) => place.title);
-      setPositions(_positions);
-      setTitles(_titles);
-      setIsMarkerClicked(Array(_positions.length).fill(false));
-    });
-  }, []);
+  function fetchShowAllPlaces() {
+    showAllPlaces()
+      .then((response) => {
+        const placesData = response.data.data;
+        if (!placesData) {
+          // 데이터가 없을 때의 처리
+          console.log('No data available');
+          return;
+        }
+        const _positions = placesData.map((place) => ({
+          lat: place.position[1],
+          lng: place.position[0],
+        }));
+        const _titles = placesData.map((place) => place.title);
+        setPositions(_positions);
+        setTitles(_titles);
+        setIsMarkerClicked(Array(_positions.length).fill(false));
+      })
+      .catch((error) => {
+        console.error('showAllPlaces 오류 in MapRenderer');
+      });
+  }
 
   //마커 클릭하면 장소이름 보여주기
 

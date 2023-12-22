@@ -1,7 +1,26 @@
 import axios from 'axios';
+const getUserToken = () => {
+  // 로컬 스토리지에서 토큰을 가져온다.
+  const userToken = localStorage.getItem('userToken');
+  return userToken;
+};
 
-export const mapApi = axios.create({
+const mapApi = axios.create({
   baseURL: 'http://localhost:8080/api/maps',
+  withCredentials: true,
+});
+
+mapApi.interceptors.request.use((config) => {
+  // 로컬 스토리지에서 토큰을 가져온다.
+  const userToken = getUserToken();
+
+  // 토큰이 있다면 헤더에 추가한다.
+  if (userToken) {
+    config.headers.Authorization = `Bearer ${userToken}`;
+  }
+  config.headers['Content-Type'] = 'application/json';
+
+  return config;
 });
 
 export async function registerMyPlace(placeData) {
@@ -22,11 +41,12 @@ export async function deleteMyPlace(id) {
     console.error('장소 정보 삭제하기 api 요청 중 에러 발생', error);
   }
 }
-let cursor = null;
+let cursor = '2023-12-23';
+let toggle = true;
 export async function showMyPlaces() {
   try {
-    const response = await mapApi.get(`?myMaps=true&cursor=${cursor}`);
-    console.log(response.data.data);
+    const response = await mapApi.get(`?myMaps=${toggle}&cursor=${cursor}`);
+    console.log(response);
     let placesData = response.data.data;
     return placesData;
   } catch (error) {
@@ -36,11 +56,20 @@ export async function showMyPlaces() {
 
 export async function showAllPlaces() {
   try {
+    //console.log(userToken);
     const response = await mapApi.get(null);
     return response;
   } catch (error) {
-    console.error('전체 장소 조회하기 api 요청 중 문제 발생', error);
+    console.log('등록된 장소정보없음');
+    return;
   }
 }
 
-export function showPlacesByTag() {}
+export async function showPlacesByTag(tag) {
+  try {
+    const response = await mapApi.get(`?tag=${tag}`);
+    return response.data.data;
+  } catch (error) {
+    console.error('태그별 장소 조회 중 오류 발생', error);
+  }
+}

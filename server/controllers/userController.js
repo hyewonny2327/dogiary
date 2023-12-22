@@ -1,4 +1,6 @@
 const userService = require("../services/userService");
+const User = require("../models/userModel");
+const path = require("path");
 
 const userController = {
     //회원가입
@@ -64,9 +66,21 @@ const userController = {
         try {
             const userId = req.currentUserId;
 
-            const updatedProfile = req.body;
+            const { nickName, password } = req.body;
+            const matchedUserImage = await User.findOne(
+                { userId: userId },
+                { imageUrl: 1 }
+            );
+            let imageUrl;
 
-            const result = await userService.updateUserInfo(userId, updatedProfile);
+            if (req.file && req.file.filename !== undefined) {
+                const imagePath = path.join(__dirname, "../public/images", req.file.filename);
+                imageUrl = imagePath;
+            } else {
+                imageUrl = matchedUserImage.imageUrl;
+            }
+
+            const result = await userService.updateUserInfo(userId, { nickName, password, imageUrl });
 
             res.status(200).json({
                 error: null,
@@ -176,6 +190,17 @@ const userController = {
 
             const result = await userService.sendId(email);
             res.status(200).json({ message: "아이디 전송이 완료되었습니다." })
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    //이미지 업로드
+    async uploadImages(req, res, next) {
+        try {
+            console.log(req.file);
+
+            res.status(200).json({ message: "이미지 업로드가 완료되었습니다." })
         } catch (error) {
             next(error);
         }
