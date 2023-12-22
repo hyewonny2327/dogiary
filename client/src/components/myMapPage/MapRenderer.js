@@ -4,60 +4,94 @@ import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import markerIcon from '../icons/markerIcon.svg';
 import { useSelector } from 'react-redux';
 import { showAllPlaces } from '../../utils/mapApi';
-
+import { showPlacesByTag } from '../../utils/mapApi';
 const { kakao } = window;
 
 function MapRenderer() {
-  const markers = useSelector((state)=>state.map.markers);
+  const markers = useSelector((state) => state.map.markers);
   const [map, setMap] = useState();
+  const [isMarkerClicked, setIsMarkerClicked] = useState([]);
+  const clickedTag = useSelector((state) => state.map.tag);
+
+  //태그가 바뀔때마다 api 호출
+  useEffect(() => {
+    if (clickedTag === 'tag4') {
+      fetchShowAllPlaces();
+      return;
+    }
+
+    showPlacesByTag(clickedTag)
+      .then((placesData) => {
+        console.log(placesData);
+        if (!placesData) {
+          // 데이터가 없을 때의 처리
+          console.log('No data available');
+          setPositions([]);
+          setTitles([]);
+          return;
+        }
+        const _positions = placesData.map((place) => ({
+          lat: place.position[1],
+          lng: place.position[0],
+        }));
+        const _titles = placesData.map((place) => place.title);
+        setPositions(_positions);
+        setTitles(_titles);
+        setIsMarkerClicked(Array(_positions.length).fill(false));
+      })
+      .catch((error) => {
+        console.error('showAllPlaces 오류 in MapRenderer');
+      });
+  }, [clickedTag]);
 
   useEffect(() => {
     if (!map) return;
 
     const bounds = new kakao.maps.LatLngBounds();
     markers.forEach((marker) => {
-      bounds.extend(new kakao.maps.LatLng(marker.position.lat, marker.position.lng));
+      bounds.extend(
+        new kakao.maps.LatLng(marker.position.lat, marker.position.lng),
+      );
     });
 
     map.setBounds(bounds);
   }, [map, markers]);
 
+  const [positions, setPositions] = useState([]);
+  const [titles, setTitles] = useState([]);
 
-  const clickedTag = useSelector((state)=>state.map.tag);
-  const [placesData,setPlacesData] = useState([]);
-
-  useEffect(() => {
-    // 모든 장소 정보 조회 API 호출 
-    // 좌표값만 추출
-    showAllPlaces().then((response, index) => {
-      const data = response.data.data;
-      console.log('현재 태그는:' ,clickedTag)
-      console.log(data);
-      if (data && data.length > 0) {
-        const places = data.map(place => ({
-          lat: place.position[1], 
+  function fetchShowAllPlaces() {
+    showAllPlaces()
+      .then((response) => {
+        const placesData = response.data.data;
+        if (!placesData) {
+          // 데이터가 없을 때의 처리
+          console.log('No data available');
+          return;
+        }
+        const _positions = placesData.map((place) => ({
+          lat: place.position[1],
           lng: place.position[0],
-          content: place.content,
-          tag:place.tag[0],
         }));
-        const filteredPlaces = places.filter((item) => {
-          // 만약 clickedTag가 'tag4'라면 모든 아이템을 포함 (전체보기)
-          if (clickedTag === 'tag4') {
-            return true;
-          }
-          // 그 외의 경우에는 clickedTag와 일치하는 아이템만 포함
-          return item.tag === clickedTag;
-        });
-        console.log(filteredPlaces)
-        //const _contents = placesData.map(place => place.content);
-        setPlacesData(filteredPlaces);
-      } else {
-        console.log('장소 데이터가 없습니다.');
-      }
-    }, [placesData]); 
-  }, [clickedTag]);
+        const _titles = placesData.map((place) => place.title);
+        setPositions(_positions);
+        setTitles(_titles);
+        setIsMarkerClicked(Array(_positions.length).fill(false));
+      })
+      .catch((error) => {
+        console.error('showAllPlaces 오류 in MapRenderer');
+      });
+  }
 
-  const [isOpen, setIsOpen] = useState(Array(placesData.length).fill(false));
+  //마커 클릭하면 장소이름 보여주기
+
+  function handleMarkerClick(index) {
+    setIsMarkerClicked((prevState) => {
+      const updatedMarkers = [...prevState];
+      updatedMarkers[index] = !updatedMarkers[index];
+      return updatedMarkers;
+    });
+  }
 
   return (
     <MapStyle>
@@ -70,11 +104,10 @@ function MapRenderer() {
         level={3}
         onCreate={setMap}
       >
-        {
-          placesData.map((place,index)=>(
-            <MapMarker 
-            key={`marker-${place.content}-${place.lat},${place.lng}`}
-            position={{ lat: place.lat, lng: place.lng }}
+        {positions.map((position, index) => (
+          <MapMarker
+            key={`marker-${titles[index]}-${position.lat},${position.lng}-${index}`}
+            position={{ lat: position.lat, lng: position.lng }}
             image={{
               src: markerIcon,
               size: {
@@ -82,23 +115,11 @@ function MapRenderer() {
                 height: 40,
               },
             }}
-            clickable={true}
-            onClick={()=>{
-              let updatedIsOpen = [...isOpen];
-              updatedIsOpen[index] = !isOpen[index];;
-              setIsOpen(updatedIsOpen);
-            }}
-            style={{
-              width: '95px',
-              height: '25px'
-            }}
+            onClick={() => handleMarkerClick(index)}
           >
-            {isOpen[index] && <div style={{ padding: "5px", color: "#000" }}>{place.content}</div>}
+            {isMarkerClicked[index] && <div>{titles[index]}</div>}
           </MapMarker>
-
-          ))
-        }
-
+        ))}
       </Map>
     </MapStyle>
   );
@@ -115,18 +136,4 @@ const MapStyle = styled.div`
     height: 100vh;
     z-index: -10000;
   }
-  
-`
-
-const MarkerContent = styled.div`
-
-  
-  
-    color: #5F5013;
-    font-family: Noto Sans KR;
-    font-size: 11px;
-    font-weight: 700;
-    
-  
-  
-`
+`;

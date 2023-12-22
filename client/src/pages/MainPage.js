@@ -8,46 +8,23 @@ import styled from 'styled-components';
 import { getAddress } from '../utils/getAddress';
 import { registerMyPlace } from '../utils/mapApi';
 import { deleteMyPlace } from '../utils/mapApi';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { setIsOpen } from '../slice/store';
+import Calendar from '../components/myFeedPage/CalendarComponent';
 function MainPage(){
   
-  
-  const [showModal, setShowModal] = useState(false);
+  const dispatch = useDispatch();
+  const isOpen = useSelector((state)=>state.modal.isOpen)
+
   function handleModalClose(){
-    setShowModal(false);
+    dispatch(setIsOpen(true));
   }
 
     return(
         <div>
             <LogoBar/>
             <NavBar/>
-            <LongColoredBtn text={'안녕'}/>
-            <LongStrokedBtn text={'cancel'}/>
-            <SmallBtn text={'등록'}/>
-            
-            <ContainerBox>
-              <BoxStyle>
-                안녕하세요! 
-                <SmallBtn text={'중복확인'}/>
-                <SmallBtn text={'확인'}/>
-              </BoxStyle>
-            </ContainerBox>
-            <InputBox>
-              <input type='text' placeholder='내용을 입력하세요'/>
-            </InputBox>
-            <button onClick={()=>{setShowModal(true)}}>모달보여줘</button>
-            {/* {showModal ? <Modal content = {<div>안녕</div>} customModalStyle={customModalStyle} containerStyle={containerStyle} onClose={handleModalClose}></Modal>:''} */}
-            {showModal ? 
-            <Modal  containerStyle={containerStyle} onClose={handleModalClose}>
-              <ModalStyle className='container' >
-                <div className='content'>안녕</div>
-              </ModalStyle>
-            </Modal>:''}
-            <button onClick={registerMyPlace}>장소 등록 api를 테스트해보자</button>
-            <button onClick={()=>{deleteMyPlace('657ec0823e4e4261163dfa86')}}>삭제!</button>
-            
-
-   
+            <Calendar/>
             
         </div>
     )
@@ -63,7 +40,7 @@ const containerStyle=`
 
 const ModalStyle = styled.div`
 &.container{
-  width:900px;
+  width:300px;
   height:100px;
 }
 &.content{
