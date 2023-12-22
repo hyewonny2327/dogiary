@@ -9,6 +9,8 @@ const {
   getMonthDiaries,
   getCurosrDiaries,
 } = require("../services/diaryService");
+const path = require("path");
+const User = require("../models/userModel");
 
 const successResponse = (data, message) => ({
   message,
@@ -18,9 +20,28 @@ const successResponse = (data, message) => ({
 
 exports.postDiary = async (req, res, next) => {
   try {
-    const { imageUrl, title, content, date } = req.body;
+    const { title, content, date } = req.body;
 
-    if (!imageUrl || !title || !content || !date) {
+    const matchedUserImage = await User.findOne(
+      { userId: req.currentUserId },
+      { imageUrl: 1 }
+    );
+    let imageUrl;
+
+    console.log("무엇", req.file);
+
+    if (req.file && req.file.filename !== undefined) {
+      const imagePath = path.join(
+        __dirname,
+        "../public/images",
+        req.file.filename
+      );
+      imageUrl = imagePath;
+    } else {
+      imageUrl = matchedUserImage.imageUrl;
+    }
+
+    if (!title || !content || !date) {
       throw new errorHandler("inputError", commonErrors.inputError, {
         statusCode: 400,
         cause: error,

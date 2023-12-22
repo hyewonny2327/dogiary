@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
+const path = require("path");
 
 const diarySchema = new Schema(
   {
@@ -7,12 +8,10 @@ const diarySchema = new Schema(
       type: String,
       required: true,
     },
-    imageUrl: [
-      {
-        type: String,
-        required: true,
-      },
-    ],
+    imageUrl: {
+      type: String,
+      default: path.join(__dirname, "../public/images/defaultImage.png"),
+    },
     title: {
       type: String,
       required: true,
