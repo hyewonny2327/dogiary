@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setSearchInput, setMarkers } from '../../slice/store';
 import { showPlacesByTag } from '../../utils/mapApi';
 import { setTag } from '../../slice/store';
-
+import useInfinityScroll from '../../hooks/useInfinityScroll';
 const TagList = [
   { label: '산책', id: 'tag0' },
   { label: '애견동반', id: 'tag1' },
@@ -64,8 +64,7 @@ function MyMapPage() {
       return updatedTags;
     });
 
-    //!밑에 지우고 태그값 redux에 저장
-    //받아온 태그값 기준으로 data 요청, state에 저장
+    //받아온 태그값으로 redux store에 태그 저장
     dispatch(setTag(id));
   }
 

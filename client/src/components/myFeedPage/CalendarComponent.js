@@ -22,6 +22,7 @@ function CalendarComponent() {
     dispatch(setIsOpen(true));
     setClickedDate(formattedDate);
   };
+
   return (
     <div>
       <CalendarStyle>

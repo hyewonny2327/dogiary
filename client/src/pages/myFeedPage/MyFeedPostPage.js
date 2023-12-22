@@ -8,23 +8,86 @@ import {
   LongStrokedBtn,
 } from '../../components/common/Buttons';
 import plusIcon from '../../components/icons/plusIcon.svg';
+import { useNavigate } from 'react-router-dom';
+import { postMyDiary } from '../../utils/diaryApi';
 
 export default function MyFeedPostPage() {
+  const navigate = useNavigate();
   const [count, setCount] = useState(1); // 복제할 개수를 상태로 관리
+  const [uploadedImage, setUploadedImage] = useState([]);
+  const [inputText, setInputText] = useState([]);
 
   const handleAddContent = () => {
-    setCount((prevCount) => prevCount + 1);
+    setCount((prev) => prev + 1);
+
+    setUploadedImage((prev) => {
+      const newUploadedImage = [...prev, ''];
+      return newUploadedImage;
+    });
+
+    setInputText((prev) => {
+      const newInputText = [...prev, ''];
+      return newInputText;
+    });
   };
 
-  const [uploadedImage, setUploadedImage] = useState([]);
-  const handleImageUpload = (event) => {
+  //const [formData, setFormData] = useState(new FormData());
+
+  function handleImageUpload(event, index) {
     const file = event.target.files[0];
     if (file) {
-      let imageArray = [...uploadedImage];
-      imageArray.push(URL.createObjectURL(file));
-      setUploadedImage(imageArray);
+      setUploadedImage((prev) => {
+        let newImage = [...prev];
+        newImage[index] = URL.createObjectURL(file);
+        return newImage;
+      });
+      console.log(uploadedImage);
+
+      //formData.set(`image_${index}`, file);
+      //console.log(formData);
     }
-  };
+  }
+
+  function handleTextChange(event, index) {
+    const text = event.target.value;
+    setInputText((prev) => {
+      let newText = [...prev];
+      newText[index] = text;
+      return newText;
+    });
+    // formData.set(`text_${index}`, text);
+    // console.log(formData);
+  }
+
+  const [_title, setTitle] = useState('');
+  const [_date, setDate] = useState('');
+
+  function handleTitleInput(e) {
+    const inputTitle = e.target.value;
+    setTitle(inputTitle);
+  }
+  function handleDateInput(e) {
+    const inputDate = e.target.value;
+    setDate(inputDate);
+  }
+
+  const [submitData, setSubmitData] = useState({
+    imageUrl: [],
+    title: '',
+    content: '',
+    date: '',
+  });
+  function handleSubmit() {
+    setSubmitData((prev) => {
+      const newSubmit = { ...prev };
+      newSubmit.imageUrl = uploadedImage;
+      newSubmit.title = _title;
+      newSubmit.content = inputText;
+      newSubmit.date = _date;
+    });
+    postMyDiary(submitData);
+    console.log(uploadedImage, inputText);
+  }
 
   //! form 데이터 써야함 const formData = new FormData(); formData.append(“key”, data);
   //전송할때 url말고 달느거
@@ -42,6 +105,7 @@ export default function MyFeedPostPage() {
                 className="title-box"
                 type="text"
                 placeholder="날짜를 입력하세요"
+                onChange={(e) => handleDateInput(e)}
               ></input>
             </InputBox>
             <InputBox>
@@ -49,6 +113,7 @@ export default function MyFeedPostPage() {
                 className="title-box"
                 type="text"
                 placeholder="제목을 작성하세요"
+                onChange={(e) => handleTitleInput(e)}
               ></input>
             </InputBox>
           </TitleContainer>
@@ -56,8 +121,10 @@ export default function MyFeedPostPage() {
             {[...Array(count)].map((_, index) => (
               <ContentBox
                 key={index}
-                uploadedImage={uploadedImage[index]}
-                handleImageUpload={() => handleImageUpload()}
+                uploadedImage={uploadedImage}
+                handleImageUpload={(event) => handleImageUpload(event, index)}
+                handleTextChange={(event) => handleTextChange(event, index)}
+                index={index}
               />
             ))}
           </ContentContainerBox>
@@ -68,30 +135,42 @@ export default function MyFeedPostPage() {
           />
         </Content>
         <ButtonContainer>
-          <LongStrokedBtn className="button">취소하기</LongStrokedBtn>
-          <LongColoredBtn className="button">등록하기</LongColoredBtn>
+          <LongStrokedBtn
+            className="button"
+            onClick={() => navigate('/myFeed')}
+          >
+            취소하기
+          </LongStrokedBtn>
+          <LongColoredBtn className="button" onClick={handleSubmit}>
+            등록하기
+          </LongColoredBtn>
         </ButtonContainer>
       </PostPageContainer>
     </PageContainer>
   );
 }
 
-export function ContentBox({ uploadedImage, handleImageUpload }) {
+export function ContentBox({
+  uploadedImage,
+  handleImageUpload,
+  handleTextChange,
+  index,
+}) {
   return (
     <ContentContainer className="container">
       <ImageContainer>
         <img
-          src={uploadedImage ? uploadedImage : imageIcon}
+          src={uploadedImage[index] ? uploadedImage[index] : imageIcon}
           style={{ width: '109px', height: '96px', objectFit: 'contain' }}
         ></img>
         <input
           className="add-photo"
           type="file"
-          id="file-input"
-          name="ImageStyle"
-          onChange={handleImageUpload}
+          id={`file-input-${index}`}
+          name={`ImageStyle-${index}`}
+          onChange={(event) => handleImageUpload(event, index)}
         />
-        <label className="upload-btn" htmlFor="file-input">
+        <label className="upload-btn" htmlFor={`file-input-${index}`}>
           이미지 업로드
         </label>
       </ImageContainer>
@@ -100,6 +179,7 @@ export function ContentBox({ uploadedImage, handleImageUpload }) {
         className="input-box"
         type="text"
         placeholder="일기를 입력하세요"
+        onChange={(event) => handleTextChange(event, index)}
       ></textarea>
     </ContentContainer>
   );

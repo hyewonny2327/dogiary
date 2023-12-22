@@ -41,7 +41,7 @@ export async function deleteMyPlace(id) {
     console.error('장소 정보 삭제하기 api 요청 중 에러 발생', error);
   }
 }
-let cursor = '2023-12-22';
+let cursor = '2023-12-23';
 let toggle = true;
 export async function showMyPlaces() {
   try {
@@ -56,6 +56,7 @@ export async function showMyPlaces() {
 
 export async function showAllPlaces() {
   try {
+    //console.log(userToken);
     const response = await mapApi.get(null);
     return response;
   } catch (error) {
