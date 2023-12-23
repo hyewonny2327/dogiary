@@ -20,10 +20,6 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
-<<<<<<< HEAD
-=======
-
->>>>>>> a7970e23028bd194933b6d4fd19f318ac86f13e7
 // const corsOptions = {
 //   origin: "http://localhost:3000",
 //   credentials: true,

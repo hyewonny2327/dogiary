@@ -18,28 +18,31 @@ const successResponse = (data, message) => ({
   data,
 });
 
-exports.postDiary = async (req, res, next) => {
+// 이미지 업로드 공통 함수
+const getImageUrl = async (req) => {
   try {
-    const { title, content, date } = req.body;
-
     const matchedUserImage = await User.findOne(
       { userId: req.currentUserId },
       { imageUrl: 1 }
     );
-    let imageUrl;
-
-    console.log("무엇", req.file);
-
     if (req.file && req.file.filename !== undefined) {
-      const imagePath = path.join(
-        __dirname,
-        "../public/images",
-        req.file.filename
-      );
-      imageUrl = imagePath;
+      return path.join(__dirname, "../public/images", req.file.filename);
     } else {
-      imageUrl = matchedUserImage.imageUrl;
+      return matchedUserImage.imageUrl;
     }
+  } catch (error) {
+    throw new errorHandler("internalError", commonErrors.internalError, {
+      statusCode: 500,
+      cause: error,
+    });
+  }
+};
+
+exports.postDiary = async (req, res, next) => {
+  try {
+    const { title, content, date } = req.body;
+    //이미지 업로드
+    const imageUrl = await getImageUrl(req);
 
     if (!title || !content || !date) {
       throw new errorHandler("inputError", commonErrors.inputError, {
@@ -66,15 +69,17 @@ exports.postDiary = async (req, res, next) => {
 exports.putDiary = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { imageUrl, title, content, date } = req.body || {};
+    const { title, content, date } = req.body || {};
 
     if (!id) {
       throw new errorHandler(commonErrors.argumentError, "argumentError", {
         statusCode: 400,
       });
     }
+    //이미지 업로드
+    const imageUrl = await getImageUrl(req);
 
-    if (!imageUrl || !title || !content || !date) {
+    if (!title || !content || !date) {
       throw new errorHandler("inputError", commonErrors.inputError, {
         statusCode: 400,
       });
