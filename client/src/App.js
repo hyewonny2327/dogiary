@@ -1,26 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
-import { Route,Routes } from 'react-router-dom';
-import MainPage from './pages/MainPage';
-import LoginPage from './pages/LoginPage';
-import JoinPage from './pages/JoinPage';
-import MyMapPage from './pages/MapPage/MyMapPage';
-import RegisterPlace from './pages/MapPage/RegisterPlace';
+import React, { Suspense } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './slice/store';
+import LoadingSpinner from './components/common/LoadingSpinner';
+
+// Lazy-loaded components
+const MainPage = React.lazy(() => import('./pages/MainPage'));
+const MyMapPage = React.lazy(() => import('./pages/MapPage/MyMapPage'));
+const RegisterPlace = React.lazy(() => import('./pages/MapPage/RegisterPlace'));
+const LoginPage = React.lazy(() => import('./pages/LoginPage'));
+const JoinPage = React.lazy(() => import('./pages/JoinPage'));
+const MyFeed = React.lazy(() => import('./pages/myFeedPage/MyFeed'));
+const MyFeedPostPage = React.lazy(
+  () => import('./pages/myFeedPage/MyFeedPostPage'),
+);
+const MyPlacePage = React.lazy(() => import('./pages/MapPage/MyPlacePage'));
+const MyPetPage = React.lazy(() => import('./pages/MyPetPage'));
+
 function App() {
   return (
-    //provider로 컴포넌트를 감싸주어야 그 속의 컴포넌트들이 state에 접근할 수 있음
     <Provider store={store}>
+      <Suspense fallback={<LoadingSpinner />}>
         <Routes>
-          <Route path='/' element={<MainPage />} />
-          <Route path='/mapPage' element={<MyMapPage />} />
-          <Route path='/registerPlace' element={<RegisterPlace />} />
-          <Route path='/LoginPage' element={<LoginPage/>}/>
-          <Route path='/JoinPage' element={<JoinPage/>}/>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/mapPage" element={<MyMapPage />} />
+          <Route path="/mapPage/myPlace" element={<MyPlacePage />} />
+          <Route path="/mapPage/registerPlace" element={<RegisterPlace />} />
+          <Route path="/LoginPage" element={<LoginPage />} />
+          <Route path="/JoinPage" element={<JoinPage />} />
+          <Route path="/myFeed" element={<MyFeed />} />
+          <Route path="/myFeed/post" element={<MyFeedPostPage />} />
+          <Route path="/myPet" element={<MyPetPage />} />
         </Routes>
+      </Suspense>
     </Provider>
-
   );
 }
 

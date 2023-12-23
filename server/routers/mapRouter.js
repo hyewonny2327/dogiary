@@ -1,18 +1,25 @@
 const express = require("express");
-const mapController = require("../controllers/mapController.js");
+const mapController = require("../controllers/mapController");
 const router = express.Router();
+const authenticateUser = require("../middlewares/authenticateUser.js");
 
 // POST: /maps - 마커 추가
-router.post("/maps", mapController.createMap);
+router.post("/", authenticateUser, mapController.postMap);
+// router.post("/", mapController.postMap);
+// GET: /maps/:id - 특정 마커 조회
+router.get("/:id", mapController.getOneMap);
+// GET: /maps/:id - 특정 마커 조회
+router.get("/rank", mapController.getRank);
+// GET: /maps - 마커 전체 조회 또는 태그별 조회
+// 내가 등록한 맵정보 /maps?myMaps=true
+router.get("/", authenticateUser, mapController.getMaps);
+// router.get("/", mapController.getMaps);
 
 // PUT: /maps/:id - 마커 수정
-router.put("/maps/:id", mapController.updateMap);
+router.put("/:id", authenticateUser, mapController.putMap);
+// router.put("/:id", mapController.putMap);
 
 // DELETE: /maps/:id - 마커 삭제
-router.delete("/maps/:id", mapController.deleteMap);
-
-// GET: /maps/:id - 특정 마커 조회
-router.get("/maps/:id", mapController.getOneMap);
-
-router.get("/maps", mapController.getAllMaps);
+router.delete("/:id", authenticateUser, mapController.deleteMap);
+// router.delete("/:id", mapController.deleteMap);
 module.exports = router;

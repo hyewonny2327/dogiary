@@ -11,22 +11,28 @@ const MapSchema = new mongoose.Schema(
 			required: true,
 		},
 		tag: {
-            type: [String], 
-            default: [],
-            required: true,
-        },
+			type: String,
+			required: true,
+		},
 		imageUrl: {
 			type: String,
 			required: true,
 		},
 		content: {
 			type: String,
-			// required: true,
+			required: true,
 		},
 		position: {
 			type: Array,
 			required: true,
 			default: [],
+		},
+		userId: {
+			type: String,
+		},
+		address: {
+			type: String,
+			required: true,
 		},
 	},
 	{
