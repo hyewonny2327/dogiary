@@ -139,13 +139,25 @@ const mapService = {
 	// 가져오기 (커서 기반 페이지네이션 및 제한된 개수)
 	async getMyMaps(currentUserId, cursor) {
 		try {
+			// console.log(currentUserId);
 			let query = { userId: currentUserId };
-			if (cursor) {
-				query._id = { $lt: cursor };
+			// cursor가 null이면 최근 글 10개를 가져오도록 query 추가
+			if (!cursor) {
+				const recentMaps = await Map.find({ userId: currentUserId })
+					.sort({ createdAt: -1 })
+					.limit(10)
+					.lean();
+				console.log(recentMaps);
+				if (!recentMaps || recentMaps.length === 0) {
+					return null;
+				}
+				return recentMaps;
 			}
+			// cursor가 존재하면 해당 cursor 이전의 글을 가져오도록 query 수정
+			query._id = { $lt: cursor };
 			const myMaps = await Map.find(query)
 				.sort({ createdAt: -1 })
-				.limit(5)
+				.limit(10)
 				.lean();
 			if (!myMaps || myMaps.length === 0) {
 				return null;
