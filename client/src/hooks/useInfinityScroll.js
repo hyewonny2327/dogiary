@@ -6,12 +6,12 @@ export default function useInfinityScroll(onIntersect) {
   useEffect(() => {
     let observer;
     if (targetRef) {
-      const handleIntersect = ([entry], obs) => {
+      function handleIntersect([entry], obs) {
         if (entry.isIntersecting) {
           obs.unobserve(entry.target);
-          onIntersect(entry, obs);
+          onIntersect();
         }
-      };
+      }
 
       observer = new IntersectionObserver(handleIntersect, { threshold: 0.6 });
       observer.observe(targetRef);

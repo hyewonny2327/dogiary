@@ -41,11 +41,20 @@ export async function deleteMyDiary(id) {
 
 export async function showAllDiaries() {
   try {
-    await diaryApi.get(null).then((res) => {
-      const diaryData = res.data.data;
-      return diaryData;
-    });
+    const res = await diaryApi.get(null);
+    const diaryData = res.data.data;
+    return diaryData;
   } catch (error) {
     console.error('모든 다이어리 조회하기 api 요청 중 에러 발생', error);
+  }
+}
+
+export async function showDailyDiaries(date) {
+  try {
+    const res = await diaryApi.get(`?createdAt=${date}`);
+    const dailyDiary = res.data.data;
+    return dailyDiary;
+  } catch (error) {
+    console.log('일간 다이어리 조회하기 api 요청 중 에러 발생', error);
   }
 }

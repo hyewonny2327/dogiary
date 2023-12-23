@@ -11,21 +11,23 @@ import useInfinityScroll from '../../hooks/useInfinityScroll';
 export default function MyPlacePage() {
   const [myPlaces, setMyPlaces] = useState([]);
   const getData = async () => {
+    //! 커서를 어디에 넣어줘야할까!! 고민중
     try {
       const res = await showMyPlaces();
-      console.log(res);
+      console.log('res', res);
 
-      //array인지 체크, 개수보다 이하이면 =>
-      if (!res || res.length === 0) {
-        // 데이터가 없을 때의 처리
-        console.log('No data available (MY PLACE PAGE)');
-        setMoreData(false); // 더 이상 데이터가 없다고 표시
-        return;
+      if (Array.isArray(res)) {
+        //array인지 체크, 개수보다 이하이면 =>
+        if (!res || res.length < 5) {
+          // 데이터가 없을 때의 처리
+          console.log('No data available (MY PLACE PAGE)');
+          setMoreData(false); // 더 이상 데이터가 없다고 표시
+        } else {
+          setMyPlaces((prev) => [...prev, ...res]); // 기존 데이터와 새로운 데이터 합치기
+        }
+      } else {
+        console.log('배열이 아님');
       }
-
-      //가져오는 개수 보다 작으면 끝내야함 +추가
-
-      setMyPlaces((prev) => [...prev, ...res]); // 기존 데이터와 새로운 데이터 합치기
     } catch (error) {
       console.error('Error fetching data in MyPlacePage:', error);
     }
@@ -41,11 +43,13 @@ export default function MyPlacePage() {
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [moreData]);
 
   async function handleIntersect() {
     if (moreData) {
       await getData();
+    } else {
+      console.log('끝');
     }
   }
 
@@ -85,7 +89,7 @@ export default function MyPlacePage() {
     });
   }
   function handleDeleteClick(id) {
-    console.log(typeof id);
+    console.log(id);
     deleteMyPlace(id);
   }
 
@@ -115,7 +119,7 @@ export default function MyPlacePage() {
             <div className="place-container">
               <div className="left-container">
                 <div className="place-name">{item.title}</div>
-                <div className="address">주소는 조금만 기다려주소</div>
+                <div className="address">{item.address}</div>
                 <div className="tag">{getTagName(item.tag[0])}</div>
               </div>
               <div className="right-container">

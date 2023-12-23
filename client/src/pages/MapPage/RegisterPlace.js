@@ -85,15 +85,27 @@ function RegisterPlace() {
       //주소값을 추가해서 selectedPlace state를 업데이트해준다. (이렇게해도 되나 ?????)
       address: markerAddresses[index],
     };
+
     setSelectedPlace(newSelectedPlace);
   }
 
-  //! 이미지 업로드 기능
-  const [uploadedImage, setUploadedImage] = useState(imageIcon);
+  //! 이미지 업로드 기능 -> form Data 로 수정
+  const [uploadedImage, setUploadedImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState(imageIcon);
+  const formData = new FormData();
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setUploadedImage(URL.createObjectURL(file));
+      //이미지 파일을 form data에 추가해서 state에 form data를 넣는다.
+      formData.append('image', file);
+      setUploadedImage(formData);
+
+      //이미지 미리보기
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImageUrl(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -124,11 +136,16 @@ function RegisterPlace() {
       toggle: selectedToggle,
       tag: selectedTag,
       content: textContent,
-      imageUrl: uploadedImage,
       position: [selectedPlace.lng, selectedPlace.lat],
       address: selectedPlace.address,
     };
+
     if (submitData.title !== '' && submitData.uploadedImage !== imageIcon) {
+      //이미지 서버에 업로드
+
+      if (formData.has('image')) {
+        submitData.image = formData.get('image');
+      }
       registerMyPlace(submitData);
       console.log('등록하기 클릭했음');
       navigate('/mapPage');
@@ -182,7 +199,7 @@ function RegisterPlace() {
             </InputBox>
             <div className="image-container">
               <img
-                src={uploadedImage ? uploadedImage : imageIcon}
+                src={uploadedImage ? imageUrl : imageIcon}
                 style={{ width: '109px', height: '96px', objectFit: 'contain' }}
                 alt="이미지를 업로드하세요"
               ></img>
