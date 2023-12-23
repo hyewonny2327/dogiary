@@ -114,7 +114,6 @@ const PetDiaryContainer = styled.div`
 
   .content-container {
     width: 370px;
-    //height:390px;
     height: 60vh;
 
     overflow: auto;
