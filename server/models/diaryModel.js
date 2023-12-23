@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const path = require("path");
-const { format } = require("date-fns");
 
 const diarySchema = new Schema(
   {
