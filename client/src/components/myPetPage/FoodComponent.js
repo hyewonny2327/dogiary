@@ -30,7 +30,7 @@ export default function FoodComponent() {
             type="text"
             name="category"
             id="category"
-            placeholder="몸무게 입력"
+            placeholder="분류명"
             onChange={handleChangeCategory}
           ></input>
         </InputBox>

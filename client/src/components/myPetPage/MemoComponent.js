@@ -30,7 +30,7 @@ export default function MemoComponent() {
             type="text"
             name="content"
             id="content"
-            placeholder="몸무게 입력"
+            placeholder="메모 입력"
             onChange={handleChangeContent}
           ></input>
         </InputBox>

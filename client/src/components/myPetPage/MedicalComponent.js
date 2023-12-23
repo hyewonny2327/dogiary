@@ -16,7 +16,7 @@ export default function MedicalComponent() {
   return (
     <div>
       <ContainerBox>
-        <h1>사료/영양제/간식 정보를 등록하세요.</h1>
+        <h2>사료/영양제/간식 정보를 등록하세요.</h2>
         <DatePicker
           locale={ko}
           selected={startDate}
@@ -30,7 +30,7 @@ export default function MedicalComponent() {
             type="text"
             name="content"
             id="content"
-            placeholder="몸무게 입력"
+            placeholder="진료내용"
             onChange={handleChangeContent}
           ></input>
         </InputBox>
