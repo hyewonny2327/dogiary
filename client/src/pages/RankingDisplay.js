@@ -1,48 +1,49 @@
 import React from 'react';
 import rankingImage from '../components/icons/foot.png';
 import styled from 'styled-components';
+import axios from 'axios';
+import { api } from '.././utils/api';
 
 //이미지 경로 맞춰서 svg넣기
-function RankingDisplay(ranking) {
-  const RankingContainer = styled.div`
-    display: flex;
-    align-items: center;
-    height: 100%;
-    position: relative;
-  `;
 
-  const RankingImage = styled.img`
-    height: 80%;
-    opacity: 70%;
-  `;
+const RankingContainer = styled.div`
+  display: flex;
+  align-items: center;
+  height: 100%;
+  position: relative;
+`;
 
-  const RankingText = styled.div`
-    position: absolute;
-    font-size: 20px;
-    font-weight: bold;
-    color: white;
-    margin: 17px 0 0 20px;
-    top: 0px;
-  `;
+const RankingImage = styled.img`
+  height: 80%;
+  opacity: 70%;
+`;
 
-  const UserInfo = styled.div`
-    margin-left: 20%;
-    color: #000;
-    font-size: 20px;
-    font-weight: bolder;
-  `;
+const RankingText = styled.div`
+  position: absolute;
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  margin: 17px 0 0 20px;
+  top: 0px;
+`;
 
-  function RankingDisplay({ userRanking, nickName, count }) {
-    return (
-      <RankingContainer>
-        <RankingImage src={rankingImage} alt="foot" />
-        <RankingText>{userRanking}</RankingText>
-        <UserInfo>
-          {nickName} ({count})
-        </UserInfo>
-      </RankingContainer>
-    );
-  }
+const UserInfo = styled.div`
+  margin-left: 20%;
+  color: #000;
+  font-size: 20px;
+  font-weight: bolder;
+`;
+
+function RankingDisplay({ userRanking, nickName, count }) {
+  return (
+    <RankingContainer>
+      <RankingImage src={rankingImage} alt="foot" />
+      <RankingText>{userRanking + 1}</RankingText>
+      <UserInfo>
+        {nickName} ({count})
+      </UserInfo>
+    </RankingContainer>
+  );
 }
 
 export default RankingDisplay;

@@ -6,6 +6,10 @@ import { LongColoredBtn } from '../components/common/Buttons';
 import { LogoBar, NavBar } from '../components/common/Header';
 import { ContainerBox } from '../components/common/Boxes';
 import React, { useState, useEffect } from 'react';
+import { api } from '.././utils/api';
+
+api.get('/rank');
+api.get('/dogs');
 
 const StyledBox = styled.div`
   font-family: 'Noto Sans KR', sans-serif;
@@ -37,12 +41,15 @@ function Ranking() {
   const currentMonth = currentDate.getMonth() + 1;
   useEffect(() => {
     fetchRankingData();
+
+    console.log(rankings);
   }, []);
 
   const fetchRankingData = async () => {
     try {
-      const response = await axios.get('http://localhost8080/api/rank');
-      const data = response.data.data;
+      const response = await api.get('/rank');
+      const data = response.data.data.topUsers;
+      console.log(data);
       setRankings(data);
     } catch (error) {
       console.error('랭킹 데이터를 가져오는데 실패했습니다:', error);
@@ -56,16 +63,18 @@ function Ranking() {
         <div class="title">랭킹 보기</div>
         <div class="myrank">나의 등수</div>
         <div>
-          <StyledBox>
-            <RankingDisplay />
-          </StyledBox>
+          <StyledBox>{/* <RankingDisplay /> */}</StyledBox>
         </div>
         <div class="myrank">{currentMonth}월 TOP 5</div>
 
         {rankings.map((ranking, index) => (
           <div class="Toprank" key={`Toprank${index}`}>
             <RankingBox>
-              <RankingDisplay ranking={ranking} />
+              <RankingDisplay
+                userRanking={index}
+                nickName={ranking.nickName}
+                count={ranking.count}
+              />
             </RankingBox>
           </div>
         ))}
@@ -118,6 +127,6 @@ const Container = styled.div`
     margin-top: 30px;
   }
 `;
-//스타일드 컴포넌트 한곳에 몰고(완 -> 적용시키기위해 노력중)  
-// api 독스 코드 연결하기 /rankingdisplay에있는 애들 객체화 시키고 데이터값 받기(발바닥은 신경쓰기)
+//스타일드 컴포넌트 한곳에 몰고(몰기 완 -> 적용시키기위해 노력중)
+// api 독스 코드 연결하기 /
 export default Ranking;
