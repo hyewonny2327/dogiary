@@ -4,7 +4,6 @@ const diaryController = require("../controllers/diaryController");
 // 사용자 인증을 위한 미들웨어
 const authenticateUser = require("../middlewares/authenticateUser");
 const router = Router();
-
 const { upload } = require("../utils/multer.js");
 
 //일기 생성
@@ -33,6 +32,6 @@ router.get("/", authenticateUser, diaryController.getDiaries);
 router.get("/month", authenticateUser, diaryController.getMonthDiaries);
 
 //커서 기반 페이징
-router.get("/paging", authenticateUser, diaryController.getCurosrDiaries);
+router.get("/paging", authenticateUser, diaryController.getCursorDiaries);
 
 module.exports = router;
