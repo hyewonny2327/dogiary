@@ -1,7 +1,7 @@
-const dogService = require("../services/dogService.js");
-const jwt = require("jsonwebtoken");
-const errorHandler = require("../middlewares/errorHandler.js");
-const commonErrors = require("../middlewares/commonErrors.js");
+const dogService = require('../services/dogService.js');
+const jwt = require('jsonwebtoken');
+const errorHandler = require('../middlewares/errorHandler.js');
+const commonErrors = require('../middlewares/commonErrors.js');
 const dogController = {
   async postDog(req, res, next) {
     try {
@@ -10,11 +10,11 @@ const dogController = {
       if (!dogData) {
         throw new errorHandler(
           commonErrors.argumentError,
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
         );
       }
-      res.status(201).json({ message: "Data created successfully" });
+      res.status(201).json({ message: 'Data created successfully' });
     } catch (error) {
       next(error);
     }
@@ -27,13 +27,13 @@ const dogController = {
       if (!id) {
         throw new errorHandler(
           commonErrors.argumentError,
-          "id를 받아오지 못했습니다.",
-          { statusCode: 400 }
+          'id를 받아오지 못했습니다.',
+          { statusCode: 400 },
         );
       }
       await dogService.updatedDogProfile(id, dogData, req.currentUserId);
 
-      res.status(200).json({ message: "Data updated successfully" });
+      res.status(200).json({ message: 'Data updated successfully' });
     } catch (error) {
       next(error);
     }
@@ -46,20 +46,20 @@ const dogController = {
       if (!id) {
         throw new errorHandler(
           commonErrors.argumentError,
-          "id를 받아오지 못했습니다.",
-          { statusCode: 400 }
+          'id를 받아오지 못했습니다.',
+          { statusCode: 400 },
         );
       }
-      res.status(200).json({ message: "Data deleted successfully" });
+      res.status(200).json({ message: 'Data deleted successfully' });
     } catch (error) {
       next(error);
     }
   },
 
-	async getOneDog(req, res, next) {
-		try {
-			const id = req.params.id;
-			const dogProfile = await dogService.getOneDog(id, req.currentUserId);
+  async getOneDog(req, res, next) {
+    try {
+      const id = req.params.id;
+      const dogProfile = await dogService.getOneDog(id, req.currentUserId);
 
       res.json({
         error: null,
