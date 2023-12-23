@@ -3,8 +3,7 @@ const jwt = require("jsonwebtoken");
 const authenticateUser = (req, res, next) => {
   const secretKey = process.env.JWT_SECRET_KEY;
   const userToken = req.headers.authorization || null;
-  //!어디다 붙여서 보내냐? 통일시켜야함
-
+  
   if (!userToken) {
     return res.status(401).json({ error: "인증 토큰이 누락되었습니다." });
   }
