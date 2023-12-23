@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 
 const authenticateUser = (req, res, next) => {
   const secretKey = process.env.JWT_SECRET_KEY;
-  // const userToken = req.headers.cookie?.split("%20")[1] ?? "null";
   const userToken = req.headers.authorization || null;
   
   if (!userToken) {
