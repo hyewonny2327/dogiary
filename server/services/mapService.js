@@ -26,9 +26,7 @@ const mapService = {
 				);
 			}
 
-			// count 증가
 			user.count = (user.count || 0) + 1;
-			// 저장
 			await user.save();
 		}
 		const mapProfile = await Map.create(mapData);
@@ -37,7 +35,6 @@ const mapService = {
 	},
 	// 마커 정보 수정
 	async updatedMapProfile(id, mapData, currentUserId) {
-		// currentUserId;
 		const mapProfile = await Map.findById(id).lean();
 		if (!mapProfile) {
 			throw new errorHandler(
@@ -54,20 +51,41 @@ const mapService = {
 				{ statusCode: 403 }
 			);
 		}
-		// 업데이트 수행
 		const updatedResult = await Map.updateOne({ _id: id }, mapData).lean();
-
+		console.log(updatedResult);
 		if (updatedResult.modifiedCount !== 1) {
-			// 업데이트된 문서의 수가 1이 아닌 경우 처리
 			throw new errorHandler(
 				commonErrors.configError,
 				"서버시스템에 문제로 인해 업데이트에 실패하였습니다..",
 				{ statusCode: 500 }
 			);
 		}
-
-		// 업데이트된 맵 데이터를 다시 조회하여 반환
 		const updatedMapProfile = await Map.findById(id).lean();
+		console.log(updatedMapProfile);
+		if (mapProfile.toggle == false && updatedMapProfile.toggle == true) {
+			const user = await User.findOne({ userId: currentUserId });
+			if (!user) {
+				throw new errorHandler(
+					commonErrors.notFound,
+					"사용자를 찾을 수 없습니다.",
+					{ statusCode: 404 }
+				);
+			}
+			user.count = (user.count || 0) + 1;
+			await user.save();
+		}
+		if (mapProfile.toggle == true && updatedMapProfile.toggle == false) {
+			const user = await User.findOne({ userId: currentUserId });
+			if (!user) {
+				throw new errorHandler(
+					commonErrors.notFound,
+					"사용자를 찾을 수 없습니다.",
+					{ statusCode: 404 }
+				);
+			}
+			user.count = (user.count || 0) - 1;
+			await user.save();
+		}
 		return updatedMapProfile;
 	},
 
@@ -87,6 +105,19 @@ const mapService = {
 					"해당 사용자에게 권한이 없습니다.",
 					{ statusCode: 403 }
 				);
+			}
+			if (mapToDelete.toggle == true) {
+				// 사용자 찾기
+				const user = await User.findOne({ userId: currentUserId });
+				if (!user) {
+					throw new errorHandler(
+						commonErrors.notFound,
+						"사용자를 찾을 수 없습니다.",
+						{ statusCode: 404 }
+					);
+				}
+				user.count = (user.count || 0) - 1;
+				await user.save();
 			}
 			const deletedMap = await Map.findByIdAndDelete(id);
 			return deletedMap;
