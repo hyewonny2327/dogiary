@@ -1,4 +1,4 @@
-const Diary = require("../models/diaryModel.js");
+const Diary = require('../models/diaryModel.js');
 
 //일기 생성
 exports.createDiary = async ({ imageUrl, title, content, userId, date }) => {
@@ -48,7 +48,7 @@ exports.deleteDiary = async (_id, userId) => {
 exports.getDiaries = async (userId) => {
   const result = await Diary.find(
     { userId },
-    `_id createdAt imageUrl title content date userId`
+    `_id createdAt imageUrl title content date userId`,
   );
   return result;
 };
@@ -61,7 +61,7 @@ exports.getDailyDiaries = async (userId, date) => {
       userId,
       date: date,
     },
-    `_id createdAt imageUrl title content date userId`
+    `_id createdAt imageUrl title content date userId`,
   );
 
   return result;
@@ -69,8 +69,8 @@ exports.getDailyDiaries = async (userId, date) => {
 // 월간 조회
 
 exports.getMonthDiaries = async (userId, year, month) => {
-  const startOfMonth = `${year}-${month.toString().padStart(2, "0")}-01`;
-  const endOfMonth = `${year}-${month.toString().padStart(2, "0")}-31T23:59:59`;
+  const startOfMonth = `${year}-${month.toString().padStart(2, '0')}-01`;
+  const endOfMonth = `${year}-${month.toString().padStart(2, '0')}-31T23:59:59`;
   const result = await Diary.find({
     userId,
     date: {
@@ -79,7 +79,7 @@ exports.getMonthDiaries = async (userId, year, month) => {
     },
   })
     .sort({ date: -1 })
-    .select("_id createdAt imageUrl title content date userId")
+    .select('_id createdAt imageUrl title content date userId')
     .exec();
 
   return result;
@@ -98,7 +98,7 @@ exports.getCursorDiaries = async (userId, cursor) => {
   const result = await Diary.find(query)
     .sort({ date: -1 })
     .limit(10)
-    .select("_id createdAt imageUrl title content date userId")
+    .select('_id createdAt imageUrl title content date userId')
     .exec();
 
   return result;

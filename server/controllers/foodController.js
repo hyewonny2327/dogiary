@@ -1,7 +1,7 @@
-const foodService = require("../services/foodService.js");
-const errorHandler = require("../middlewares/errorHandler.js");
+const foodService = require('../services/foodService.js');
+const errorHandler = require('../middlewares/errorHandler.js');
 
-const commonErrors = require("../middlewares/commonErrors.js");
+const commonErrors = require('../middlewares/commonErrors.js');
 const foodController = {
   // post
   async postFood(req, res, next) {
@@ -11,12 +11,12 @@ const foodController = {
       if (!dogId || !foodData) {
         throw new errorHandler(
           commonErrors.argumentError,
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
         );
       }
       await foodService.createFood(dogId, foodData, req.currentUserId);
-      res.status(201).json({ message: "Data created successfully" });
+      res.status(201).json({ message: 'Data created successfully' });
     } catch (error) {
       next(error);
     }
@@ -30,22 +30,22 @@ const foodController = {
       if (!dogId) {
         throw new errorHandler(
           commonErrors.argumentError,
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
         );
       }
       if (req.query.limit) {
         const food = await foodService.getFood3ById(
           dogId,
           req.currentUserId,
-          req.query.limit
+          req.query.limit,
         );
         res.status(200).json({ error: null, data: food });
       } else {
         const food = await foodService.getFoodById(
           dogId,
           req.currentUserId,
-          cursor
+          cursor,
         );
         res.status(200).json({ error: null, data: food });
       }
@@ -62,8 +62,8 @@ const foodController = {
     if (!dogId || !foodId || !updatedFoodData) {
       throw new errorHandler(
         commonErrors.argumentError,
-        "데이터를 받아오지 못했습니다.",
-        { statusCode: 400 }
+        '데이터를 받아오지 못했습니다.',
+        { statusCode: 400 },
       );
     }
     try {
@@ -71,9 +71,9 @@ const foodController = {
         dogId,
         foodId,
         updatedFoodData,
-        req.currentUserId
+        req.currentUserId,
       );
-      res.status(200).json({ message: "Data updated successfully" });
+      res.status(200).json({ message: 'Data updated successfully' });
     } catch (error) {
       next(error);
     }
@@ -86,13 +86,13 @@ const foodController = {
     if (!dogId || !foodId) {
       throw new errorHandler(
         commonErrors.argumentError,
-        "데이터를 받아오지 못했습니다.",
-        { statusCode: 400 }
+        '데이터를 받아오지 못했습니다.',
+        { statusCode: 400 },
       );
     }
     try {
       await foodService.deleteFood(dogId, foodId, req.currentUserId);
-      res.status(200).json({ message: "Data deleted successfully" });
+      res.status(200).json({ message: 'Data deleted successfully' });
     } catch (error) {
       next(error);
     }
