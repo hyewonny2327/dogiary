@@ -3,17 +3,17 @@ const errorHandler = require("../middlewares/errorHandler.js");
 
 const commonErrors = require("../middlewares/commonErrors.js");
 const dogService = {
-  async createDog(dogData, currentUserId) {
-    dogData.userId = currentUserId;
-    const dog = await Dog.create(dogData);
-    const dogObject = dog.toObject();
-    return dogObject;
-  },
+	async createDog(dogData, currentUserId) {
+		dogData.userId = currentUserId;
+		const dog = await Dog.create(dogData);
+		const dogObject = dog.toObject();
+		return dogObject;
+	},
 
-  // 강아지 수정
-  async updatedDogProfile(id, dogData, currentUserId) {
-    const { imageUrl, name, type, gender, date, birthday } = dogData;
-    const dog = await Dog.findById(id).lean();
+	// 강아지 수정
+	async updatedDogProfile(id, dogData, currentUserId) {
+		const { imageUrl, name, type, gender, date, birthday } = dogData;
+		const dog = await Dog.findById(id).lean();
 
 		if (dog.userId !== currentUserId) {
 			throw new errorHandler(
@@ -51,9 +51,9 @@ const dogService = {
 		return result;
 	},
 
-  // 강아지 삭제
-  async deletedDog(id, currentUserId) {
-    const dog = await Dog.findById(id);
+	// 강아지 삭제
+	async deletedDog(id, currentUserId) {
+		const dog = await Dog.findById(id);
 
 		if (dog.userId !== currentUserId) {
 			throw new errorHandler(

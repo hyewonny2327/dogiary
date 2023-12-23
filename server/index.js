@@ -19,12 +19,13 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
-app.use(cors());
-// const corsOptions = {
-//   origin: "http://localhost:3000",
-//   credentials: true,
-// };
-// app.use(cors(corsOptions));
+// app.use(cors());
+
+const corsOptions = {
+	origin: "http://localhost:3000",
+	credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
@@ -38,29 +39,29 @@ app.use("/api/rank", rankRouter);
 const DB_URL = process.env.ATLAS_URL;
 
 const connectToDatabase = async () => {
-  try {
-    await mongoose.connect(DB_URL);
-    console.log("DB 연결 성공");
-  } catch (err) {
-    console.error("DB 연결 실패", err);
-  }
+	try {
+		await mongoose.connect(DB_URL);
+		console.log("DB 연결 성공");
+	} catch (err) {
+		console.error("DB 연결 실패", err);
+	}
 };
 
 app.use((error, req, res, next) => {
-  console.log(error);
-  res.statusCode = error.httpCode ?? 500;
-  res.json({
-    data: null,
-    error: error.message,
-  });
+	console.log(error);
+	res.statusCode = error.httpCode ?? 500;
+	res.json({
+		data: null,
+		error: error.message,
+	});
 });
 console.log("express application 준비가 완료되었습니다.");
 
 // app.use(errorHandler);
 
 connectToDatabase().then(() => {
-  const PORT = process.env.PORT || 8080;
-  app.listen(PORT, () => {
-    console.log(`🚀 Server is now open on port ${PORT} `);
-  });
+	const PORT = process.env.PORT || 8080;
+	app.listen(PORT, () => {
+		console.log(`🚀 Server is now open on port ${PORT} `);
+	});
 });
