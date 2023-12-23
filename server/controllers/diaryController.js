@@ -9,6 +9,8 @@ const {
   getMonthDiaries,
   getCurosrDiaries,
 } = require("../services/diaryService");
+const path = require("path");
+const User = require("../models/userModel");
 
 const successResponse = (data, message) => ({
   message,
@@ -16,11 +18,33 @@ const successResponse = (data, message) => ({
   data,
 });
 
+// 이미지 업로드 공통 함수
+const getImageUrl = async (req) => {
+  try {
+    const matchedUserImage = await User.findOne(
+      { userId: req.currentUserId },
+      { imageUrl: 1 }
+    );
+    if (req.file && req.file.filename !== undefined) {
+      return path.join(__dirname, "../public/images", req.file.filename);
+    } else {
+      return matchedUserImage.imageUrl;
+    }
+  } catch (error) {
+    throw new errorHandler("internalError", commonErrors.internalError, {
+      statusCode: 500,
+      cause: error,
+    });
+  }
+};
+
 exports.postDiary = async (req, res, next) => {
   try {
-    const { imageUrl, title, content, date } = req.body;
+    const { title, content, date } = req.body;
+    //이미지 업로드
+    const imageUrl = await getImageUrl(req);
 
-    if (!imageUrl || !title || !content || !date) {
+    if (!title || !content || !date) {
       throw new errorHandler("inputError", commonErrors.inputError, {
         statusCode: 400,
         cause: error,
@@ -45,15 +69,17 @@ exports.postDiary = async (req, res, next) => {
 exports.putDiary = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { imageUrl, title, content, date } = req.body || {};
+    const { title, content, date } = req.body || {};
 
     if (!id) {
       throw new errorHandler(commonErrors.argumentError, "argumentError", {
         statusCode: 400,
       });
     }
+    //이미지 업로드
+    const imageUrl = await getImageUrl(req);
 
-    if (!imageUrl || !title || !content || !date) {
+    if (!title || !content || !date) {
       throw new errorHandler("inputError", commonErrors.inputError, {
         statusCode: 400,
       });
