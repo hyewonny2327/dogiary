@@ -141,8 +141,7 @@ const mapService = {
 		try {
 			let query = { userId: currentUserId };
 			if (cursor) {
-				// 이전에 불러온 항목들의 createdAt 값보다 이후의 항목들을 조회
-				query.createdAt = { $lt: cursor };
+				query._id = { $lt: cursor };
 			}
 			const myMaps = await Map.find(query)
 				.sort({ createdAt: -1 })
