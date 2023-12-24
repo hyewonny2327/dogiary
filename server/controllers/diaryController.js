@@ -1,5 +1,5 @@
-const commonErrors = require("../middlewares/commonErrors");
-const errorHandler = require("../middlewares/errorHandler");
+const commonErrors = require('../middlewares/commonErrors');
+const errorHandler = require('../middlewares/errorHandler');
 const {
   createDiary,
   updateDiary,
@@ -7,8 +7,10 @@ const {
   getDiaries,
   getDailyDiaries,
   getMonthDiaries,
-  getCurosrDiaries,
-} = require("../services/diaryService");
+  getCursorDiaries,
+} = require('../services/diaryService');
+const path = require('path');
+const User = require('../models/userModel');
 
 const successResponse = (data, message) => ({
   message,
@@ -16,19 +18,45 @@ const successResponse = (data, message) => ({
   data,
 });
 
+// 이미지 업로드 공통 함수
+const getImageUrl = async (req) => {
+  try {
+    const matchedUserImage = await User.findOne(
+      { userId: req.currentUserId },
+      { imageUrl: 1 },
+    );
+    console.log(req.files);
+    if (req.files && req.files.length > 0) {
+      const firstFile = req.files[0];
+      return path.join(__dirname, '../public/images', firstFile.filename);
+    } else {
+      return matchedUserImage.imageUrl;
+    }
+  } catch (error) {
+    throw new errorHandler('internalError', commonErrors.internalError, {
+      statusCode: 500,
+      cause: error,
+    });
+  }
+};
+
 exports.postDiary = async (req, res, next) => {
   try {
-    const { imageUrl, title, content, date } = req.body;
+    const { title, content, date } = req.body;
 
-    if (!imageUrl || !title || !content || !date) {
-      throw new errorHandler("inputError", commonErrors.inputError, {
+    //이미지 업로드
+    const imageUrls = req.files.map((file) =>
+      path.join(__dirname, '../public/images', file.filename),
+    );
+
+    if (!title || !content || !date) {
+      throw new errorHandler('inputError', commonErrors.inputError, {
         statusCode: 400,
-        cause: error,
       });
     }
 
     const result = await createDiary({
-      imageUrl,
+      imageUrl: imageUrls,
       title,
       content,
       userId: req.currentUserId,
@@ -45,26 +73,29 @@ exports.postDiary = async (req, res, next) => {
 exports.putDiary = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { imageUrl, title, content, date } = req.body || {};
+    const { title, content } = req.body || {};
 
     if (!id) {
-      throw new errorHandler(commonErrors.argumentError, "argumentError", {
+      throw new errorHandler(commonErrors.argumentError, 'argumentError', {
         statusCode: 400,
       });
     }
+    //이미지 업로드
+    const imageUrls = req.files.map((file) =>
+      path.join(__dirname, '../public/images', file.filename),
+    );
 
-    if (!imageUrl || !title || !content || !date) {
-      throw new errorHandler("inputError", commonErrors.inputError, {
+    if (!title || !content) {
+      throw new errorHandler('inputError', commonErrors.inputError, {
         statusCode: 400,
       });
     }
 
     // req.currentUserId가 정의되어 있고 updateDiary에 전달되었는지 확인
     const result = await updateDiary(id, req.currentUserId, {
-      imageUrl,
+      imageUrl: imageUrls,
       title,
       content,
-      date,
     });
 
     res.status(200).json(successResponse(result));
@@ -78,7 +109,7 @@ exports.deleteDiary = async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!id) {
-      throw new errorHandler("argumentError", commonErrors.argumentError, {
+      throw new errorHandler('argumentError', commonErrors.argumentError, {
         statusCode: 400,
       });
     }
@@ -86,7 +117,7 @@ exports.deleteDiary = async (req, res, next) => {
     const result = await deleteDiary(id, req.currentUserId);
 
     if (!result || result.deletedCount !== 1) {
-      throw new errorHandler("notfound", commonErrors.resourceNotFoundError, {
+      throw new errorHandler('notfound', commonErrors.resourceNotFoundError, {
         statusCode: 404,
       });
     }
@@ -99,19 +130,19 @@ exports.deleteDiary = async (req, res, next) => {
 //모두 조회 일간 조회
 exports.getDiaries = async (req, res, next) => {
   try {
-    const { createdAt } = req.query;
-    if (createdAt && !/^\d{4}-\d{2}-\d{2}$/.test(createdAt)) {
-      throw new errorHandler("inputError", commonErrors.inputError, {
+    const { date } = req.query;
+    if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      throw new errorHandler('inputError', commonErrors.inputError, {
         statusCode: 400,
       });
     }
-    const result = createdAt
-      ? await getDailyDiaries(req.currentUserId, createdAt)
+    const result = date
+      ? await getDailyDiaries(req.currentUserId, date)
       : await getDiaries(req.currentUserId);
 
-    const message = createdAt
-      ? `${createdAt} 조회가 성공적으로 완료되었습니다.`
-      : "전체 조회가 성공적으로 완료되었습니다.";
+    const message = date
+      ? `${date} 조회가 성공적으로 완료되었습니다.`
+      : '전체 조회가 성공적으로 완료되었습니다.';
     res.status(200).json(successResponse(result, message));
   } catch (err) {
     next(err);
@@ -122,28 +153,28 @@ exports.getDiaries = async (req, res, next) => {
 exports.getMonthDiaries = async (req, res, next) => {
   try {
     // 년도 및 월 가져오기
-    const { year, month } = req.query;
-    //year = 1000~9999 입력
-    const validatedYear = parseInt(year, 10);
-    //month = 1~12 만 입력
-    const validatedMonth = parseInt(month, 10);
+    const { date } = req.query;
 
-    if (
-      isNaN(validatedYear) ||
-      validatedYear < 1000 ||
-      validatedYear > 9999 ||
-      isNaN(validatedMonth) ||
-      validatedMonth < 1 ||
-      validatedMonth > 12
-    ) {
-      throw new errorHandler("inputError", commonErrors.inputError, {
+    const dateFormatRegex = /^\d{4}-\d{2}$/;
+    if (!dateFormatRegex.test(date)) {
+      throw new errorHandler('inputError', commonErrors.inputError, {
         statusCode: 400,
       });
     }
 
-    const result = await getMonthDiaries(req.currentUserId, year, month);
+    const copyDate = new Date(date);
 
-    const message = `${validatedYear}년 ${validatedMonth}월의 월간 조회가 성공적으로 완료되었습니다.`;
+    const year = copyDate.getFullYear();
+
+    const month = copyDate.getMonth() + 1;
+
+    const result = await getMonthDiaries(req.currentUserId, year, month);
+    if (result.length === 0) {
+    }
+    const message =
+      result.length === 0
+        ? `${year}년 ${month}월에 대한 데이터가 없습니다.`
+        : `${year}년 ${month}월 조회가 성공적으로 완료되었습니다.`;
 
     res.status(200).json(successResponse(result, message));
   } catch (err) {
@@ -152,23 +183,17 @@ exports.getMonthDiaries = async (req, res, next) => {
 };
 
 //커서 기반 페이징
-exports.getCurosrDiaries = async (req, res, next) => {
+exports.getCursorDiaries = async (req, res, next) => {
   try {
     const { cursor } = req.query;
-    const currentDate = new Date(cursor);
 
-    if (isNaN(currentDate) || currentDate.toString() === "Invalid Date") {
-      throw new errorHandler("inputError", commonErrors.inputError, {
+    if (!cursor) {
+      throw new errorHandler('inputError', commonErrors.inputError, {
         statusCode: 400,
       });
     }
-    const pageSize = 10;
 
-    const result = await getCurosrDiaries(
-      req.currentUserId,
-      currentDate,
-      pageSize
-    );
+    const result = await getCursorDiaries(req.currentUserId, cursor);
 
     const message = `${cursor}을 기준으로 다이어리 목록을 성공적으로 불러왔습니다.`;
 

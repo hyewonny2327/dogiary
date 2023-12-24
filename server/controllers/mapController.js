@@ -1,21 +1,24 @@
-const mapService = require("../services/mapService.js");
-const errorHandler = require("../middlewares/errorHandler.js");
-const rankService = require("../services/rankService.js");
-const commonErrors = require("../middlewares/commonErrors.js");
+const mapService = require('../services/mapService.js');
+const errorHandler = require('../middlewares/errorHandler.js');
+const rankService = require('../services/rankService.js');
+const commonErrors = require('../middlewares/commonErrors.js');
+const path = require('path');
+const User = require('../models/userModel');
+
 const mapController = {
   async postMap(req, res, next) {
     try {
       const mapData = req.body;
+      mapData.imageUrl = await getImageUrl(req);
       if (!mapData) {
         throw new errorHandler(
           commonErrors.argumentError,
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
         );
       }
       await mapService.createMap(mapData, req.currentUserId);
-      // await mapService.createMap(mapData, "user1");
-      res.status(201).json({ message: "Data created successfully" });
+      res.status(201).json({ message: 'Data created successfully' });
     } catch (error) {
       next(error);
     }
@@ -23,18 +26,17 @@ const mapController = {
   async putMap(req, res, next) {
     try {
       const mapData = req.body;
+      mapData.imageUrl = await getImageUrl(req);
       const id = req.params.id;
       if (!mapData || !id) {
         throw new errorHandler(
           commonErrors.argumentError,
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
         );
       }
       await mapService.updatedMapProfile(id, mapData, req.currentUserId);
-      // await mapService.updatedMapProfile(id, mapData, "user1");
-
-      res.status(200).json({ message: "Data updated successfully" });
+      res.status(200).json({ message: 'Data updated successfully' });
     } catch (error) {
       next(error);
     }
@@ -46,13 +48,12 @@ const mapController = {
       if (!id) {
         throw new errorHandler(
           commonErrors.argumentError,
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
         );
       }
       await mapService.deleteMap(id, req.currentUserId);
-      // await mapService.deleteMap(id, "user1");
-      res.status(200).json({ message: "Data deleted successfully" });
+      res.status(200).json({ message: 'Data deleted successfully' });
     } catch (error) {
       next(error);
     }
@@ -64,8 +65,8 @@ const mapController = {
       if (!id) {
         throw new errorHandler(
           commonErrors.argumentError,
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
         );
       }
       const mapProfile = await mapService.getOneMap(id);
@@ -119,6 +120,21 @@ const mapController = {
       next(error);
     }
   },
+};
+// 이미지 업로드 공통 함수
+const getImageUrl = async (req) => {
+  try {
+    if (req.file && req.file.filename !== undefined) {
+      return path.join(__dirname, '../public/images', req.file.filename);
+    } else {
+      return matchedImage.imageUrl;
+    }
+  } catch (error) {
+    throw new errorHandler('internalError', commonErrors.internalError, {
+      statusCode: 500,
+      cause: error,
+    });
+  }
 };
 
 module.exports = mapController;

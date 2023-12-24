@@ -1,7 +1,7 @@
-const memoService = require("../services/memoService.js");
-const errorHandler = require("../middlewares/errorHandler.js");
+const memoService = require('../services/memoService.js');
+const errorHandler = require('../middlewares/errorHandler.js');
 
-const commonErrors = require("../middlewares/commonErrors.js");
+const commonErrors = require('../middlewares/commonErrors.js');
 const memoController = {
   //post
   async postMemo(req, res, next) {
@@ -11,12 +11,12 @@ const memoController = {
       if (!dogId || !memoData) {
         throw new errorHandler(
           commonErrors.argumentError,
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
         );
       }
       await memoService.createMemo(dogId, memoData, req.currentUserId);
-      res.status(201).json({ message: "Data created successfully" });
+      res.status(201).json({ message: 'Data created successfully' });
     } catch (error) {
       next(error);
     }
@@ -29,15 +29,15 @@ const memoController = {
       if (!dogId) {
         throw new errorHandler(
           commonErrors.argumentError,
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
         );
       }
       if (req.query.limit) {
         const memo = await memoService.getMemo3ById(
           dogId,
           req.currentUserId,
-          req.query.limit
+          req.query.limit,
         );
         res.json({
           error: null,
@@ -47,7 +47,7 @@ const memoController = {
         const memo = await memoService.getMemoById(
           dogId,
           req.currentUserId,
-          cursor
+          cursor,
         );
         res.json({
           error: null,
@@ -67,17 +67,17 @@ const memoController = {
       if (!dogId || !memoId || !updatedMemoData) {
         throw new errorHandler(
           commonErrors.argumentError,
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
         );
       }
       await memoService.updateMemo(
         dogId,
         memoId,
         updatedMemoData,
-        req.currentUserId
+        req.currentUserId,
       );
-      res.status(200).json({ message: "Data updated successfully" });
+      res.status(200).json({ message: 'Data updated successfully' });
     } catch (error) {
       next(error);
     }
@@ -91,12 +91,12 @@ const memoController = {
       if (!dogId || !memoId) {
         throw new errorHandler(
           commonErrors.argumentError,
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
         );
       }
       await memoService.deleteMemo(dogId, memoId, req.currentUserId);
-      res.status(200).json({ message: "Data deleted successfully" });
+      res.status(200).json({ message: 'Data deleted successfully' });
     } catch (error) {
       next(error);
     }

@@ -1,7 +1,7 @@
-const errorHandler = require("../middlewares/errorHandler.js");
+const errorHandler = require('../middlewares/errorHandler.js');
 
-const commonErrors = require("../middlewares/commonErrors.js");
-const Dog = require("../models/dogModel.js");
+const commonErrors = require('../middlewares/commonErrors.js');
+const Dog = require('../models/dogModel.js');
 const foodService = {
   // 추가
   async createFood(dogId, foodData, currentUserId) {
@@ -9,8 +9,8 @@ const foodService = {
     if (dog.userId !== currentUserId) {
       throw new errorHandler(
         commonErrors.authorizationError,
-        "해당 사용자에게 권한이 없습니다.",
-        { statusCode: 403 }
+        '해당 사용자에게 권한이 없습니다.',
+        { statusCode: 403 },
       );
     }
     dog.foods.push(foodData);
@@ -20,42 +20,39 @@ const foodService = {
   //무한스크롤 구현
   async getFoodById(dogId, currentUserId, cursor, pageSize = 3) {
     //10개씩
-    const dog = await Dog.findById(dogId).sort({ createdAt: -1 }).exec();
+    const dog = await Dog.findById(dogId).sort({ _id: -1 }).exec();
     if (dog.userId !== currentUserId) {
       throw new errorHandler(
         commonErrors.authorizationError,
-        "해당 사용자에게 권한이 없습니다.",
-        { statusCode: 403 }
+        '해당 사용자에게 권한이 없습니다.',
+        { statusCode: 403 },
       );
     }
-    let food = dog.foods;
+    let foods = dog.foods;
     if (cursor) {
-      food = food.filter((item) => new Date(item.date) < new Date(cursor));
+      foods = foods.filter((item) => item._id < cursor);
     }
     // 내림차순 정렬
-    food.sort((a, b) => new Date(b.date) - new Date(a.date));
-    if (!food) {
+    foods.sort((a, b) => b._id.getTimestamp() - a._id.getTimestamp());
+    if (!foods || foods.length === 0) {
       throw new errorHandler(
         commonErrors.resourceNotFoundError,
-        "해당자료를 찾을수없습니다.",
-        { statusCode: 404 }
+        '해당 자료를 찾을 수 없습니다.',
+        { statusCode: 404 },
       );
     }
     // 페이징 처리
     let startIndex = 0;
     if (cursor) {
       // 현재 페이지의 시작 인덱스를 찾아내기
-      startIndex = food.findIndex(
-        (item) => new Date(item.date) <= new Date(cursor)
-      );
+      startIndex = foods.findIndex((item) => item._id <= cursor);
       if (startIndex === -1) {
         // 커서의 날짜보다 이전 데이터가 없을 경우 처음부터 반환
         return null;
       }
     }
     const endIndex = startIndex + pageSize;
-    const slicedFood = food.slice(startIndex, endIndex);
-
+    const slicedFood = foods.slice(startIndex, endIndex);
     return slicedFood;
   },
   // 가져오기 3개
@@ -64,8 +61,8 @@ const foodService = {
     if (dog.userId !== currentUserId) {
       throw new errorHandler(
         commonErrors.authorizationError,
-        "해당 사용자에게 권한이 없습니다.",
-        { statusCode: 403 }
+        '해당 사용자에게 권한이 없습니다.',
+        { statusCode: 403 },
       );
     }
     const food = dog.foods
@@ -74,8 +71,8 @@ const foodService = {
     if (!food) {
       throw new errorHandler(
         commonErrors.resourceNotFoundError,
-        "해당자료를 찾을수없습니다.",
-        { statusCode: 404 }
+        '해당자료를 찾을수없습니다.',
+        { statusCode: 404 },
       );
     }
     return food;
@@ -86,8 +83,8 @@ const foodService = {
     if (dog.userId !== currentUserId) {
       throw new errorHandler(
         commonErrors.authorizationError,
-        "해당 사용자에게 권한이 없습니다.",
-        { statusCode: 403 }
+        '해당 사용자에게 권한이 없습니다.',
+        { statusCode: 403 },
       );
     }
     const food = dog.foods.id(foodId);
@@ -95,8 +92,8 @@ const foodService = {
     if (!food) {
       throw new errorHandler(
         commonErrors.resourceNotFoundError,
-        "해당 데이터를 찾을수없습니다.",
-        { statusCode: 404 }
+        '해당 데이터를 찾을수없습니다.',
+        { statusCode: 404 },
       );
     }
 
@@ -111,8 +108,8 @@ const foodService = {
     if (dog.userId !== currentUserId) {
       throw new errorHandler(
         commonErrors.authorizationError,
-        "해당 사용자에게 권한이 없습니다.",
-        { statusCode: 403 }
+        '해당 사용자에게 권한이 없습니다.',
+        { statusCode: 403 },
       );
     }
     const foodIndex = dog.foods.findIndex((w) => w._id.toString() === foodId);
@@ -120,8 +117,8 @@ const foodService = {
     if (foodIndex === -1) {
       throw new errorHandler(
         commonErrors.resourceNotFoundError,
-        "해당 데이터를 찾을수없습니다.",
-        { statusCode: 404 }
+        '해당 데이터를 찾을수없습니다.',
+        { statusCode: 404 },
       );
     }
 

@@ -1,7 +1,7 @@
-const errorHandler = require("../middlewares/errorHandler.js");
+const errorHandler = require('../middlewares/errorHandler.js');
 
-const commonErrors = require("../middlewares/commonErrors.js");
-const medicalService = require("../services/medicalService.js");
+const commonErrors = require('../middlewares/commonErrors.js');
+const medicalService = require('../services/medicalService.js');
 const medicalController = {
   //post
   async postMedical(req, res, next) {
@@ -11,12 +11,12 @@ const medicalController = {
       if (!dogId || !medicalData) {
         throw new errorHandler(
           commonErrors.argumentError,
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
         );
       }
       await medicalService.createMedical(dogId, medicalData, req.currentUserId);
-      res.status(201).json({ message: "Data created successfully" });
+      res.status(201).json({ message: 'Data created successfully' });
     } catch (error) {
       next(error);
     }
@@ -29,15 +29,15 @@ const medicalController = {
       if (!dogId) {
         throw new errorHandler(
           commonErrors.argumentError,
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
         );
       }
       if (req.query.limit) {
         const medical = await medicalService.getMedical3ById(
           dogId,
           req.currentUserId,
-          limit
+          limit,
         );
         res.json({
           error: null,
@@ -47,7 +47,7 @@ const medicalController = {
         const medical = await medicalService.getMedicalById(
           dogId,
           req.currentUserId,
-          cursor
+          cursor,
         );
         res.json({
           error: null,
@@ -67,17 +67,17 @@ const medicalController = {
       if (!dogId || !medicalId || !updatedMedicalData) {
         throw new errorHandler(
           commonErrors.argumentError,
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
         );
       }
       await medicalService.updateMedical(
         dogId,
         medicalId,
         updatedMedicalData,
-        req.currentUserId
+        req.currentUserId,
       );
-      res.status(200).json({ message: "Data updated successfully" });
+      res.status(200).json({ message: 'Data updated successfully' });
     } catch (error) {
       next(error);
     }
@@ -91,12 +91,12 @@ const medicalController = {
       if (!dogId || !medicalId) {
         throw new errorHandler(
           commonErrors.argumentError,
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
         );
       }
       await medicalService.deleteMedical(dogId, medicalId, req.currentUserId);
-      res.status(200).json({ message: "Data deleted successfully" });
+      res.status(200).json({ message: 'Data deleted successfully' });
     } catch (error) {
       next(error);
     }

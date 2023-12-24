@@ -1,24 +1,28 @@
 # TEAM 9 - 구구콘
+
 # 🐶Dogiary🐶
 
 ## 🐕 팀원 소개
 
 ### ✔️ Front-End
+
 - 송은지 (총괄팀장)
 - 윤혜원 (프론트엔드 팀장)
 - 진제훈
 
 ### ✔️ Back-End
+
 - 정상준 (백엔드 팀장)
 - 손우민
 - 신영재
 
 ## 🐩 API 문서
+
 - [ERD](https://www.erdcloud.com/d/SDqbCtgDMe8grBadX)
 - [Notion](https://www.notion.so/API-Docs-4114de1f27a64a3e8f9aa57b503cffec)
 
-
 ### ✔️ 커밋 컨벤션
+
 - `✨Feat`: 새로운 기능 추가
 - `🐛Fix`: 버그 수정
 - `📝Docs`: 문서 변경
@@ -33,7 +37,6 @@
 - `💥!BREAKING CHANGE`: 커다란 API 변경의 경우
 - `🚑️!HOTFIX`: 급하게 치명적인 버그를 고쳐야 하는 경우
 
-
 ### ✔️ Git Branch 관리
 
 ```
@@ -41,11 +44,10 @@ master
 ├── dev
 │   ├──
 │   ├──
-│   │ 
-│   │ 
+│   │
+│   │
 │___│__
 ```
-
 
 ### ✔️ 협업 툴
 

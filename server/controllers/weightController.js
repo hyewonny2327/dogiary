@@ -1,6 +1,6 @@
-const weightService = require("../services/weightService.js");
-const errorHandler = require("../middlewares/errorHandler.js");
-const commonErrors = require("../middlewares/commonErrors.js");
+const weightService = require('../services/weightService.js');
+const errorHandler = require('../middlewares/errorHandler.js');
+const commonErrors = require('../middlewares/commonErrors.js');
 const weightController = {
   async postWeight(req, res, next) {
     try {
@@ -9,12 +9,12 @@ const weightController = {
       if (!dogId || !weightData) {
         throw new errorHandler(
           commonErrors.argumentError,
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
         );
       }
       await weightService.createWeight(dogId, weightData, req.currentUserId);
-      res.status(201).json({ message: "Data created successfully" });
+      res.status(201).json({ message: 'Data created successfully' });
     } catch (error) {
       next(error);
     }
@@ -27,15 +27,15 @@ const weightController = {
       if (!dogId) {
         throw new errorHandler(
           commonErrors.argumentError,
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
         );
       }
       if (req.query.limit) {
         const weight = await weightService.getWeight5ById(
           dogId,
           req.currentUserId,
-          req.limit
+          req.limit,
         );
         res.json({
           error: null,
@@ -45,7 +45,7 @@ const weightController = {
         const weight = await weightService.getWeightById(
           dogId,
           req.currentUserId,
-          cursor
+          cursor,
         );
         res.json({
           error: null,
@@ -65,17 +65,17 @@ const weightController = {
       if (!dogId || !weightId || !updatedWeightData) {
         throw new errorHandler(
           commonErrors.argumentError,
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
         );
       }
       await weightService.updateWeight(
         dogId,
         weightId,
         updatedWeightData,
-        req.currentUserId
+        req.currentUserId,
       );
-      res.status(200).json({ message: "Data updated successfully" });
+      res.status(200).json({ message: 'Data updated successfully' });
     } catch (error) {
       next(error);
     }
@@ -89,12 +89,12 @@ const weightController = {
       if (!dogId || !weightId) {
         throw new errorHandler(
           commonErrors.argumentError,
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
         );
       }
       await weightService.deleteWeight(dogId, weightId, req.currentUserId);
-      res.status(204).json({ message: "Data deleted successfully" });
+      res.status(204).json({ message: 'Data deleted successfully' });
     } catch (error) {
       next(error);
     }
