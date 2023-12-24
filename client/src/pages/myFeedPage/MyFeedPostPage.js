@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { ContainerBox, InputBox } from '../../components/common/Boxes';
 import { LogoBar, NavBar } from '../../components/common/Header';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import imageIcon from '../../components/icons/imageIcon.svg';
 import {
   LongColoredBtn,
@@ -10,53 +10,35 @@ import {
 import plusIcon from '../../components/icons/plusIcon.svg';
 import { useNavigate } from 'react-router-dom';
 import { postMyDiary } from '../../utils/diaryApi';
+import closeBtn from '../../components/icons/closeBtn.svg';
 
 export default function MyFeedPostPage() {
   const navigate = useNavigate();
   const [count, setCount] = useState(1); // 복제할 개수를 상태로 관리
-  const [uploadedImage, setUploadedImage] = useState([]);
+  const [uploadedImages, setUploadedImages] = useState([]);
   const [inputText, setInputText] = useState([]);
+
+  const formData = new FormData();
 
   const handleAddContent = () => {
     setCount((prev) => prev + 1);
-
-    setUploadedImage((prev) => {
-      const newUploadedImage = [...prev, ''];
-      return newUploadedImage;
-    });
-
-    setInputText((prev) => {
-      const newInputText = [...prev, ''];
-      return newInputText;
-    });
+    setUploadedImages((prev) => [...prev, '']);
   };
-
-  //const [formData, setFormData] = useState(new FormData());
 
   function handleImageUpload(event, index) {
     const file = event.target.files[0];
     if (file) {
-      setUploadedImage((prev) => {
+      setUploadedImages((prev) => {
         let newImage = [...prev];
-        newImage[index] = URL.createObjectURL(file);
+        newImage[index] = file;
         return newImage;
       });
-      console.log(uploadedImage);
-
-      //formData.set(`image_${index}`, file);
-      //console.log(formData);
     }
   }
 
   function handleTextChange(event, index) {
     const text = event.target.value;
-    setInputText((prev) => {
-      let newText = [...prev];
-      newText[index] = text;
-      return newText;
-    });
-    // formData.set(`text_${index}`, text);
-    // console.log(formData);
+    setInputText(text);
   }
 
   const [_title, setTitle] = useState('');
@@ -72,21 +54,43 @@ export default function MyFeedPostPage() {
   }
 
   const [submitData, setSubmitData] = useState({
-    imageUrl: [],
     title: '',
     content: '',
     date: '',
+    imageUrl: [],
   });
+
+  // useEffect(() => {
+  //   console.log(formData);
+
+  //   if (submitData.title !== '' && submitData.date !== '') {
+  //     fetchDiaryData();
+  //   }
+  // }, [submitData.title, submitData.date]);
+
   function handleSubmit() {
-    setSubmitData((prev) => {
-      const newSubmit = { ...prev };
-      newSubmit.imageUrl = uploadedImage;
-      newSubmit.title = _title;
-      newSubmit.content = inputText;
-      newSubmit.date = _date;
-    });
-    postMyDiary(submitData);
-    console.log(uploadedImage, inputText);
+    // uploadedImages.forEach((image, index) => {
+    //   formData.append(`image_${index}`, image);
+    // });
+    formData.append('title', _title);
+    formData.append('date', _date);
+    formData.append('content', inputText);
+
+    if (_title === '' || _date === '') {
+      alert('날짜, 제목을 빠짐없이 입력해주세요');
+    } else {
+      console.log('formData', formData);
+      fetchDiaryData();
+    }
+  }
+  async function fetchDiaryData() {
+    try {
+      await postMyDiary(formData);
+      alert('게시글이 등록되었습니다.');
+      navigate('/myFeed');
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   //! form 데이터 써야함 const formData = new FormData(); formData.append(“key”, data);
@@ -120,10 +124,10 @@ export default function MyFeedPostPage() {
           <ContentContainerBox>
             {[...Array(count)].map((_, index) => (
               <ContentBox
-                key={index}
-                uploadedImage={uploadedImage}
+                key={`diaryContent-${index}`}
+                uploadedImage={uploadedImages}
+                f
                 handleImageUpload={(event) => handleImageUpload(event, index)}
-                handleTextChange={(event) => handleTextChange(event, index)}
                 index={index}
               />
             ))}
@@ -133,6 +137,12 @@ export default function MyFeedPostPage() {
             src={plusIcon}
             onClick={handleAddContent}
           />
+          <textarea
+            className="content-input-box"
+            type="text"
+            placeholder="일기를 입력하세요"
+            onChange={(event) => handleTextChange(event)}
+          ></textarea>
         </Content>
         <ButtonContainer>
           <LongStrokedBtn
@@ -150,18 +160,15 @@ export default function MyFeedPostPage() {
   );
 }
 
-export function ContentBox({
-  uploadedImage,
-  handleImageUpload,
-  handleTextChange,
-  index,
-}) {
+export function ContentBox({ uploadedImage, handleImageUpload, index }) {
+  function handleCloseBtn() {}
   return (
     <ContentContainer className="container">
+      <img src={closeBtn} className="close-btn" onClick={handleCloseBtn} />
       <ImageContainer>
         <img
           src={uploadedImage[index] ? uploadedImage[index] : imageIcon}
-          style={{ width: '109px', height: '96px', objectFit: 'contain' }}
+          className="uploadedImage"
         ></img>
         <input
           className="add-photo"
@@ -170,17 +177,14 @@ export function ContentBox({
           name={`ImageStyle-${index}`}
           onChange={(event) => handleImageUpload(event, index)}
         />
-        <label className="upload-btn" htmlFor={`file-input-${index}`}>
-          이미지 업로드
-        </label>
+        {!uploadedImage[index] ? (
+          <label className="upload-btn" htmlFor={`file-input-${index}`}>
+            이미지 업로드
+          </label>
+        ) : (
+          ''
+        )}
       </ImageContainer>
-
-      <textarea
-        className="input-box"
-        type="text"
-        placeholder="일기를 입력하세요"
-        onChange={(event) => handleTextChange(event, index)}
-      ></textarea>
     </ContentContainer>
   );
 }
@@ -212,6 +216,17 @@ const Content = styled.div`
   align-items: center;
   height: 60vh;
   margin-top: 10px;
+
+  .content-input-box {
+    margin-top: 10px;
+    border: 1px solid #bdaf74;
+    font-weight: 700;
+    color: #383030;
+    height: 100px;
+    background-color: rgb(0, 0, 0, 0);
+    font-family: Noto Sans KR;
+    width: 100%;
+  }
 `;
 const TitleContainer = styled.div`
   width: 100%;
@@ -233,29 +248,27 @@ const PlusIcon = styled.img`
 `;
 const ContentContainerBox = styled.div`
   width: 100%;
-  height: 45vh;
+  height: 25vh;
   overflow: auto;
   margin-top: 10px;
 `;
 const ContentContainer = styled.div`
   background-color: #fff8e6;
   width: 354px;
-  height: 253px;
+  height: 180px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin: 18px 0;
+  position: relative;
 
-  .input-box {
-    margin-top: 20px;
-    border: 1px solid #bdaf74;
-    font-weight: 700;
-    color: #383030;
-    height: 61px;
-    background-color: rgb(0, 0, 0, 0);
-    font-family: Noto Sans KR;
-    width: 80%;
+  .close-btn {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 10px;
+    right: 20px;
   }
 `;
 const ImageContainer = styled.div`
@@ -276,6 +289,11 @@ const ImageContainer = styled.div`
 
     text-align: center;
     font-weight: 600;
+  }
+  .uploadedImage {
+    width: 200px;
+    height: 130px;
+    object-fit: contain;
   }
 `;
 

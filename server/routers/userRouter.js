@@ -2,10 +2,7 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const authenticateUser = require("../middlewares/authenticateUser.js");
 const userController = require("../controllers/userController");
-const {
-	validateSignUp,
-	validateSignIn,
-} = require("../middlewares/validator");
+const { validateSignUp, validateSignIn } = require("../middlewares/validator");
 const userRouter = express.Router();
 const { upload } = require("../utils/multer.js");
 
@@ -22,13 +19,26 @@ userRouter.post("/logout", userController.signOutUser);
 userRouter.get("/my-page", authenticateUser, userController.getUserInformation);
 
 //내 정보 수정
-userRouter.put("/my-page", authenticateUser, upload.single("imageUrl"), userController.updateUserInformation);
+userRouter.put(
+  "/my-page",
+  authenticateUser,
+  upload.single("imageUrl"),
+  userController.updateUserInformation
+);
 
 //회원탈퇴
-userRouter.delete("/my-page", authenticateUser, userController.deleteUserInfomation);
+userRouter.delete(
+  "/my-page",
+  authenticateUser,
+  userController.deleteUserInfomation
+);
 
 //기존 비밀번호 확인
-userRouter.post("/check-password", authenticateUser, userController.checkUserPassword);
+userRouter.post(
+  "/check-password",
+  authenticateUser,
+  userController.checkUserPassword
+);
 
 //아이디 중복 확인
 userRouter.post("/check-id", userController.checkUserId);
