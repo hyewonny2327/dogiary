@@ -18,41 +18,18 @@ const successResponse = (data, message) => ({
   data,
 });
 
-// 이미지 업로드 공통 함수
-const getImageUrl = async (req) => {
-  try {
-    const matchedUserImage = await User.findOne(
-      { userId: req.currentUserId },
-      { imageUrl: 1 }
-    );
-    if (req.file && req.file.filename !== undefined) {
-      return path.join(__dirname, "../public/images", req.file.filename);
-    } else {
-      return matchedUserImage.imageUrl;
-    }
-  } catch (error) {
-    throw new errorHandler("internalError", commonErrors.internalError, {
-      statusCode: 500,
-      cause: error,
-    });
-  }
-};
-
 exports.postDiary = async (req, res, next) => {
   try {
-    const { title, content, date } = req.body;
-    //이미지 업로드
-    const imageUrl = await getImageUrl(req);
+    const { imageUrl, title, content, date } = req.body;
 
-    if (!title || !content || !date) {
+    if (!imageUrl || !title || !content || !date) {
       throw new errorHandler("inputError", commonErrors.inputError, {
         statusCode: 400,
-        cause: error,
       });
     }
 
     const result = await createDiary({
-      imageUrl,
+      imageUrl: imageUrls,
       title,
       content,
       userId: req.currentUserId,
@@ -76,8 +53,6 @@ exports.putDiary = async (req, res, next) => {
         statusCode: 400,
       });
     }
-    //이미지 업로드
-    const imageUrl = await getImageUrl(req);
 
     if (!title || !content) {
       throw new errorHandler("inputError", commonErrors.inputError, {
@@ -87,7 +62,7 @@ exports.putDiary = async (req, res, next) => {
 
     // req.currentUserId가 정의되어 있고 updateDiary에 전달되었는지 확인
     const result = await updateDiary(id, req.currentUserId, {
-      imageUrl,
+      imageUrl: imageUrls,
       title,
       content,
     });
@@ -187,8 +162,12 @@ exports.getCursorDiaries = async (req, res, next) => {
       });
     }
 
-    const result = await getCursorDiaries(req.currentUserId, cursor);
-    console.log(result);
+    const result = await getCurosrDiaries(
+      req.currentUserId,
+      currentDate,
+      pageSize
+    );
+
     const message = `${cursor}을 기준으로 다이어리 목록을 성공적으로 불러왔습니다.`;
 
     res.status(200).json(successResponse(result, message));

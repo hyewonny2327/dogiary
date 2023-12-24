@@ -10,7 +10,7 @@ const { upload } = require("../utils/multer.js");
 router.post(
   "/",
   authenticateUser,
-  upload.single("imageUrl"),
+  upload.array("imageUrl"),
   diaryController.postDiary
 );
 
@@ -18,7 +18,7 @@ router.post(
 router.put(
   `/:id`,
   authenticateUser,
-  upload.single("imageUrl"),
+  upload.array("imageUrl"),
   diaryController.putDiary
 );
 
