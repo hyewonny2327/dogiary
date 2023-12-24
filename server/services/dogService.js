@@ -1,7 +1,7 @@
-const Dog = require('../models/dogModel.js');
-const errorHandler = require('../middlewares/errorHandler.js');
+const Dog = require("../models/dogModel.js");
+const errorHandler = require("../middlewares/errorHandler.js");
+const commonErrors = require("../middlewares/commonErrors.js");
 
-const commonErrors = require('../middlewares/commonErrors.js');
 const dogService = {
   async createDog(dogData, currentUserId) {
     dogData.userId = currentUserId;
@@ -74,25 +74,37 @@ const dogService = {
     return deletedDog;
   },
 
-  // 강아지 조회
-  async getOneDog(id, currentUserId) {
-    const dog = await Dog.findById(id).lean();
-    if (!dog || dog.length === 0) {
-      throw new errorHandler(
-        commonErrors.resourceNotFoundError,
-        '해당 강아지를 찾을수없습니다.',
-        { statusCode: 404 },
-      );
-    }
-    if (dog.userId !== currentUserId) {
-      throw new errorHandler(
-        commonErrors.authorizationError,
-        '해당 사용자에게 권한이 없습니다.',
-        { statusCode: 401 },
-      );
-    }
-    return dog;
-  },
+	// 강아지 조회
+	async getOneDog(id, currentUserId) {
+		const dog = await Dog.findById(id).lean();
+		if (!dog || dog.length === 0) {
+			throw new errorHandler(
+				commonErrors.resourceNotFoundError,
+				"해당 강아지를 찾을수없습니다.",
+				{ statusCode: 404 }
+			);
+		}
+		if (dog.userId !== currentUserId) {
+			throw new errorHandler(
+				commonErrors.authorizationError,
+				"해당 사용자에게 권한이 없습니다.",
+				{ statusCode: 401 }
+			);
+		}
+		return dog;
+	},
+	// 강아지 목록띄우기
+	async getUserDogs(currentUserId) {
+		const dogs = await Dog.find({ userId: currentUserId }).lean();
+		if (!dogs || dogs.length === 0) {
+			throw new errorHandler(
+				commonErrors.resourceNotFoundError,
+				"해당 강아지를 찾을수없습니다.",
+				{ statusCode: 404 }
+			);
+		}
+		return dogs;
+	},
 };
 
 module.exports = dogService;

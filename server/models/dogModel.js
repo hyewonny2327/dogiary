@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const path = require("path");
 
 const weightSchema = new mongoose.Schema(
   {
@@ -75,43 +76,43 @@ const memoSchema = new mongoose.Schema(
   { timestamps: true },
 );
 const dogSchema = new mongoose.Schema(
-  {
-    imageUrl: {
-      type: String,
-      required: true,
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    birthday: {
-      type: String,
-      required: true,
-    },
-    sex: {
-      type: String,
-      required: true,
-    },
-    date: {
-      type: String,
-      required: true,
-    },
-    type: {
-      type: String,
-      required: true,
-    },
-    userId: {
-      type: String,
-    },
-    weights: [weightSchema],
-    medicals: [medicalSchema],
-    foods: [foodSchema],
-    memos: [memoSchema],
-  },
-  {
-    collection: 'Dogs',
-    timestamps: true,
-  },
+	{
+		imageUrl: {
+			type: String,
+			default: path.join(__dirname, "../public/images/defaultImage.png"),
+		},
+		name: {
+			type: String,
+			required: true,
+		},
+		birthday: {
+			type: String,
+			required: true,
+		},
+		sex: {
+			type: String,
+			required: true,
+		},
+		date: {
+			type: String,
+			required: true,
+		},
+		type: {
+			type: String,
+			required: true,
+		},
+		userId: {
+			type: String,
+		},
+		weights: [weightSchema],
+		medicals: [medicalSchema],
+		foods: [foodSchema],
+		memos: [memoSchema],
+	},
+	{
+		collection: "Dogs",
+		timestamps: true,
+	}
 );
 
 const Dog = mongoose.model('Dogs', dogSchema);
