@@ -11,7 +11,6 @@ import useInfinityScroll from '../../hooks/useInfinityScroll';
 export default function MyPlacePage() {
   const [myPlaces, setMyPlaces] = useState([]);
   const getData = async () => {
-    //! 커서를 어디에 넣어줘야할까!! 고민중
     try {
       const res = await showMyPlaces();
       console.log('res', res);

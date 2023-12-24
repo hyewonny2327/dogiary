@@ -15,32 +15,24 @@ import closeBtn from '../../components/icons/closeBtn.svg';
 export default function MyFeedPostPage() {
   const navigate = useNavigate();
   const [count, setCount] = useState(1); // 복제할 개수를 상태로 관리
-  const [uploadedImage, setUploadedImage] = useState([]);
+  const [uploadedImages, setUploadedImages] = useState([]);
   const [inputText, setInputText] = useState([]);
+
+  const formData = new FormData();
 
   const handleAddContent = () => {
     setCount((prev) => prev + 1);
-
-    setUploadedImage((prev) => {
-      const newUploadedImage = [...prev, ''];
-      return newUploadedImage;
-    });
+    setUploadedImages((prev) => [...prev, '']);
   };
-
-  //const [formData, setFormData] = useState(new FormData());
 
   function handleImageUpload(event, index) {
     const file = event.target.files[0];
     if (file) {
-      setUploadedImage((prev) => {
+      setUploadedImages((prev) => {
         let newImage = [...prev];
-        newImage[index] = URL.createObjectURL(file);
+        newImage[index] = file;
         return newImage;
       });
-      console.log(uploadedImage);
-
-      //formData.set(`image_${index}`, file);
-      //console.log(formData);
     }
   }
 
@@ -62,35 +54,38 @@ export default function MyFeedPostPage() {
   }
 
   const [submitData, setSubmitData] = useState({
-    imageUrl: [],
     title: '',
     content: '',
     date: '',
+    imageUrl: [],
   });
 
-  useEffect(() => {
-    if (submitData.title !== '' && submitData.date !== '') {
-      fetchDiaryData();
-    }
-  }, [submitData.title, submitData.date]);
+  // useEffect(() => {
+  //   console.log(formData);
+
+  //   if (submitData.title !== '' && submitData.date !== '') {
+  //     fetchDiaryData();
+  //   }
+  // }, [submitData.title, submitData.date]);
 
   function handleSubmit() {
-    setSubmitData((prev) => {
-      const newSubmit = { ...prev };
-      newSubmit.imageUrl = uploadedImage;
-      newSubmit.title = _title;
-      newSubmit.content = inputText;
-      newSubmit.date = _date;
-      return newSubmit;
-    });
+    // uploadedImages.forEach((image, index) => {
+    //   formData.append(`image_${index}`, image);
+    // });
+    formData.append('title', _title);
+    formData.append('date', _date);
+    formData.append('content', inputText);
 
     if (_title === '' || _date === '') {
       alert('날짜, 제목을 빠짐없이 입력해주세요');
+    } else {
+      console.log('formData', formData);
+      fetchDiaryData();
     }
   }
   async function fetchDiaryData() {
     try {
-      await postMyDiary(submitData);
+      await postMyDiary(formData);
       alert('게시글이 등록되었습니다.');
       navigate('/myFeed');
     } catch (error) {
@@ -130,7 +125,7 @@ export default function MyFeedPostPage() {
             {[...Array(count)].map((_, index) => (
               <ContentBox
                 key={`diaryContent-${index}`}
-                uploadedImage={uploadedImage}
+                uploadedImage={uploadedImages}
                 f
                 handleImageUpload={(event) => handleImageUpload(event, index)}
                 index={index}

@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import { showDailyDiaries } from '../../utils/diaryApi';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import dogIcon from '../../components/icons/dogIcon.svg';
+import useInfinityScroll from '../../hooks/useInfinityScroll';
 
 export default function DailyDiaryComponent({ clickedDate }) {
   const [dailyDiaries, setDailyDiaries] = useState([]);
@@ -30,11 +31,29 @@ export default function DailyDiaryComponent({ clickedDate }) {
 
   useEffect(() => {
     callDailyDiaryApi();
-  }, []);
+  }, [moreData]);
 
   useEffect(() => {
     console.log('diary 조회 : ', dailyDiaries);
   }, [dailyDiaries]);
+
+  //무한스크롤
+  const targetRef = useRef(null);
+  const { setTargetRef } = useInfinityScroll(handleIntersect);
+  const [moreData, setMoreData] = useState(true);
+
+  useEffect(() => {
+    setTargetRef(targetRef.current);
+  }, []);
+
+  async function handleIntersect() {
+    if (moreData) {
+      //! 커서 보내줘야함. 어떻게 보내줄지 고민중. .
+      await callDailyDiaryApi();
+    } else {
+      console.log('끝');
+    }
+  }
   return (
     <Container>
       {isNoData && (
@@ -55,7 +74,7 @@ export default function DailyDiaryComponent({ clickedDate }) {
               <div className="content-container" key={`post-${index}`}>
                 <img
                   className="image"
-                  src="blob:http://localhost:3000/9c64b5fb-7ff9-49fd-896a-1906987f30b0"
+                  src={diary.imageUrl[index]}
                   alt="업로드된 이미지"
                 ></img>
               </div>
@@ -63,6 +82,9 @@ export default function DailyDiaryComponent({ clickedDate }) {
             <div className="text">{diary.content}</div>
           </DailyDiary>
         ))}
+      {moreData ? (
+        <div ref={targetRef} onIntersect={handleIntersect}></div>
+      ) : null}
     </Container>
   );
 }

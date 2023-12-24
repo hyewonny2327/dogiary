@@ -98,8 +98,10 @@ function RegisterPlace() {
     if (file) {
       //이미지 파일을 form data에 추가해서 state에 form data를 넣는다.
       formData.append('image', file);
+      if (formData.has('image')) {
+        console.log('Image value:', formData.get('image'));
+      }
       setUploadedImage(formData);
-
       //이미지 미리보기
       const reader = new FileReader();
       reader.onload = () => {
@@ -140,12 +142,13 @@ function RegisterPlace() {
       address: selectedPlace.address,
     };
 
-    if (submitData.title !== '' && submitData.uploadedImage !== imageIcon) {
+    if (submitData.title !== '' && submitData.imageUrl !== imageIcon) {
       //이미지 서버에 업로드
 
       if (formData.has('image')) {
         submitData.image = formData.get('image');
       }
+      console.log(submitData);
       registerMyPlace(submitData);
       console.log('등록하기 클릭했음');
       navigate('/mapPage');
@@ -216,12 +219,12 @@ function RegisterPlace() {
             </div>
             <InputBox>
               <div className="content-container">
-                <input
+                <textarea
                   className="content-input"
                   type="text"
                   placeholder="내용을 넣어주세요"
                   onChange={handleContentChange}
-                ></input>
+                ></textarea>
               </div>
             </InputBox>
           </InputContainerStyle>

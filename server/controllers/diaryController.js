@@ -193,7 +193,11 @@ exports.getCursorDiaries = async (req, res, next) => {
       });
     }
 
-    const result = await getCursorDiaries(req.currentUserId, cursor);
+    const result = await getCurosrDiaries(
+      req.currentUserId,
+      currentDate,
+      pageSize
+    );
 
     const message = `${cursor}을 기준으로 다이어리 목록을 성공적으로 불러왔습니다.`;
 

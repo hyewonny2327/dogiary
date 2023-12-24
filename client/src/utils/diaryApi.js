@@ -25,7 +25,11 @@ diaryApi.interceptors.request.use((config) => {
 
 export async function postMyDiary(postData) {
   try {
-    await diaryApi.post(null, postData);
+    await diaryApi.post(null, postData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   } catch (error) {
     console.error('다이어리 생성하기 api 요청 중 에러 발생', error);
   }
