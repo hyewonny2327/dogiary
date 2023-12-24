@@ -33,27 +33,15 @@ const memoController = {
 					{ statusCode: 400 }
 				);
 			}
-			if (req.query.limit) {
-				const memo = await memoService.getMemo3ById(
-					dogId,
-					req.currentUserId,
-					req.query.limit
-				);
-				res.json({
-					error: null,
-					data: memo,
-				});
-			} else {
-				const memo = await memoService.getMemoById(
-					dogId,
-					req.currentUserId,
-					cursor
-				);
-				res.json({
-					error: null,
-					data: memo,
-				});
-			}
+			const memo = await memoService.getMemoById(
+				dogId,
+				req.currentUserId,
+				cursor
+			);
+			res.json({
+				error: null,
+				data: memo,
+			});
 		} catch (error) {
 			next(error);
 		}

@@ -31,27 +31,15 @@ const weightController = {
 					{ statusCode: 400 }
 				);
 			}
-			if (req.query.limit) {
-				const weight = await weightService.getWeight5ById(
-					dogId,
-					req.currentUserId,
-					req.limit
-				);
-				res.json({
-					error: null,
-					data: weight,
-				});
-			} else {
-				const weight = await weightService.getWeightById(
-					dogId,
-					req.currentUserId,
-					cursor
-				);
-				res.json({
-					error: null,
-					data: weight,
-				});
-			}
+			const weight = await weightService.getWeightById(
+				dogId,
+				req.currentUserId,
+				cursor
+			);
+			res.json({
+				error: null,
+				data: weight,
+			});
 		} catch (error) {
 			next(error);
 		}

@@ -6,7 +6,6 @@ const rankService = {
 	// 추가
 	async getRank(currentUserId) {
 		const users = await User.find().sort({ count: -1 }).lean();
-
 		if (!currentUserId) {
 			throw new errorHandler(
 				commonErrors.authorizationError,
@@ -14,18 +13,20 @@ const rankService = {
 				{ statusCode: 403 }
 			);
 		}
-
 		const currentUser = users.find((user) => user.userId === currentUserId);
+		if (!currentUser) {
+			throw new errorHandler(
+				commonErrors.notFoundError,
+				"해당 사용자를 찾을 수 없습니다.",
+				{ statusCode: 404 }
+			);
+		}
 		const currentUserRank = users.indexOf(currentUser) + 1;
-
-		// 상위 5명의 사용자 데이터
-		const topUsers = users.slice(0, 5);
-
 		return {
-			topUsers,
+			topUsers: users.slice(0, 5),
 			currentUserRank,
+			currentUserInfo: currentUser,
 		};
 	},
 };
-
 module.exports = rankService;

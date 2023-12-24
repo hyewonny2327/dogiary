@@ -3,7 +3,6 @@ const errorHandler = require("../middlewares/errorHandler.js");
 const rankService = require("../services/rankService.js");
 const commonErrors = require("../middlewares/commonErrors.js");
 const path = require("path");
-const User = require("../models/userModel");
 
 const mapController = {
 	async postMap(req, res, next) {
@@ -108,26 +107,18 @@ const mapController = {
 			next(error);
 		}
 	},
-	async getRank(req, res, next) {
-		try {
-			const currentUserId = req.currentUserId;
-			const rank = await rankService.getRank(currentUserId);
-			res.json({
-				error: null,
-				data: rank,
-			});
-		} catch (error) {
-			next(error);
-		}
-	},
 };
 // 이미지 업로드 공통 함수
 const getImageUrl = async (req) => {
 	try {
 		if (req.file && req.file.filename !== undefined) {
-			return path.join(__dirname, "../public/images", req.file.filename);
+			return path.join("../public/images", req.file.filename);
 		} else {
-			return matchedImage.imageUrl;
+			throw new errorHandler(
+				commonErrors.argumentError,
+				"사진데이터를 받아오지 못했습니다.",
+				{ statusCode: 400 }
+			);
 		}
 	} catch (error) {
 		throw new errorHandler("internalError", commonErrors.internalError, {

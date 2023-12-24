@@ -19,8 +19,6 @@ router.put(
 );
 // GET: /maps/:id - 특정 마커 조회
 router.get("/:id", mapController.getOneMap);
-// GET: /maps/:id - 특정 마커 조회
-router.get("/rank", mapController.getRank);
 // GET: /maps - 마커 전체 조회 또는 태그별 조회
 // 내가 등록한 맵정보 /maps?myMaps=true
 router.get("/", authenticateUser, mapController.getMaps);

@@ -9,18 +9,18 @@ const { upload } = require("../utils/multer.js");
 
 //일기 생성
 router.post(
-  "/",
-  authenticateUser,
-  upload.single("imageUrl"),
-  diaryController.postDiary
+	"/",
+	authenticateUser,
+	upload.single("imageUrl"),
+	diaryController.postDiary
 );
 
 //일기 수정
 router.put(
-  `/:id`,
-  authenticateUser,
-  upload.single("imageUrl"),
-  diaryController.putDiary
+	`/:id`,
+	authenticateUser,
+	upload.single("imageUrl"),
+	diaryController.putDiary
 );
 
 //일기 삭제

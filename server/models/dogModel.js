@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const path = require("path");
 
 const weightSchema = new mongoose.Schema(
 	{
@@ -78,7 +79,7 @@ const dogSchema = new mongoose.Schema(
 	{
 		imageUrl: {
 			type: String,
-			required: true,
+			default: path.join(__dirname, "../public/images/defaultImage.png"),
 		},
 		name: {
 			type: String,

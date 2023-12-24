@@ -33,27 +33,15 @@ const medicalController = {
 					{ statusCode: 400 }
 				);
 			}
-			if (req.query.limit) {
-				const medical = await medicalService.getMedical3ById(
-					dogId,
-					req.currentUserId,
-					limit
-				);
-				res.json({
-					error: null,
-					data: medical,
-				});
-			} else {
-				const medical = await medicalService.getMedicalById(
-					dogId,
-					req.currentUserId,
-					cursor
-				);
-				res.json({
-					error: null,
-					data: medical,
-				});
-			}
+			const medical = await medicalService.getMedicalById(
+				dogId,
+				req.currentUserId,
+				cursor
+			);
+			res.json({
+				error: null,
+				data: medical,
+			});
 		} catch (error) {
 			next(error);
 		}
