@@ -69,6 +69,7 @@ export default function MyFeedPostPage() {
   // }, [submitData.title, submitData.date]);
 
   function handleSubmit() {
+    //! 폼데이터로 저장하기 아직 구현중 ..
     // uploadedImages.forEach((image, index) => {
     //   formData.append(`image_${index}`, image);
     // });
@@ -92,9 +93,6 @@ export default function MyFeedPostPage() {
       console.error(error);
     }
   }
-
-  //! form 데이터 써야함 const formData = new FormData(); formData.append(“key”, data);
-  //전송할때 url말고 달느거
 
   return (
     <PageContainer>

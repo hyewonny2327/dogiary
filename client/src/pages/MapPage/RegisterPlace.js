@@ -146,6 +146,7 @@ function RegisterPlace() {
       //이미지 서버에 업로드
 
       if (formData.has('image')) {
+        //! 폼데이터 수정필요함 아직 구현중..
         submitData.image = formData.get('image');
       }
       console.log(submitData);
