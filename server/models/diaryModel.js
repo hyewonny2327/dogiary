@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const path = require("path");
+const path = require('path');
 
 const diarySchema = new Schema(
   {
@@ -11,7 +11,7 @@ const diarySchema = new Schema(
     imageUrl: [
       {
         type: String,
-        default: path.join(__dirname, "../public/images/defaultImage.png"),
+        default: path.join(__dirname, '../public/images/defaultImage.png'),
       },
     ],
     title: {
@@ -28,11 +28,11 @@ const diarySchema = new Schema(
     },
   },
   {
-    collection: "Diary",
+    collection: 'Diary',
     timestamps: { createdAt: true, updatedAt: false },
-  }
+  },
 );
 
-module.exports = mongoose.model("Diary", diarySchema);
+module.exports = mongoose.model('Diary', diarySchema);
 
 // // 표준 = 영국시간 (우리나라와 영국은 9시간 차이)
