@@ -4,27 +4,27 @@ const Map = require("../models/mapModel.js");
 const User = require("../models/userModel.js");
 const { default: mongoose } = require("mongoose");
 const mapService = {
-	// 마커 데이터 생성
-	async createMap(mapData, currentUserId) {
-		if (!currentUserId) {
-			throw new errorHandler(
-				commonErrors.argumentError,
-				"데이터를 받아오지 못했습니다.",
-				{ statusCode: 400 }
-			);
-		}
-		mapData.userId = currentUserId;
-		if (mapData.toggle == true) {
-			// 사용자 찾기
-			const user = await User.findOne({ userId: currentUserId });
+  // 마커 데이터 생성
+  async createMap(mapData, currentUserId) {
+    if (!currentUserId) {
+      throw new errorHandler(
+        commonErrors.argumentError,
+        '데이터를 받아오지 못했습니다.',
+        { statusCode: 400 },
+      );
+    }
+    mapData.userId = currentUserId;
+    if (mapData.toggle == true) {
+      // 사용자 찾기
+      const user = await User.findOne({ userId: currentUserId });
 
-			if (!user) {
-				throw new errorHandler(
-					commonErrors.notFound,
-					"사용자를 찾을 수 없습니다.",
-					{ statusCode: 404 }
-				);
-			}
+      if (!user) {
+        throw new errorHandler(
+          commonErrors.notFound,
+          '사용자를 찾을 수 없습니다.',
+          { statusCode: 404 },
+        );
+      }
 
 			user.count = (user.count || 0) + 1;
 			await user.save();
@@ -147,31 +147,31 @@ const mapService = {
 		}
 	},
 
-	// 특정 마커 정보 조회
-	async getOneMap(id) {
-		const mapProfile = await Map.findById(id).lean();
-		if (!mapProfile || mapProfile.length === 0) {
-			throw new errorHandler(
-				commonErrors.resourceNotFoundError,
-				"해당 데이터를 찾을수없습니다.",
-				{ statusCode: 404 }
-			);
-		}
-		return mapProfile;
-	},
+  // 특정 마커 정보 조회
+  async getOneMap(id) {
+    const mapProfile = await Map.findById(id).lean();
+    if (!mapProfile || mapProfile.length === 0) {
+      throw new errorHandler(
+        commonErrors.resourceNotFoundError,
+        '해당 데이터를 찾을수없습니다.',
+        { statusCode: 404 },
+      );
+    }
+    return mapProfile;
+  },
 
-	// 전체 정보 받아오기
-	async getAllMaps() {
-		const allMaps = await Map.find({ toggle: true }).lean();
-		if (!allMaps || allMaps.length === 0) {
-			throw new errorHandler(
-				commonErrors.resourceNotFoundError,
-				"해당 데이터를 찾을수없습니다.",
-				{ statusCode: 404 }
-			);
-		}
-		return allMaps;
-	},
+  // 전체 정보 받아오기
+  async getAllMaps() {
+    const allMaps = await Map.find({ toggle: true }).lean();
+    if (!allMaps || allMaps.length === 0) {
+      throw new errorHandler(
+        commonErrors.resourceNotFoundError,
+        '해당 데이터를 찾을수없습니다.',
+        { statusCode: 404 },
+      );
+    }
+    return allMaps;
+  },
 
 	// 태그별 데이터 받아오기
 	async getMapsByTag(tagName) {
@@ -220,6 +220,6 @@ const mapService = {
 };
 
 function isValidTag(tagName) {
-	return typeof tagName === "string" && tagName.length > 0;
+  return typeof tagName === 'string' && tagName.length > 0;
 }
 module.exports = mapService;

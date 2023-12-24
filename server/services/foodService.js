@@ -77,8 +77,8 @@ const foodService = {
 		dog.foods.splice(foodIndex, 1);
 		const updatedDog = await dog.save();
 
-		return updatedDog;
-	},
+    return updatedDog;
+  },
 };
 
 module.exports = foodService;

@@ -46,46 +46,46 @@ const medicalService = {
 		}
 		const medical = dog.medicals.id(medicalId);
 
-		if (!medical) {
-			throw new errorHandler(
-				commonErrors.resourceNotFoundError,
-				"해당 데이터를 찾을수없습니다.",
-				{ statusCode: 404 }
-			);
-		}
+    if (!medical) {
+      throw new errorHandler(
+        commonErrors.resourceNotFoundError,
+        '해당 데이터를 찾을수없습니다.',
+        { statusCode: 404 },
+      );
+    }
 
-		medical.set(updatedWeightData);
-		const updatedDog = await dog.save();
-		return updatedDog.medicals.id(medicalId);
-	},
+    medical.set(updatedWeightData);
+    const updatedDog = await dog.save();
+    return updatedDog.medicals.id(medicalId);
+  },
 
-	// 진료기록 삭제
-	async deleteMedical(dogId, medicalId, currentUserId) {
-		const dog = await Dog.findById(dogId);
-		if (dog.userId !== currentUserId) {
-			throw new errorHandler(
-				commonErrors.authorizationError,
-				"해당 사용자에게 권한이 없습니다.",
-				{ statusCode: 403 }
-			);
-		}
-		const medicalIndex = dog.medicals.findIndex(
-			(w) => w._id.toString() === medicalId
-		);
+  // 진료기록 삭제
+  async deleteMedical(dogId, medicalId, currentUserId) {
+    const dog = await Dog.findById(dogId);
+    if (dog.userId !== currentUserId) {
+      throw new errorHandler(
+        commonErrors.authorizationError,
+        '해당 사용자에게 권한이 없습니다.',
+        { statusCode: 403 },
+      );
+    }
+    const medicalIndex = dog.medicals.findIndex(
+      (w) => w._id.toString() === medicalId,
+    );
 
-		if (medicalIndex === -1) {
-			throw new errorHandler(
-				commonErrors.resourceNotFoundError,
-				"해당 데이터를 찾을수없습니다.",
-				{ statusCode: 404 }
-			);
-		}
+    if (medicalIndex === -1) {
+      throw new errorHandler(
+        commonErrors.resourceNotFoundError,
+        '해당 데이터를 찾을수없습니다.',
+        { statusCode: 404 },
+      );
+    }
 
-		dog.medicals.splice(medicalIndex, 1);
-		const updatedDog = await dog.save();
+    dog.medicals.splice(medicalIndex, 1);
+    const updatedDog = await dog.save();
 
-		return updatedDog;
-	},
+    return updatedDog;
+  },
 };
 
 module.exports = medicalService;

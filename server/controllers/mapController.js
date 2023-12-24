@@ -5,58 +5,58 @@ const commonErrors = require("../middlewares/commonErrors.js");
 const path = require("path");
 
 const mapController = {
-	async postMap(req, res, next) {
-		try {
-			const mapData = req.body;
-			mapData.imageUrl = await getImageUrl(req);
-			if (!mapData) {
-				throw new errorHandler(
-					commonErrors.argumentError,
-					"데이터를 받아오지 못했습니다.",
-					{ statusCode: 400 }
-				);
-			}
-			await mapService.createMap(mapData, req.currentUserId);
-			res.status(201).json({ message: "Data created successfully" });
-		} catch (error) {
-			next(error);
-		}
-	},
-	async putMap(req, res, next) {
-		try {
-			const mapData = req.body;
-			mapData.imageUrl = await getImageUrl(req);
-			const id = req.params.id;
-			if (!mapData || !id) {
-				throw new errorHandler(
-					commonErrors.argumentError,
-					"데이터를 받아오지 못했습니다.",
-					{ statusCode: 400 }
-				);
-			}
-			await mapService.updatedMapProfile(id, mapData, req.currentUserId);
-			res.status(200).json({ message: "Data updated successfully" });
-		} catch (error) {
-			next(error);
-		}
-	},
+  async postMap(req, res, next) {
+    try {
+      const mapData = req.body;
+      mapData.imageUrl = await getImageUrl(req);
+      if (!mapData) {
+        throw new errorHandler(
+          commonErrors.argumentError,
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
+        );
+      }
+      await mapService.createMap(mapData, req.currentUserId);
+      res.status(201).json({ message: 'Data created successfully' });
+    } catch (error) {
+      next(error);
+    }
+  },
+  async putMap(req, res, next) {
+    try {
+      const mapData = req.body;
+      mapData.imageUrl = await getImageUrl(req);
+      const id = req.params.id;
+      if (!mapData || !id) {
+        throw new errorHandler(
+          commonErrors.argumentError,
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
+        );
+      }
+      await mapService.updatedMapProfile(id, mapData, req.currentUserId);
+      res.status(200).json({ message: 'Data updated successfully' });
+    } catch (error) {
+      next(error);
+    }
+  },
 
-	async deleteMap(req, res, next) {
-		try {
-			const id = req.params.id;
-			if (!id) {
-				throw new errorHandler(
-					commonErrors.argumentError,
-					"데이터를 받아오지 못했습니다.",
-					{ statusCode: 400 }
-				);
-			}
-			await mapService.deleteMap(id, req.currentUserId);
-			res.status(200).json({ message: "Data deleted successfully" });
-		} catch (error) {
-			next(error);
-		}
-	},
+  async deleteMap(req, res, next) {
+    try {
+      const id = req.params.id;
+      if (!id) {
+        throw new errorHandler(
+          commonErrors.argumentError,
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
+        );
+      }
+      await mapService.deleteMap(id, req.currentUserId);
+      res.status(200).json({ message: 'Data deleted successfully' });
+    } catch (error) {
+      next(error);
+    }
+  },
 
 	async getOneMap(req, res, next) {
 		try {

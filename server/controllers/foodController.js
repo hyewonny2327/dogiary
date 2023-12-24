@@ -1,7 +1,7 @@
-const foodService = require("../services/foodService.js");
-const errorHandler = require("../middlewares/errorHandler.js");
+const foodService = require('../services/foodService.js');
+const errorHandler = require('../middlewares/errorHandler.js');
 
-const commonErrors = require("../middlewares/commonErrors.js");
+const commonErrors = require('../middlewares/commonErrors.js');
 const foodController = {
 	// post
 	async postFood(req, res, next) {

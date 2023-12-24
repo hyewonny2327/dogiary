@@ -1,6 +1,6 @@
-const errorHandler = require("../middlewares/errorHandler.js");
-const commonErrors = require("../middlewares/commonErrors.js");
-const User = require("../models/userModel");
+const errorHandler = require('../middlewares/errorHandler.js');
+const commonErrors = require('../middlewares/commonErrors.js');
+const User = require('../models/userModel');
 
 const rankService = {
 	// 추가

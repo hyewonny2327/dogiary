@@ -1,5 +1,5 @@
-const express = require("express");
-const dogController = require("../controllers/dogController.js");
+const express = require('express');
+const dogController = require('../controllers/dogController.js');
 const router = express.Router();
 const authenticateUser = require("../middlewares/authenticateUser.js");
 const { upload } = require("../utils/multer.js");
@@ -20,7 +20,7 @@ router.put(
 );
 
 // DELETE: /dogs/:id - 강아지 삭제
-router.delete("/:id", authenticateUser, dogController.deleteDog);
+router.delete('/:id', authenticateUser, dogController.deleteDog);
 
 // GET: /dogs/:id - 강아지 조회
 router.get("/", authenticateUser, dogController.getDog);
