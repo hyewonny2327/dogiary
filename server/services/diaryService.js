@@ -1,8 +1,8 @@
 const Diary = require("../models/diaryModel.js");
 
 //일기 생성
-exports.createDiary = async ({ imageUrl, title, content, userId, date }) => {
-  const newDiary = new Diary({ imageUrl, title, content, userId, date });
+exports.createDiary = async ({ imageUrls, title, content, userId, date }) => {
+  const newDiary = new Diary({ imageUrls, title, content, userId, date });
   const result = await newDiary.save();
   return result;
 };
@@ -48,7 +48,7 @@ exports.deleteDiary = async (_id, userId) => {
 exports.getDiaries = async (userId) => {
   const result = await Diary.find(
     { userId },
-    `_id createdAt imageUrl title content date userId`
+    `_id createdAt imageUrls title content date userId`
   );
   return result;
 };
@@ -61,7 +61,7 @@ exports.getDailyDiaries = async (userId, date) => {
       userId,
       date: date,
     },
-    `_id createdAt imageUrl title content date userId`
+    `_id createdAt imageUrls title content date userId`
   );
 
   return result;
@@ -70,16 +70,19 @@ exports.getDailyDiaries = async (userId, date) => {
 
 exports.getMonthDiaries = async (userId, year, month) => {
   const startOfMonth = `${year}-${month.toString().padStart(2, "0")}-01`;
-  const endOfMonth = `${year}-${month.toString().padStart(2, "0")}-31T23:59:59`;
+  const endOfMonth = new Date(year, month, 1);
+  endOfMonth.setMonth(endOfMonth.getMonth() + 1);
+  endOfMonth.setDate(0); // 이로써 원래 월의 마지막 날이 됩니다.
+
   const result = await Diary.find({
     userId,
     date: {
       $gte: startOfMonth,
-      $lte: endOfMonth,
+      $lt: endOfMonth,
     },
   })
     .sort({ date: -1 })
-    .select("_id createdAt imageUrl title content date userId")
+    .select("_id createdAt imageUrls title content date userId")
     .exec();
 
   return result;
@@ -98,7 +101,7 @@ exports.getCursorDiaries = async (userId, cursor) => {
   const result = await Diary.find(query)
     .sort({ date: -1 })
     .limit(10)
-    .select("_id createdAt imageUrl title content date userId")
+    .select("_id createdAt imageUrls title content date userId")
     .exec();
 
   return result;

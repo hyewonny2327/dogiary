@@ -19,18 +19,24 @@ const successResponse = (data, message) => ({
 });
 
 // 이미지 업로드 공통 함수
-const getImageUrl = async (req) => {
+const getImageUrls = async (req) => {
   try {
     const matchedUserImage = await User.findOne(
       { userId: req.currentUserId },
-      { imageUrl: 1 }
+      { imageUrls: 1 }
     );
-    console.log(req.files);
     if (req.files && req.files.length > 0) {
-      const firstFile = req.files[0];
-      return path.join(__dirname, "../public/images", firstFile.filename);
+      return req.files.map((file) =>
+        path.join(__dirname, "../public/images", file.filename)
+      );
     } else {
-      return matchedUserImage.imageUrl;
+      const defaultImageUrl = path.join(
+        __dirname,
+        "../public/images/defaultImage.png"
+      );
+      return matchedUserImage?.imageUrl
+        ? [matchedUserImage.imageUrl]
+        : [defaultImageUrl];
     }
   } catch (error) {
     throw new errorHandler("internalError", commonErrors.internalError, {
@@ -42,21 +48,39 @@ const getImageUrl = async (req) => {
 
 exports.postDiary = async (req, res, next) => {
   try {
-    const { title, content, date } = req.body;
+    const { title, content, date } = req.body ? req.body : {};
 
     //이미지 업로드
-    const imageUrls = req.files.map((file) =>
-      path.join(__dirname, "../public/images", file.filename)
-    );
+    const imageUrls = await getImageUrls(req);
 
+    //유효성검사
     if (!title || !content || !date) {
       throw new errorHandler("inputError", commonErrors.inputError, {
         statusCode: 400,
       });
     }
 
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      throw new errorHandler("inputError", "유효하지 않은 날짜 형식", {
+        statusCode: 400,
+      });
+    }
+
+    const [year, month, day] = date.split("-").map(Number);
+    const lastDayOfMonth = new Date(year, month, 0).getDate();
+
+    if (!(day >= 1 && day <= lastDayOfMonth)) {
+      throw new errorHandler(
+        "inputError",
+        "지정된 월에 대한 유효하지 않은 날짜",
+        {
+          statusCode: 400,
+        }
+      );
+    }
+
     const result = await createDiary({
-      imageUrl: imageUrls,
+      imageUrls: imageUrls,
       title,
       content,
       userId: req.currentUserId,
@@ -73,7 +97,7 @@ exports.postDiary = async (req, res, next) => {
 exports.putDiary = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { title, content } = req.body || {};
+    const { title, content } = req.body ? req.body : {};
 
     if (!id) {
       throw new errorHandler(commonErrors.argumentError, "argumentError", {
@@ -81,9 +105,7 @@ exports.putDiary = async (req, res, next) => {
       });
     }
     //이미지 업로드
-    const imageUrls = req.files.map((file) =>
-      path.join(__dirname, "../public/images", file.filename)
-    );
+    const imageUrls = await getImageUrls(req);
 
     if (!title || !content) {
       throw new errorHandler("inputError", commonErrors.inputError, {
@@ -93,7 +115,7 @@ exports.putDiary = async (req, res, next) => {
 
     // req.currentUserId가 정의되어 있고 updateDiary에 전달되었는지 확인
     const result = await updateDiary(id, req.currentUserId, {
-      imageUrl: imageUrls,
+      imageUrls: imageUrls,
       title,
       content,
     });
@@ -169,8 +191,7 @@ exports.getMonthDiaries = async (req, res, next) => {
     const month = copyDate.getMonth() + 1;
 
     const result = await getMonthDiaries(req.currentUserId, year, month);
-    if (result.length === 0) {
-    }
+
     const message =
       result.length === 0
         ? `${year}년 ${month}월에 대한 데이터가 없습니다.`
