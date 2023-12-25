@@ -1,7 +1,7 @@
-const errorHandler = require("../middlewares/errorHandler.js");
+const errorHandler = require('../middlewares/errorHandler.js');
 
-const commonErrors = require("../middlewares/commonErrors.js");
-const medicalService = require("../services/medicalService.js");
+const commonErrors = require('../middlewares/commonErrors.js');
+const medicalService = require('../services/medicalService.js');
 const medicalController = {
 	//post
 	async postMedical(req, res, next) {
@@ -33,27 +33,15 @@ const medicalController = {
 					{ statusCode: 400 }
 				);
 			}
-			if (req.query.limit) {
-				const medical = await medicalService.getMedical3ById(
-					dogId,
-					req.currentUserId,
-					limit
-				);
-				res.json({
-					error: null,
-					data: medical,
-				});
-			} else {
-				const medical = await medicalService.getMedicalById(
-					dogId,
-					req.currentUserId,
-					cursor
-				);
-				res.json({
-					error: null,
-					data: medical,
-				});
-			}
+			const medical = await medicalService.getMedicalById(
+				dogId,
+				req.currentUserId,
+				cursor
+			);
+			res.json({
+				error: null,
+				data: medical,
+			});
 		} catch (error) {
 			next(error);
 		}
@@ -83,23 +71,23 @@ const medicalController = {
 		}
 	},
 
-	//delete
-	async deleteMedical(req, res, next) {
-		try {
-			const dogId = req.params.id;
-			const medicalId = req.params.medicalId;
-			if (!dogId || !medicalId) {
-				throw new errorHandler(
-					commonErrors.argumentError,
-					"데이터를 받아오지 못했습니다.",
-					{ statusCode: 400 }
-				);
-			}
-			await medicalService.deleteMedical(dogId, medicalId, req.currentUserId);
-			res.status(200).json({ message: "Data deleted successfully" });
-		} catch (error) {
-			next(error);
-		}
-	},
+  //delete
+  async deleteMedical(req, res, next) {
+    try {
+      const dogId = req.params.id;
+      const medicalId = req.params.medicalId;
+      if (!dogId || !medicalId) {
+        throw new errorHandler(
+          commonErrors.argumentError,
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
+        );
+      }
+      await medicalService.deleteMedical(dogId, medicalId, req.currentUserId);
+      res.status(200).json({ message: 'Data deleted successfully' });
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 module.exports = medicalController;
