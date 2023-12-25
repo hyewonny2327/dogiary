@@ -95,7 +95,7 @@ const dogService = {
 	},
 	// 강아지 목록띄우기
 	async getUserDogs(currentUserId) {
-		const dogs = await Dog.find({ userId: currentUserId }).lean();
+		const dogs = await Dog.find({ userId: currentUserId }).select('_id imageUrl name userId').lean();
 		if (!dogs || dogs.length === 0) {
 			throw new errorHandler(
 				commonErrors.resourceNotFoundError,

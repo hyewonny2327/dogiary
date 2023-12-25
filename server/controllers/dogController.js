@@ -64,7 +64,6 @@ const dogController = {
 		try {
 			if (req.query.id) {
 				const id = req.query.id;
-				console.log(id);
 				const dogProfile = await dogService.getOneDog(id, req.currentUserId);
 
 				res.json({
