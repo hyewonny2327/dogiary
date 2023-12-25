@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { setIsOpen } from '../../slice/store';
 import { Modal } from '../common/Modal';
+import DailyDiaryComponent from './DailyDiaryComponent';
+
 function CalendarComponent() {
   const [value, setValue] = useState(new Date());
   const [clickedDate, setClickedDate] = useState(0);
@@ -19,8 +21,8 @@ function CalendarComponent() {
     });
 
     //console.log('선택한 날짜 : ', formattedDate)
-    dispatch(setIsOpen(true));
     setClickedDate(formattedDate);
+    dispatch(setIsOpen(true));
   };
 
   return (
@@ -38,14 +40,7 @@ function CalendarComponent() {
       {isModalOpen && (
         <Modal containerStyle={containerStyle}>
           <ModalContents>
-            <div className="title-container">
-              <div className="date">{clickedDate}</div>
-              <div className="title">제목</div>
-            </div>
-            <div className="content-container">
-              <div className="image">이미지</div>
-              <div className="text">텍스트 내용</div>
-            </div>
+            <DailyDiaryComponent clickedDate={clickedDate} />
           </ModalContents>
         </Modal>
       )}
@@ -72,35 +67,7 @@ const ModalContents = styled.div`
   align-items: center;
   color: #5f5013;
   font-family: Noto Sans KR;
-  .title-container {
-    margin: 23px 0;
-    display: flex;
-    flex-direction: column;
-  }
-  .content-container {
-    width: 80%;
-    height: 315px;
-    border-radius: 5px;
-    background: #fff8e6;
-    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.25);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    box-sizing: border-box;
-    margin: 2rem 0;
-  }
-  .image {
-    width: 90%;
-    height: 200px;
-    border: 1px solid red;
-  }
-  .text {
-    width: 90%;
-    height: 100px;
-    margin: 20px 0;
-    border: 1px solid blue;
-  }
+  overflow: auto;
 `;
 const CalendarStyle = styled.div`
   .react-calendar {

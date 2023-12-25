@@ -25,7 +25,11 @@ diaryApi.interceptors.request.use((config) => {
 
 export async function postMyDiary(postData) {
   try {
-    await diaryApi.post(null, postData);
+    await diaryApi.post(null, postData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   } catch (error) {
     console.error('다이어리 생성하기 api 요청 중 에러 발생', error);
   }
@@ -41,11 +45,20 @@ export async function deleteMyDiary(id) {
 
 export async function showAllDiaries() {
   try {
-    await diaryApi.get(null).then((res) => {
-      const diaryData = res.data.data;
-      return diaryData;
-    });
+    const res = await diaryApi.get(null);
+    const diaryData = res.data.data;
+    return diaryData;
   } catch (error) {
     console.error('모든 다이어리 조회하기 api 요청 중 에러 발생', error);
+  }
+}
+
+export async function showDailyDiaries(date) {
+  try {
+    const res = await diaryApi.get(`?createdAt=${date}`);
+    const dailyDiary = res.data.data;
+    return dailyDiary;
+  } catch (error) {
+    console.log('일간 다이어리 조회하기 api 요청 중 에러 발생', error);
   }
 }

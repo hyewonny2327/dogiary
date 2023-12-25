@@ -1,6 +1,6 @@
-const weightService = require("../services/weightService.js");
-const errorHandler = require("../middlewares/errorHandler.js");
-const commonErrors = require("../middlewares/commonErrors.js");
+const weightService = require('../services/weightService.js');
+const errorHandler = require('../middlewares/errorHandler.js');
+const commonErrors = require('../middlewares/commonErrors.js');
 const weightController = {
 	async postWeight(req, res, next) {
 		try {
@@ -31,27 +31,15 @@ const weightController = {
 					{ statusCode: 400 }
 				);
 			}
-			if (req.query.limit) {
-				const weight = await weightService.getWeight5ById(
-					dogId,
-					req.currentUserId,
-					req.limit
-				);
-				res.json({
-					error: null,
-					data: weight,
-				});
-			} else {
-				const weight = await weightService.getWeightById(
-					dogId,
-					req.currentUserId,
-					cursor
-				);
-				res.json({
-					error: null,
-					data: weight,
-				});
-			}
+			const weight = await weightService.getWeightById(
+				dogId,
+				req.currentUserId,
+				cursor
+			);
+			res.json({
+				error: null,
+				data: weight,
+			});
 		} catch (error) {
 			next(error);
 		}
@@ -81,24 +69,24 @@ const weightController = {
 		}
 	},
 
-	// 몸무게 삭제
-	async deleteWeight(req, res, next) {
-		try {
-			const dogId = req.params.id;
-			const weightId = req.params.weightId;
-			if (!dogId || !weightId) {
-				throw new errorHandler(
-					commonErrors.argumentError,
-					"데이터를 받아오지 못했습니다.",
-					{ statusCode: 400 }
-				);
-			}
-			await weightService.deleteWeight(dogId, weightId, req.currentUserId);
-			res.status(204).json({ message: "Data deleted successfully" });
-		} catch (error) {
-			next(error);
-		}
-	},
+  // 몸무게 삭제
+  async deleteWeight(req, res, next) {
+    try {
+      const dogId = req.params.id;
+      const weightId = req.params.weightId;
+      if (!dogId || !weightId) {
+        throw new errorHandler(
+          commonErrors.argumentError,
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
+        );
+      }
+      await weightService.deleteWeight(dogId, weightId, req.currentUserId);
+      res.status(204).json({ message: 'Data deleted successfully' });
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 
 module.exports = weightController;

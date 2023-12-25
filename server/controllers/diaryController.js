@@ -1,5 +1,5 @@
-const commonErrors = require("../middlewares/commonErrors");
-const errorHandler = require("../middlewares/errorHandler");
+const commonErrors = require('../middlewares/commonErrors');
+const errorHandler = require('../middlewares/errorHandler');
 const {
   createDiary,
   updateDiary,
@@ -8,9 +8,9 @@ const {
   getDailyDiaries,
   getMonthDiaries,
   getCursorDiaries,
-} = require("../services/diaryService");
-const path = require("path");
-const User = require("../models/userModel");
+} = require('../services/diaryService');
+const path = require('path');
+const User = require('../models/userModel');
 
 const successResponse = (data, message) => ({
   message,
@@ -39,7 +39,7 @@ const getImageUrls = async (req) => {
         : [defaultImageUrl];
     }
   } catch (error) {
-    throw new errorHandler("internalError", commonErrors.internalError, {
+    throw new errorHandler('internalError', commonErrors.internalError, {
       statusCode: 500,
       cause: error,
     });
@@ -55,7 +55,7 @@ exports.postDiary = async (req, res, next) => {
 
     //유효성검사
     if (!title || !content || !date) {
-      throw new errorHandler("inputError", commonErrors.inputError, {
+      throw new errorHandler('inputError', commonErrors.inputError, {
         statusCode: 400,
       });
     }
@@ -100,7 +100,7 @@ exports.putDiary = async (req, res, next) => {
     const { title, content } = req.body ? req.body : {};
 
     if (!id) {
-      throw new errorHandler(commonErrors.argumentError, "argumentError", {
+      throw new errorHandler(commonErrors.argumentError, 'argumentError', {
         statusCode: 400,
       });
     }
@@ -108,7 +108,7 @@ exports.putDiary = async (req, res, next) => {
     const imageUrls = await getImageUrls(req);
 
     if (!title || !content) {
-      throw new errorHandler("inputError", commonErrors.inputError, {
+      throw new errorHandler('inputError', commonErrors.inputError, {
         statusCode: 400,
       });
     }
@@ -131,7 +131,7 @@ exports.deleteDiary = async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!id) {
-      throw new errorHandler("argumentError", commonErrors.argumentError, {
+      throw new errorHandler('argumentError', commonErrors.argumentError, {
         statusCode: 400,
       });
     }
@@ -139,7 +139,7 @@ exports.deleteDiary = async (req, res, next) => {
     const result = await deleteDiary(id, req.currentUserId);
 
     if (!result || result.deletedCount !== 1) {
-      throw new errorHandler("notfound", commonErrors.resourceNotFoundError, {
+      throw new errorHandler('notfound', commonErrors.resourceNotFoundError, {
         statusCode: 404,
       });
     }
@@ -154,7 +154,7 @@ exports.getDiaries = async (req, res, next) => {
   try {
     const { date } = req.query;
     if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-      throw new errorHandler("inputError", commonErrors.inputError, {
+      throw new errorHandler('inputError', commonErrors.inputError, {
         statusCode: 400,
       });
     }
@@ -164,7 +164,7 @@ exports.getDiaries = async (req, res, next) => {
 
     const message = date
       ? `${date} 조회가 성공적으로 완료되었습니다.`
-      : "전체 조회가 성공적으로 완료되었습니다.";
+      : '전체 조회가 성공적으로 완료되었습니다.';
     res.status(200).json(successResponse(result, message));
   } catch (err) {
     next(err);
@@ -179,7 +179,7 @@ exports.getMonthDiaries = async (req, res, next) => {
 
     const dateFormatRegex = /^\d{4}-\d{2}$/;
     if (!dateFormatRegex.test(date)) {
-      throw new errorHandler("inputError", commonErrors.inputError, {
+      throw new errorHandler('inputError', commonErrors.inputError, {
         statusCode: 400,
       });
     }
@@ -209,12 +209,16 @@ exports.getCursorDiaries = async (req, res, next) => {
     const { cursor } = req.query;
 
     if (!cursor) {
-      throw new errorHandler("inputError", commonErrors.inputError, {
+      throw new errorHandler('inputError', commonErrors.inputError, {
         statusCode: 400,
       });
     }
 
-    const result = await getCursorDiaries(req.currentUserId, cursor);
+    const result = await getCurosrDiaries(
+      req.currentUserId,
+      currentDate,
+      pageSize
+    );
 
     const message = `${cursor}을 기준으로 다이어리 목록을 성공적으로 불러왔습니다.`;
 
