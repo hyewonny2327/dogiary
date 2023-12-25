@@ -12,21 +12,12 @@ const mapController = {
       if (!mapData) {
         throw new errorHandler(
           commonErrors.argumentError,
-<<<<<<< HEAD
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
-        );
-      }
-      await mapService.createMap(mapData, req.currentUserId);
-      res.status(201).json({ message: "Data created successfully" });
-=======
           '데이터를 받아오지 못했습니다.',
           { statusCode: 400 },
         );
       }
       await mapService.createMap(mapData, req.currentUserId);
       res.status(201).json({ message: 'Data created successfully' });
->>>>>>> 91ec49b84a2fa1d7a7ebcab3b85776ec4f909d08
     } catch (error) {
       next(error);
     }
@@ -39,21 +30,12 @@ const mapController = {
       if (!mapData || !id) {
         throw new errorHandler(
           commonErrors.argumentError,
-<<<<<<< HEAD
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
-        );
-      }
-      await mapService.updatedMapProfile(id, mapData, req.currentUserId);
-      res.status(200).json({ message: "Data updated successfully" });
-=======
           '데이터를 받아오지 못했습니다.',
           { statusCode: 400 },
         );
       }
       await mapService.updatedMapProfile(id, mapData, req.currentUserId);
       res.status(200).json({ message: 'Data updated successfully' });
->>>>>>> 91ec49b84a2fa1d7a7ebcab3b85776ec4f909d08
     } catch (error) {
       next(error);
     }
@@ -65,104 +47,17 @@ const mapController = {
       if (!id) {
         throw new errorHandler(
           commonErrors.argumentError,
-<<<<<<< HEAD
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
-        );
-      }
-      await mapService.deleteMap(id, req.currentUserId);
-      res.status(200).json({ message: "Data deleted successfully" });
-=======
           '데이터를 받아오지 못했습니다.',
           { statusCode: 400 },
         );
       }
       await mapService.deleteMap(id, req.currentUserId);
       res.status(200).json({ message: 'Data deleted successfully' });
->>>>>>> 91ec49b84a2fa1d7a7ebcab3b85776ec4f909d08
     } catch (error) {
       next(error);
     }
   },
 
-<<<<<<< HEAD
-  async getOneMap(req, res, next) {
-    try {
-      const id = req.params.id;
-      if (!id) {
-        throw new errorHandler(
-          commonErrors.argumentError,
-          "데이터를 받아오지 못했습니다.",
-          { statusCode: 400 }
-        );
-      }
-      const mapProfile = await mapService.getOneMap(id);
-      res.json({
-        error: null,
-        data: mapProfile,
-      });
-    } catch (error) {
-      next(error);
-    }
-  },
-  async getMaps(req, res, next) {
-    const cursor = req.query.cursor;
-    try {
-      // 태그가 존재하면 태그별 조회, 없으면 전체 조회
-      if (req.query.tag) {
-        const tagName = req.query.tag;
-        const maps = await mapService.getMapsByTag(tagName);
-        res.json({
-          error: null,
-          data: maps,
-        });
-      } else if (req.query.myMaps) {
-        // 새로 추가한 부분: myMaps가 요청에 있을 때
-        const currentUserId = req.currentUserId;
-        const myMaps = await mapService.getMyMaps(currentUserId, cursor);
-        res.json({
-          error: null,
-          data: myMaps,
-        });
-      } else {
-        const allMaps = await mapService.getAllMaps();
-        res.json({
-          error: null,
-          data: allMaps,
-        });
-      }
-    } catch (error) {
-      next(error);
-    }
-  },
-  async getRank(req, res, next) {
-    try {
-      const currentUserId = req.currentUserId;
-      const rank = await rankService.getRank(currentUserId);
-      res.json({
-        error: null,
-        data: rank,
-      });
-    } catch (error) {
-      next(error);
-    }
-  },
-};
-// 이미지 업로드 공통 함수
-const getImageUrl = async (req) => {
-  try {
-    if (req.file && req.file.filename !== undefined) {
-      return path.join(__dirname, "../public/images", req.file.filename);
-    } else {
-      return matchedImage.imageUrl;
-    }
-  } catch (error) {
-    throw new errorHandler("internalError", commonErrors.internalError, {
-      statusCode: 500,
-      cause: error,
-    });
-  }
-=======
 	async getOneMap(req, res, next) {
 		try {
 			const id = req.params.id;
@@ -231,7 +126,6 @@ const getImageUrl = async (req) => {
 			cause: error,
 		});
 	}
->>>>>>> 91ec49b84a2fa1d7a7ebcab3b85776ec4f909d08
 };
 
 module.exports = mapController;
