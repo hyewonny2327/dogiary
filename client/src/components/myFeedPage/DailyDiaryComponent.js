@@ -20,6 +20,9 @@ export default function DailyDiaryComponent({ clickedDate }) {
         } else {
           setIsNoData(false);
           setDailyDiaries(diaryData);
+          if (diaryData.length < 10) {
+            setMoreData(false);
+          }
         }
       }
     } catch (error) {
@@ -31,11 +34,7 @@ export default function DailyDiaryComponent({ clickedDate }) {
 
   useEffect(() => {
     callDailyDiaryApi();
-  }, [moreData]);
-
-  useEffect(() => {
-    console.log('diary 조회 : ', dailyDiaries);
-  }, [dailyDiaries]);
+  }, []);
 
   //무한스크롤
   const targetRef = useRef(null);

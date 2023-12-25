@@ -89,7 +89,6 @@ function RegisterPlace() {
     setSelectedPlace(newSelectedPlace);
   }
 
-  //! 이미지 업로드 기능 -> form Data 로 수정
   const [uploadedImage, setUploadedImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(imageIcon);
   const formData = new FormData();
@@ -97,11 +96,8 @@ function RegisterPlace() {
     const file = event.target.files[0];
     if (file) {
       //이미지 파일을 form data에 추가해서 state에 form data를 넣는다.
-      formData.append('image', file);
-      if (formData.has('image')) {
-        console.log('Image value:', formData.get('image'));
-      }
-      setUploadedImage(formData);
+
+      setUploadedImage(file);
       //이미지 미리보기
       const reader = new FileReader();
       reader.onload = () => {
@@ -139,8 +135,8 @@ function RegisterPlace() {
       title: selectedPlace.placename,
       toggle: selectedToggle,
       tag: selectedTag,
-      imageUrl: uploadedImage,
       content: textContent,
+      imageUrl: uploadedImage,
       position: [selectedPlace.lng, selectedPlace.lat],
       address: selectedPlace.address,
     };
@@ -149,15 +145,19 @@ function RegisterPlace() {
       //이미지 서버에 업로드
       try {
         formData.append('title', submitData.title);
-        formData.append('toggle', submitData.selectedToggle);
-        formData.append('tag', submitData.selectedTag);
-        formData.append('imageUrl', submitData.imageUrl);
+        formData.append('toggle', submitData.toggle);
+        formData.append('tag', submitData.tag);
         formData.append('content', submitData.content);
         formData.append('position', submitData.position);
+        formData.append('imageUrl', submitData.imageUrl);
         formData.append('address', submitData.address);
         console.log('submitData 확인', submitData);
         console.log('폼데이터확인', formData);
         await registerMyPlace(formData);
+
+        //폼데이터 확인
+        console.log('폼데이터를 확인해보자 : ', formDataToObject(formData));
+
         console.log('등록하기 클릭했음');
         navigate('/mapPage');
       } catch (error) {
@@ -166,6 +166,14 @@ function RegisterPlace() {
     } else {
       alert('장소, 이미지를 빠짐없이 작성해주세요');
     }
+  }
+
+  function formDataToObject(formData) {
+    const object = {};
+    formData.forEach((value, key) => {
+      object[key] = value;
+    });
+    return object;
   }
 
   return (

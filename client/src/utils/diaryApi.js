@@ -18,8 +18,6 @@ diaryApi.interceptors.request.use((config) => {
   if (userToken) {
     config.headers.Authorization = `Bearer ${userToken}`;
   }
-  config.headers['Content-Type'] = 'application/json';
-
   return config;
 });
 

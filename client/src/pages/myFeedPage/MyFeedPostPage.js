@@ -17,7 +17,7 @@ export default function MyFeedPostPage() {
   const [count, setCount] = useState(1); // 복제할 개수를 상태로 관리
   const [uploadedImages, setUploadedImages] = useState([]);
   const [inputText, setInputText] = useState([]);
-
+  const [imageUrl, setImageUrl] = useState([]);
   const formData = new FormData();
 
   const handleAddContent = () => {
@@ -33,6 +33,17 @@ export default function MyFeedPostPage() {
         newImage[index] = file;
         return newImage;
       });
+
+      //이미지 미리보기
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImageUrl((prev) => {
+          let newImage = [...prev];
+          newImage[index] = reader.result;
+          return newImage;
+        });
+      };
+      reader.readAsDataURL(file);
     }
   }
 
@@ -57,34 +68,25 @@ export default function MyFeedPostPage() {
     title: '',
     content: '',
     date: '',
-    imageUrl: [],
+    imageUrls: [],
   });
 
-  // useEffect(() => {
-  //   console.log(formData);
-
-  //   if (submitData.title !== '' && submitData.date !== '') {
-  //     fetchDiaryData();
-  //   }
-  // }, [submitData.title, submitData.date]);
-
-  function handleSubmit() {
+  function handleSubmit(e) {
+    e.preventDefault();
     //! 폼데이터로 저장하기 아직 구현중 ..
-    // uploadedImages.forEach((image, index) => {
-    //   formData.append(`image_${index}`, image);
-    // });
     formData.append('title', _title);
     formData.append('date', _date);
     formData.append('content', inputText);
+    formData.append('imageUrls', uploadedImages);
 
     if (_title === '' || _date === '') {
       alert('날짜, 제목을 빠짐없이 입력해주세요');
     } else {
       console.log('formData', formData);
-      fetchDiaryData();
+      fetchDiaryData(formData);
     }
   }
-  async function fetchDiaryData() {
+  async function fetchDiaryData(formData) {
     try {
       await postMyDiary(formData);
       alert('게시글이 등록되었습니다.');
@@ -149,9 +151,13 @@ export default function MyFeedPostPage() {
           >
             취소하기
           </LongStrokedBtn>
-          <LongColoredBtn className="button" onClick={handleSubmit}>
+          <button
+            className="submit-button"
+            onClick={(e) => handleSubmit(e)}
+            type="submit"
+          >
             등록하기
-          </LongColoredBtn>
+          </button>
         </ButtonContainer>
       </PostPageContainer>
     </PageContainer>
@@ -186,6 +192,7 @@ export function ContentBox({ uploadedImage, handleImageUpload, index }) {
     </ContentContainer>
   );
 }
+
 const PageContainer = styled.div`
   font-family: Noto Sans KR;
   color: #383030;
@@ -207,7 +214,7 @@ const PostPageContainer = styled.div`
   justify-content: center;
   align-items: center;
 `;
-const Content = styled.div`
+const Content = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -301,4 +308,22 @@ const ButtonContainer = styled.div`
   flex-direction: column;
   height: 87px;
   justify-content: space-between;
+
+  .submit-button {
+    padding: 8px 25px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 281px;
+    height: 38px;
+    border: none;
+
+    font-family: Noto Sans KR;
+    font-size: 100%;
+    font-weight: 500;
+    background: #bdaf74;
+    color: #fff;
+  }
 `;
