@@ -18,7 +18,16 @@ const foodService = {
 		return updatedDog.foods[updatedDog.foods.length - 1]; // return the newly added food
 	},
 	//무한스크롤 구현
-	async getFoodById(dogId, currentUserId, cursor, pageSize = 10) {
+	async getFoodById(dogId, currentUserId, cursor) {
+		//dogId불러서 사용
+		const dog = await Dog.find({_id:new mongoose.Types.ObjectId(dogId)}).select('userId');
+		if (dog[0].userId !== currentUserId) {
+			throw new errorHandler(
+				commonErrors.authorizationError,
+				"해당 사용자에게 권한이 없습니다.",
+				{ statusCode: 403 }
+			);
+		}
 		const food = await Dog.aggregate([
 			{
 				$match: {

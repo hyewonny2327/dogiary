@@ -68,6 +68,9 @@ const userController = {
       const userId = req.currentUserId;
 
       const { nickName, password } = req.body;
+
+      const checkNick = await userService.checkNickname(nickName);
+
       const matchedUserImage = await User.findOne(
         { userId: userId },
         { imageUrl: 1 },

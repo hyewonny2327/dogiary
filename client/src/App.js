@@ -15,7 +15,12 @@ const MyFeedPostPage = React.lazy(
   () => import('./pages/myFeedPage/MyFeedPostPage'),
 );
 const MyPlacePage = React.lazy(() => import('./pages/MapPage/MyPlacePage'));
+const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
+const ProfileUpdatePage = React.lazy(
+  () => import('./components/myProfilePage/ProfileUpdatePage'),
+);
 const MyPetPage = React.lazy(() => import('./pages/MyPetPage'));
+const FindIdPassword = React.lazy(() => import('./pages/FindIdPassword'));
 
 function App() {
   return (
@@ -30,7 +35,10 @@ function App() {
           <Route path="/JoinPage" element={<JoinPage />} />
           <Route path="/myFeed" element={<MyFeed />} />
           <Route path="/myFeed/post" element={<MyFeedPostPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/update" element={<ProfileUpdatePage />} />
           <Route path="/myPet" element={<MyPetPage />} />
+          <Route path="/find" element={<FindIdPassword />} />
         </Routes>
       </Suspense>
     </Provider>

@@ -20,6 +20,14 @@ const medicalService = {
 	},
 	// 진료기록 가져오기(무한 스크롤)
 	async getMedicalById(dogId, currentUserId, cursor) {
+		const dog = await Dog.find({_id:new mongoose.Types.ObjectId(dogId)}).select('userId');
+		if (dog[0].userId !== currentUserId) {
+			throw new errorHandler(
+				commonErrors.authorizationError,
+				"해당 사용자에게 권한이 없습니다.",
+				{ statusCode: 403 }
+			);
+		}
 		const medicals = await Dog.aggregate([
 			{ $match: { _id: new mongoose.Types.ObjectId(dogId) } },
 			{ $unwind: "$medicals" },

@@ -8,7 +8,7 @@ const diarySchema = new Schema(
       type: String,
       required: true,
     },
-    imageUrl: [
+    imageUrls: [
       {
         type: String,
         default: path.join(__dirname, '../public/images/defaultImage.png'),

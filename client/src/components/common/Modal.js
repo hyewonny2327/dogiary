@@ -16,7 +16,8 @@ export function Modal({ children, containerStyle }) {
     ? createPortal(
         <ModalContainerStyle
           containerStyle={containerStyle}
-          onClick={closeModal}
+          //우선닫아두기
+          // onClick={closeModal}
         >
           <ModalContentStyle>{children}</ModalContentStyle>
         </ModalContainerStyle>,
@@ -37,9 +38,9 @@ const ModalContainerStyle = styled.div`
 `;
 
 const ModalContentStyle = styled.div`
-  // border-radius: 4px;
-  // background: #FFF;
-  // box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  /* border-radius: 4px; */
+  /* background: #fff; */
+  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); */
 `;
 
 /**

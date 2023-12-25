@@ -13,7 +13,15 @@ const weightService = {
 		return updatedDog.weights[updatedDog.weights.length - 1];
 	},
 	// 몸무게 가져오기 무한스크롤 10개
-	async getWeightById(dogId, currentUserId, cursor, pageSize = 10) {
+	async getWeightById(dogId, currentUserId, cursor) {
+		const dog = await Dog.find({_id:new mongoose.Types.ObjectId(dogId)}).select('userId');
+		if (dog[0].userId !== currentUserId) {
+			throw new errorHandler(
+				commonErrors.authorizationError,
+				"해당 사용자에게 권한이 없습니다.",
+				{ statusCode: 403 }
+			);
+		}
 		const weights = await Dog.aggregate([
 			{
 				$match: {
