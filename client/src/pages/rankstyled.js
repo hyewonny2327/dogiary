@@ -50,3 +50,38 @@ export const UserInfo = styled.div`
   font-size: 20px;
   font-weight: bolder;
 `;
+export const Container = styled.div`
+  .title {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 26px;
+    color: #5f5013;
+    margin: 0 auto;
+    width: 100%;
+    flex-wrap: nowrap;
+    padding: 20px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .movemap {
+    display: flex;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 20px;
+    margin: 0 auto;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .myrank {
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #5f5013;
+    font-size: 20px;
+    width: 70%;
+    flex-wrap: nowrap;
+    font-weight: bold;
+    margin: 10 auto;
+    margin-left: 40px;
+    margin-top: 30px;
+  }
+`;
