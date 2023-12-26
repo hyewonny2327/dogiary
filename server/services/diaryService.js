@@ -48,7 +48,7 @@ exports.deleteDiary = async (_id, userId) => {
 exports.getDiaries = async (userId) => {
   const result = await Diary.find(
     { userId },
-    `_id createdAt imageUrls title content date userId`
+    `_id createdAt imageUrls title content date userId`,
   );
   return result;
 };
@@ -61,7 +61,7 @@ exports.getDailyDiaries = async (userId, date) => {
       userId,
       date: date,
     },
-    `_id createdAt imageUrls title content date userId`
+    `_id createdAt imageUrls title content date userId`,
   );
 
   return result;
@@ -69,7 +69,7 @@ exports.getDailyDiaries = async (userId, date) => {
 // 월간 조회
 
 exports.getMonthDiaries = async (userId, year, month) => {
-  const startOfMonth = `${year}-${month.toString().padStart(2, "0")}-01`;
+  const startOfMonth = `${year}-${month.toString().padStart(2, '0')}-01`;
   const endOfMonth = new Date(year, month, 1);
   endOfMonth.setMonth(endOfMonth.getMonth() + 1);
   endOfMonth.setDate(0); // 이로써 원래 월의 마지막 날이 됩니다.
@@ -82,7 +82,7 @@ exports.getMonthDiaries = async (userId, year, month) => {
     },
   })
     .sort({ date: -1 })
-    .select("_id createdAt imageUrls title content date userId")
+    .select('_id createdAt imageUrls title content date userId')
     .exec();
 
   return result;
@@ -93,7 +93,17 @@ exports.getCursorDiaries = async (userId, cursor) => {
   const query = {
     userId: userId,
   };
-
+  if (!cursor) {
+    const recent = await Diary.find({ userId: userId })
+      .sort({ date: -1 })
+      .limit(10)
+      .select('_id createdAt imageUrls title content date userId')
+      .exec();
+    if (!recent || recent.length === 0) {
+      return null;
+    }
+    return recent;
+  }
   if (cursor) {
     query._id = { $lt: cursor };
   }
@@ -101,7 +111,7 @@ exports.getCursorDiaries = async (userId, cursor) => {
   const result = await Diary.find(query)
     .sort({ date: -1 })
     .limit(10)
-    .select("_id createdAt imageUrls title content date userId")
+    .select('_id createdAt imageUrls title content date userId')
     .exec();
 
   return result;

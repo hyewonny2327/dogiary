@@ -13,7 +13,6 @@ const ReadContent = () => {
   const handleEditPage = () => {
     console.log('클릭');
     dispatch(setIsOpen(true));
-    // navigate('/profile/update');
   };
 
   return (

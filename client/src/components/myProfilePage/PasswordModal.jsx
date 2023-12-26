@@ -48,27 +48,27 @@ const PasswordModal = () => {
 
   return (
     <Modal containerStyle={containerStyle}>
-      <ModalPage>
-        <ModalContainer>
-          <AuthTitle>
-            <div>본인 인증을 해주세요.</div>
-          </AuthTitle>
-          <ContentBox>
-            <div>
-              <input
-                ref={passwordInputRef}
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-                placeholder="비밀번호 입력"
-              ></input>
-            </div>
-          </ContentBox>
-          <BtnBox>
-            <button>비밀번호 찾기</button>
-            <button onClick={handlePasswordCheck}>확인</button>
-          </BtnBox>
-        </ModalContainer>
-      </ModalPage>
+      <ModalContainer>
+        <AuthTitle>
+          <div>본인 인증을 해주세요.</div>
+        </AuthTitle>
+        <ContentBox>
+          <label htmlFor="passwordInput">
+            <input
+              ref={passwordInputRef}
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              placeholder="비밀번호 입력"
+              type="password"
+              id="passwordInput"
+            ></input>
+          </label>
+        </ContentBox>
+        <BtnBox>
+          <button>비밀번호 찾기</button>
+          <button onClick={handlePasswordCheck}>확인</button>
+        </BtnBox>
+      </ModalContainer>
     </Modal>
   );
 };
@@ -80,13 +80,16 @@ export default PasswordModal;
 const containerStyle = `
 display:flex;
 flex-direction:column;
-justify-content:flex-end;
+justify-content:center;
 align-items:center;
+font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 700;
+  color: #5f5013;
 
 `;
 
 const ModalPage = styled.div`
-  width: 390px;
+  /* width: 390px;
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -94,6 +97,7 @@ const ModalPage = styled.div`
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
   color: #5f5013;
+  background-color: red; */
 `;
 
 const ModalContainer = styled.div`
@@ -104,6 +108,14 @@ const ModalContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   background-color: white;
+  box-shadow:
+    rgba(0, 0, 0, 0.25) 0px 54px 55px,
+    rgba(0, 0, 0, 0.12) 0px -12px 30px,
+    rgba(0, 0, 0, 0.12) 0px 4px 6px,
+    rgba(0, 0, 0, 0.17) 0px 12px 13px,
+    rgba(0, 0, 0, 0.09) 0px -3px 5px;
+  z-index: 1000;
+  border-radius: 5px;
 `;
 
 const AuthTitle = styled.div`
@@ -116,10 +128,7 @@ const AuthTitle = styled.div`
   & > div {
     width: 95%;
     height: 60%;
-    /* border: 1px solid black; */
   }
-
-  /* background-color: red; */
 `;
 
 const ContentBox = styled.div`
@@ -129,7 +138,7 @@ const ContentBox = styled.div`
   justify-content: center;
   align-items: center;
   //비밀번호 테두리
-  & > div {
+  & > label {
     width: 95%;
     height: 6vh;
     display: flex;
@@ -137,27 +146,31 @@ const ContentBox = styled.div`
     align-items: center;
     border: 1px solid black;
     border-radius: 5px;
+
     //비밀번호 입력칸
     & > input {
       width: 90%;
       height: 80%;
       border: none;
+      font-size: 30px;
+      &:focus {
+        outline: none;
+      }
       &::placeholder {
         color: #a5a5a5;
-        width: 100%;
         font-weight: 700;
-        font-size: 16px;
+        font-size: 20px;
         font-family: 'Noto Sans KR';
       }
     }
   }
 `;
 
+//확인버튼
 const BtnBox = styled.div`
   width: 95%;
   height: 9vh;
   display: flex;
-  /* background-color: red; */
   justify-content: space-between;
   & button:first-child {
     border: none;
