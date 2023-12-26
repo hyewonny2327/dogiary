@@ -17,6 +17,7 @@ const MyFeedPostPage = React.lazy(
 const MyPlacePage = React.lazy(() => import('./pages/MapPage/MyPlacePage'));
 const MyPetPage = React.lazy(() => import('./pages/MyPetPage'));
 const FindIdPassword = React.lazy(() => import('./pages/FindIdPassword'));
+const SignOut = React.lazy(() => import('./pages/Signout'));
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/myFeed/post" element={<MyFeedPostPage />} />
           <Route path="/myPet" element={<MyPetPage />} />
           <Route path="/find" element={<FindIdPassword />} />
+          <Route path="/signout" element={<SignOut />} />
         </Routes>
       </Suspense>
     </Provider>
