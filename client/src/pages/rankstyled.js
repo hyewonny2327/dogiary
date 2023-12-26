@@ -58,7 +58,7 @@ export const Container = styled.div`
     margin: 0 auto;
     width: 100%;
     flex-wrap: nowrap;
-    padding: 20px;
+    padding: 10px;
     font-weight: bold;
     text-align: center;
   }
