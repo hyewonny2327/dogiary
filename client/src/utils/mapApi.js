@@ -36,17 +36,24 @@ export async function registerMyPlace(placeData) {
 export function modifyMyPlace() {}
 
 export async function deleteMyPlace(id) {
+  console.log('받아온 id', typeof id);
   try {
     await mapApi.delete(`/${id}`);
   } catch (error) {
     console.error('장소 정보 삭제하기 api 요청 중 에러 발생', error);
   }
 }
-let cursor = '2023-12-23';
-let toggle = true;
-export async function showMyPlaces() {
+
+export async function showMyPlaces(toggle, cursor) {
+  console.log('커서값 확인', cursor);
+  if (cursor) {
+    cursor = '&cursor=' + cursor;
+  }
+  console.log('커서값 확인', cursor);
+  console.log('토글값 확인', typeof toggle);
+  toggle = toggle.toString();
   try {
-    const response = await mapApi.get(`?myMaps=${toggle}&cursor=${cursor}`);
+    const response = await mapApi.get(`?myMaps=${toggle}${cursor}`);
     console.log(response);
     let placesData = response.data.data;
     return placesData;

@@ -77,7 +77,10 @@ export default function MyFeedPostPage() {
     formData.append('title', _title);
     formData.append('date', _date);
     formData.append('content', inputText);
-    formData.append('imageUrls', uploadedImages);
+    //배열 형태의 이미지는 이렇게 해야함
+    uploadedImages.forEach((image, index) => {
+      formData.append('imageUrls', JSON.stringify(image));
+    });
 
     if (_title === '' || _date === '') {
       alert('날짜, 제목을 빠짐없이 입력해주세요');

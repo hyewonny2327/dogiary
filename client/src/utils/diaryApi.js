@@ -60,3 +60,23 @@ export async function showDailyDiaries(date) {
     console.log('일간 다이어리 조회하기 api 요청 중 에러 발생', error);
   }
 }
+
+export async function showMonthlyDiaries(month) {
+  console.log('month: ', month);
+  try {
+    const res = await diaryApi.get(`/month?date=${month}`);
+    const monthlyDiary = res.data.data;
+    return monthlyDiary;
+  } catch (error) {
+    console.log('월간 다이어리 조회하기 api 요청 중 오류 발생');
+  }
+}
+
+export async function showDiaryWithCursor(cursor) {
+  try {
+    cursor = `?cursor=` + cursor;
+    const res = await diaryApi.get(`/paging${cursor}`);
+  } catch (error) {
+    console.log('커서기준 월간 다이어리 조회하기 api 요청 중 오류발생');
+  }
+}

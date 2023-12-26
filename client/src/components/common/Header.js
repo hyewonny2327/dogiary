@@ -135,21 +135,22 @@ const NavBarStyle = styled.div`
 
   padding: 0px 20px;
   position: relative;
+  box-sizing: border-box;
 
   .menu-icon {
     cursor: pointer;
-    padding: 10px 0;
+    //padding: 10px 0;
   }
 `;
 const CategoryContainer = styled.div`
-  height: 88vh;
+  height: 90vh;
   width: 60vw;
   background-color: #fff8e6;
   box-sizing: border-box;
 
   position: absolute;
   left: 0;
-  top: 6vh;
+  top: 5vh;
   padding: 20px 20px;
 
   display: flex;

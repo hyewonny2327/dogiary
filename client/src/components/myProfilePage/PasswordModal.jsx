@@ -3,6 +3,7 @@ import { useRef, useState } from 'react';
 import { Modal } from '../common/Modal';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { InputBox } from '../common/Boxes';
 
 const PasswordModal = () => {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ const PasswordModal = () => {
       const result = await PasswordCheck();
       result && result.check
         ? navigate('/profile/update')
-        : clearInputField(inputRef);
+        : clearInputField('');
     } catch (error) {
       console.error('비밀번호 확인 오류:', error);
     }
@@ -48,27 +49,27 @@ const PasswordModal = () => {
 
   return (
     <Modal containerStyle={containerStyle}>
-      <ModalPage>
-        <ModalContainer>
-          <AuthTitle>
-            <div>본인 인증을 해주세요.</div>
-          </AuthTitle>
-          <ContentBox>
-            <div>
-              <input
-                ref={passwordInputRef}
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-                placeholder="비밀번호 입력"
-              ></input>
-            </div>
-          </ContentBox>
-          <BtnBox>
-            <button>비밀번호 찾기</button>
-            <button onClick={handlePasswordCheck}>확인</button>
-          </BtnBox>
-        </ModalContainer>
-      </ModalPage>
+      {/* <ModalPage> */}
+      <ModalContainer>
+        <AuthTitle>
+          <div>본인 인증을 해주세요.</div>
+        </AuthTitle>
+        <ContentBox>
+          <InputBox>
+            <input
+              ref={passwordInputRef}
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              placeholder="비밀번호 입력"
+            ></input>
+          </InputBox>
+        </ContentBox>
+        <BtnBox>
+          <button>비밀번호 찾기</button>
+          <button onClick={handlePasswordCheck}>확인</button>
+        </BtnBox>
+      </ModalContainer>
+      {/* </ModalPage> */}
     </Modal>
   );
 };
@@ -80,21 +81,21 @@ export default PasswordModal;
 const containerStyle = `
 display:flex;
 flex-direction:column;
-justify-content:flex-end;
+justify-content:center;
 align-items:center;
 
 `;
 
-const ModalPage = styled.div`
-  width: 390px;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Noto Sans KR', sans-serif;
-  font-weight: 700;
-  color: #5f5013;
-`;
+// const ModalPage = styled.div`
+//   width: 390px;
+//   height: 100vh;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   font-family: 'Noto Sans KR', sans-serif;
+//   font-weight: 700;
+//   color: #5f5013;
+// `;
 
 const ModalContainer = styled.div`
   width: 370px;

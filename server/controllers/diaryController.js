@@ -21,25 +21,20 @@ const successResponse = (data, message) => ({
 // 이미지 업로드 공통 함수
 const getImageUrls = async (req) => {
   try {
-    const matchedUserImage = await User.findOne(
-      { userId: req.currentUserId },
-      { imageUrls: 1 }
-    );
+    console.log(req.files.length);
     if (req.files && req.files.length > 0) {
       return req.files.map((file) =>
-        path.join(__dirname, "../public/images", file.filename)
+        path.join(__dirname, '../public/images', file.filename),
       );
     } else {
-      const defaultImageUrl = path.join(
-        __dirname,
-        "../public/images/defaultImage.png"
+      const matchedUserImage = await User.findOne(
+        { userId: req.currentUserId },
+        { imageUrl: 1 },
       );
-      return matchedUserImage?.imageUrl
-        ? [matchedUserImage.imageUrl]
-        : [defaultImageUrl];
+      return matchedUserImage.imageUrl;
     }
   } catch (error) {
-    throw new errorHandler('internalError', commonErrors.internalError, {
+    throw new errorHandler(commonErrors.internalError, 'internalError', {
       statusCode: 500,
       cause: error,
     });
@@ -61,21 +56,21 @@ exports.postDiary = async (req, res, next) => {
     }
 
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-      throw new errorHandler("inputError", "유효하지 않은 날짜 형식", {
+      throw new errorHandler('inputError', '유효하지 않은 날짜 형식', {
         statusCode: 400,
       });
     }
 
-    const [year, month, day] = date.split("-").map(Number);
+    const [year, month, day] = date.split('-').map(Number);
     const lastDayOfMonth = new Date(year, month, 0).getDate();
 
     if (!(day >= 1 && day <= lastDayOfMonth)) {
       throw new errorHandler(
-        "inputError",
-        "지정된 월에 대한 유효하지 않은 날짜",
+        'inputError',
+        '지정된 월에 대한 유효하지 않은 날짜',
         {
           statusCode: 400,
-        }
+        },
       );
     }
 
@@ -214,10 +209,10 @@ exports.getCursorDiaries = async (req, res, next) => {
       });
     }
 
-    const result = await getCurosrDiaries(
+    const result = await getCursorDiaries(
       req.currentUserId,
       currentDate,
-      pageSize
+      pageSize,
     );
 
     const message = `${cursor}을 기준으로 다이어리 목록을 성공적으로 불러왔습니다.`;

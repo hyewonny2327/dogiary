@@ -47,7 +47,9 @@ function MyFeed() {
           </div>
           <div className="content-container">
             {isCalendarClick && <CalendarComponent />}
-            {isTimelineClick && <TimelineComponent />}
+            {isTimelineClick && (
+              <TimelineComponent isTimelineClick={isTimelineClick} />
+            )}
           </div>
         </CalendarContainer>
         <LongColoredBtn onClick={handleButtonClick}>
