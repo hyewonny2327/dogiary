@@ -70,6 +70,8 @@ export function NavBar() {
     '마이맵',
     '로그인',
     '회원가입',
+    '랭킹',
+    '비번/아이디찾기',
   ];
   const links = [
     'registerPuppy',
@@ -79,6 +81,8 @@ export function NavBar() {
     'mapPage',
     'LoginPage',
     'JoinPage',
+    'ranking',
+    'find',
   ];
 
   return (

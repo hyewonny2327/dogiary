@@ -36,7 +36,6 @@ export async function registerMyPlace(placeData) {
 export function modifyMyPlace() {}
 
 export async function deleteMyPlace(id) {
-  console.log('받아온 id', typeof id);
   try {
     await mapApi.delete(`/${id}`);
   } catch (error) {
@@ -45,16 +44,12 @@ export async function deleteMyPlace(id) {
 }
 
 export async function showMyPlaces(toggle, cursor) {
-  console.log('커서값 확인', cursor);
   if (cursor) {
     cursor = '&cursor=' + cursor;
   }
-  console.log('커서값 확인', cursor);
-  console.log('토글값 확인', typeof toggle);
   toggle = toggle.toString();
   try {
     const response = await mapApi.get(`?myMaps=${toggle}${cursor}`);
-    console.log(response);
     let placesData = response.data.data;
     return placesData;
   } catch (error) {

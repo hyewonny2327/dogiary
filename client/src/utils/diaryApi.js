@@ -76,6 +76,7 @@ export async function showDiaryWithCursor(cursor) {
   try {
     if (cursor !== null) {
       cursor = `?cursor=` + cursor;
+      console.log(cursor);
     } else {
       cursor = '';
     }

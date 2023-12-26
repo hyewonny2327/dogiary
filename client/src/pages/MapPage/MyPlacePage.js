@@ -19,8 +19,6 @@ export default function MyPlacePage() {
       const lastItemId =
         myPlaces.length > 0 ? myPlaces[myPlaces.length - 1]._id : null;
       const res = await showMyPlaces(isPublicClicked, lastItemId);
-      console.log('res', res);
-
       if (Array.isArray(res)) {
         //array인지 체크, 개수보다 이하이면 =>
         if (!res || res.length < 10) {
@@ -75,11 +73,8 @@ export default function MyPlacePage() {
   }
   useEffect(() => {
     // isPublicClicked 상태가 변경될 때마다 데이터를 다시 호출
-    console.log(isPublicClicked);
-
     setMyPlaces([]);
     setMoreData(true);
-    getData();
   }, [isPublicClicked]);
   function handleMouseIn(index) {
     setIsHover((prev) => {
@@ -96,8 +91,6 @@ export default function MyPlacePage() {
     });
   }
   function handleDeleteClick(id) {
-    console.log(id);
-    deleteMyPlace(id);
     deleteMyPlace(id)
       .then(() => {
         // myPlaces에서 삭제된 데이터를 제외하고 업데이트
