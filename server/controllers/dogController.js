@@ -1,12 +1,14 @@
 const dogService = require("../services/dogService.js");
-const jwt = require("jsonwebtoken");
 const errorHandler = require("../middlewares/errorHandler.js");
-const commonErrors = require("../middlewares/commonError.js");
+const commonErrors = require("../middlewares/commonErrors.js");
+const path = require("path");
+
 const dogController = {
 	async postDog(req, res, next) {
 		try {
 			const dogData = req.body;
-			await dogService.createDog(dogData, req.currentUserId);
+
+			dogData.imageUrl = await getImageUrl(req);
 			if (!dogData) {
 				throw new errorHandler(
 					commonErrors.argumentError,
@@ -14,6 +16,7 @@ const dogController = {
 					{ statusCode: 400 }
 				);
 			}
+			await dogService.createDog(dogData, req.currentUserId);
 			res.status(201).json({ message: "Data created successfully" });
 		} catch (error) {
 			next(error);
@@ -23,6 +26,7 @@ const dogController = {
 	async putDog(req, res, next) {
 		try {
 			const dogData = req.body;
+			dogData.imageUrl = await getImageUrl(req);
 			const id = req.params.id;
 			if (!id) {
 				throw new errorHandler(
@@ -56,20 +60,46 @@ const dogController = {
 		}
 	},
 
-	async getOneDog(req, res, next) {
+	async getDog(req, res, next) {
 		try {
-			const id = req.params.id;
-			console.log(id);
-			const dogProfile = await dogService.getOneDog(id, req.currentUserId);
+			if (req.query.id) {
+				const id = req.query.id;
+				const dogProfile = await dogService.getOneDog(id, req.currentUserId);
 
-			res.json({
-				error: null,
-				data: dogProfile,
-			});
+				res.json({
+					error: null,
+					data: dogProfile,
+				});
+			} else {
+				console.log(req.currentUserId);
+				const userDogs = await dogService.getUserDogs(req.currentUserId);
+				res.json({
+					error: null,
+					data: userDogs,
+				});
+			}
 		} catch (error) {
 			next(error);
 		}
 	},
 };
-
+// 이미지 업로드 공통 함수
+const getImageUrl = async (req) => {
+	try {
+		if (req.file && req.file.filename !== undefined) {
+			return path.join("../public/images", req.file.filename);
+		} else {
+			throw new errorHandler(
+				commonErrors.argumentError,
+				"사진데이터를 받아오지 못했습니다.",
+				{ statusCode: 400 }
+			);
+		}
+	} catch (error) {
+		throw new errorHandler(commonErrors.internalError, "internalError", {
+			statusCode: 500,
+			cause: error,
+		});
+	}
+};
 module.exports = dogController;

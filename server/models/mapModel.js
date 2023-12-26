@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const path = require("path");
 
 const MapSchema = new mongoose.Schema(
 	{
@@ -16,11 +17,11 @@ const MapSchema = new mongoose.Schema(
 		},
 		imageUrl: {
 			type: String,
-			required: true,
+			default: path.join(__dirname, "../public/images/defaultImage.png"),
 		},
 		content: {
 			type: String,
-			// required: true,
+			required: true,
 		},
 		position: {
 			type: Array,
@@ -30,6 +31,10 @@ const MapSchema = new mongoose.Schema(
 		userId: {
 			type: String,
 		},
+		address: {
+			type: String,
+			required: true,
+		},
 	},
 	{
 		collection: "Maps",
@@ -37,6 +42,6 @@ const MapSchema = new mongoose.Schema(
 	}
 );
 
-const Map = mongoose.model("Maps", MapSchema);
+const Map = mongoose.model('Maps', MapSchema);
 
 module.exports = Map;

@@ -1,9 +1,8 @@
-const errorHandler = require("../middlewares/errorHandler.js");
-const Diary = require("../models/diaryModel.js");
+const Diary = require('../models/diaryModel.js');
 
 //일기 생성
-exports.createDiary = async ({ imageUrl, title, content, userId }) => {
-  const newDiary = new Diary({ imageUrl, title, content, userId });
+exports.createDiary = async ({ imageUrls, title, content, userId, date }) => {
+  const newDiary = new Diary({ imageUrls, title, content, userId, date });
   const result = await newDiary.save();
   return result;
 };
@@ -49,59 +48,71 @@ exports.deleteDiary = async (_id, userId) => {
 exports.getDiaries = async (userId) => {
   const result = await Diary.find(
     { userId },
-    `_id createdAt imageUrl title content `
+    `_id createdAt imageUrls title content date userId`,
   );
   return result;
 };
 
-//월간 일기 조회(보류)
-// exports.getMonthlyDiaries = async (month) => {
-//   try {
-//     const startDate = new Date(`2023-${month}-01`);
-
-//     const endDate = new Date(startDate);
-//     endDate.setMonth(startDate.getMonth() + 1);
-
-//     const result = await Diary.find(
-//       {
-//         //초과(gt), 미만(lt), 이상(gte), 이하(lte)
-//         //startDate  지정된 달의 1일부터 endDate 다음달 1일(포함되지 않음) 까지
-//         // createdAt: { $gte: startDate, $lt: endDate }, 표현은 필드에 대한 범위를 지정하는 MonggoDB쿼리 필터
-//         // 해당 범위는 startDate 결과값 2023-12-01 00:00:00 ~ 2023-12-31 23:59:59
-
-//         createdAt: { $gte: startDate, $lt: endDate },
-//       },
-//       `_id createdAt imageUrl title content`
-//     );
-
-//     return result;
-//   } catch (err) {
-//     console.error("월간 일기 조회 중 오류 발생", err);
-//   }
-// };
-
 //일간 일기 조회
 
 exports.getDailyDiaries = async (userId, date) => {
-  // 날짜 객체 생성
-  const startDate = new Date(date);
-  // 2023-12-16T00:00:00.000Z
-  const endDate = new Date(startDate);
-  endDate.setDate(startDate.getDate() + 1);
-  // 2023-12-17T00:00:00.000Z
-
-  // setDate : 객체의 날짜를 설정
-  // getDate : 객체에서 해당 월의 날짜를 검색
-
-  // MongoDB에서 데이터 조회
   const result = await Diary.find(
     {
-      // 범위설정 시간 00~ 23시 59분 59초
       userId,
-      createdAt: { $gte: startDate, $lt: endDate },
+      date: date,
     },
-    `_id createdAt imageUrl title content`
+    `_id createdAt imageUrls title content date userId`,
   );
+
+  return result;
+};
+// 월간 조회
+
+exports.getMonthDiaries = async (userId, year, month) => {
+  const startOfMonth = `${year}-${month.toString().padStart(2, '0')}-01`;
+  const endOfMonth = new Date(year, month, 1);
+  endOfMonth.setMonth(endOfMonth.getMonth() + 1);
+  endOfMonth.setDate(0); // 이로써 원래 월의 마지막 날이 됩니다.
+
+  const result = await Diary.find({
+    userId,
+    date: {
+      $gte: startOfMonth,
+      $lt: endOfMonth,
+    },
+  })
+    .sort({ date: -1 })
+    .select('_id createdAt imageUrls title content date userId')
+    .exec();
+
+  return result;
+};
+
+//커서 기반 페이징
+exports.getCursorDiaries = async (userId, cursor) => {
+  const query = {
+    userId: userId,
+  };
+  if (!cursor) {
+    const recent = await Diary.find({ userId: userId })
+      .sort({ date: -1 })
+      .limit(10)
+      .select('_id createdAt imageUrls title content date userId')
+      .exec();
+    if (!recent || recent.length === 0) {
+      return null;
+    }
+    return recent;
+  }
+  if (cursor) {
+    query._id = { $lt: cursor };
+  }
+
+  const result = await Diary.find(query)
+    .sort({ date: -1 })
+    .limit(10)
+    .select('_id createdAt imageUrls title content date userId')
+    .exec();
 
   return result;
 };

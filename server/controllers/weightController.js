@@ -1,6 +1,6 @@
-const weightService = require("../services/weightService.js");
-const errorHandler = require("../middlewares/errorHandler.js");
-const commonErrors = require("../middlewares/commonError.js");
+const weightService = require('../services/weightService.js');
+const errorHandler = require('../middlewares/errorHandler.js');
+const commonErrors = require('../middlewares/commonErrors.js');
 const weightController = {
 	async postWeight(req, res, next) {
 		try {
@@ -21,6 +21,7 @@ const weightController = {
 	},
 	// 몸무게데이터 가져오기
 	async getWeightById(req, res, next) {
+		const cursor = req.query.cursor;
 		try {
 			const dogId = req.params.id;
 			if (!dogId) {
@@ -32,9 +33,13 @@ const weightController = {
 			}
 			const weight = await weightService.getWeightById(
 				dogId,
-				req.currentUserId
+				req.currentUserId,
+				cursor
 			);
-			res.json(weight);
+			res.json({
+				error: null,
+				data: weight,
+			});
 		} catch (error) {
 			next(error);
 		}
@@ -64,24 +69,24 @@ const weightController = {
 		}
 	},
 
-	// 몸무게 삭제
-	async deleteWeight(req, res, next) {
-		try {
-			const dogId = req.params.id;
-			const weightId = req.params.weightId;
-			if (!dogId || !weightId) {
-				throw new errorHandler(
-					commonErrors.argumentError,
-					"데이터를 받아오지 못했습니다.",
-					{ statusCode: 400 }
-				);
-			}
-			await weightService.deleteWeight(dogId, weightId, req.currentUserId);
-			res.status(204).json({ message: "Data deleted successfully" });
-		} catch (error) {
-			next(error);
-		}
-	},
+  // 몸무게 삭제
+  async deleteWeight(req, res, next) {
+    try {
+      const dogId = req.params.id;
+      const weightId = req.params.weightId;
+      if (!dogId || !weightId) {
+        throw new errorHandler(
+          commonErrors.argumentError,
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
+        );
+      }
+      await weightService.deleteWeight(dogId, weightId, req.currentUserId);
+      res.status(204).json({ message: 'Data deleted successfully' });
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 
 module.exports = weightController;

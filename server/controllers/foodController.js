@@ -1,7 +1,7 @@
-const foodService = require("../services/foodService.js");
-const errorHandler = require("../middlewares/errorHandler.js");
+const foodService = require('../services/foodService.js');
+const errorHandler = require('../middlewares/errorHandler.js');
 
-const commonErrors = require("../middlewares/commonError.js");
+const commonErrors = require('../middlewares/commonErrors.js');
 const foodController = {
 	// post
 	async postFood(req, res, next) {
@@ -24,6 +24,7 @@ const foodController = {
 
 	// get
 	async getFoodById(req, res, next) {
+		const cursor = req.query.cursor;
 		try {
 			const dogId = req.params.id;
 			if (!dogId) {
@@ -33,7 +34,11 @@ const foodController = {
 					{ statusCode: 400 }
 				);
 			}
-			const food = await foodService.getFoodById(dogId, req.currentUserId);
+			const food = await foodService.getFoodById(
+				dogId,
+				req.currentUserId,
+				cursor
+			);
 			res.status(200).json({ error: null, data: food });
 		} catch (error) {
 			next(error);
