@@ -9,8 +9,6 @@ import React, { useState, useEffect } from 'react';
 import { api } from '.././utils/api';
 import { StyledBox, RankingBox, Container } from '../pages/rankstyled';
 
-
-
 function Ranking() {
   const navigate = useNavigate();
   const [rankings, setRankings] = useState([]);
@@ -28,8 +26,8 @@ function Ranking() {
     try {
       const response = await api.get('/rank');
       const data = response.data.data;
-      console.log(data.currentUserRank);
-    
+      console.log(data.topUsers);
+
       setRankings(data.topUsers);
       setcurrentUserInfo(data.currentUserInfo);
       setcurrentUserRank(data.currentUserRank);
@@ -82,7 +80,4 @@ function Ranking() {
   );
 }
 
-
-
 export default Ranking;
-
