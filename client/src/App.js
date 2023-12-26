@@ -21,6 +21,7 @@ const ProfileUpdatePage = React.lazy(
 );
 const MyPetPage = React.lazy(() => import('./pages/MyPetPage'));
 const FindIdPassword = React.lazy(() => import('./pages/FindIdPassword'));
+const SignOut = React.lazy(() => import('./pages/Signout'));
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
           <Route path="/profile/update" element={<ProfileUpdatePage />} />
           <Route path="/myPet" element={<MyPetPage />} />
           <Route path="/find" element={<FindIdPassword />} />
+          <Route path="/signout" element={<SignOut />} />
         </Routes>
       </Suspense>
     </Provider>
