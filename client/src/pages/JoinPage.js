@@ -62,10 +62,10 @@ function JoinPage() {
       );
 
       console.log(response);
-      if (response.data.check === false) {
-        setUserIdCheckMsg('중복된 아이디입니다.');
-      } else {
+      if (!response.data.check) {
         setUserIdCheckMsg('사용 가능한 아이디 입니다.');
+      } else {
+        setUserIdCheckMsg('중복된 아이디입니다.');
       }
       console.log('아이디 중복체크');
     } catch (error) {
@@ -334,9 +334,14 @@ function JoinPage() {
             </InputBox>
             <div className="message">{confirmPwdMsg}</div>
           </div>
-          <div className="btn-box" onClick={handleJoin}>
-            <LongColoredBtn text={'가입하기'} className="long-btn" />
-          </div>
+          <LongColoredBtn
+            onClick={(e) => {
+              handleJoin();
+            }}
+            className="long-btn"
+          >
+            가입하기
+          </LongColoredBtn>
         </JoinContents>
       </Main>
     </div>
