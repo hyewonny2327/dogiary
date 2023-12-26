@@ -203,17 +203,7 @@ exports.getCursorDiaries = async (req, res, next) => {
   try {
     const { cursor } = req.query;
 
-    if (!cursor) {
-      throw new errorHandler('inputError', commonErrors.inputError, {
-        statusCode: 400,
-      });
-    }
-
-    const result = await getCursorDiaries(
-      req.currentUserId,
-      currentDate,
-      pageSize,
-    );
+    const result = await getCursorDiaries(req.currentUserId, cursor);
 
     const message = `${cursor}을 기준으로 다이어리 목록을 성공적으로 불러왔습니다.`;
 

@@ -74,8 +74,14 @@ export async function showMonthlyDiaries(month) {
 
 export async function showDiaryWithCursor(cursor) {
   try {
-    cursor = `?cursor=` + cursor;
+    if (cursor !== null) {
+      cursor = `?cursor=` + cursor;
+    } else {
+      cursor = '';
+    }
     const res = await diaryApi.get(`/paging${cursor}`);
+    console.log(res.data.data);
+    return res.data.data;
   } catch (error) {
     console.log('커서기준 월간 다이어리 조회하기 api 요청 중 오류발생');
   }

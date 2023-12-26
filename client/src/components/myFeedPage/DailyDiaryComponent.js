@@ -123,7 +123,7 @@ const DailyDiary = styled.div`
   .image {
     width: 90%;
     height: 200px;
-    border: 1px solid red;
+    //border: 1px solid red;
   }
   .text {
     width: 90%;

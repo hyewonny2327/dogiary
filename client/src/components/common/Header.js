@@ -69,14 +69,16 @@ export function NavBar() {
     '마이페이지',
     '마이맵',
     '로그인',
+    '회원가입',
   ];
   const links = [
     'registerPuppy',
     'myFeed',
-    'myPuppyPage',
-    'myPage',
+    'myPet',
+    'profile',
     'mapPage',
     'LoginPage',
+    'JoinPage',
   ];
 
   return (
