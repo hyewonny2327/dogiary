@@ -38,16 +38,17 @@ export default function WeightComponent() {
       <ContainerBox>
         <WeightContents>
           <span className="span">몸무게를 등록하세요.</span>
+          <div className="register-btn">
+            <SmallBtn
+              onClick={(e) => {
+                weightPostClick();
+              }}
+            >
+              등록
+            </SmallBtn>
+          </div>
 
-          <SmallBtn
-            onClick={(e) => {
-              weightPostClick();
-            }}
-          >
-            등록
-          </SmallBtn>
-
-          <DatePicker
+          <StyledDatePicker
             locale={ko}
             selected={startDate}
             onChange={(date) => setStartDate(date)}
@@ -65,10 +66,11 @@ export default function WeightComponent() {
               onChange={handleChangeWeight}
             ></input>
           </InputBox>
-          <div>
-            <span>몸무게 히스토리</span>
-          </div>
+
           <WeightList>
+            <div>
+              <span>몸무게 히스토리</span>
+            </div>
             <ul>
               {weightList.map((item, index) => (
                 <li key={index}>
@@ -84,15 +86,23 @@ export default function WeightComponent() {
 }
 
 const WeightContents = styled.div`
-  // height: 100%;
   display: flex;
   flex-direction: column;
-  // align-items: center;
   justify-content: center;
   padding: 30px;
 
   .span {
     padding: 10px;
+    text-align: left;
+  }
+
+  .form-input {
+    width: 280px;
+    margin-top: 10px;
+  }
+  .register-btn {
+    padding: 10px;
+    margin-left: auto;
   }
 `;
 
@@ -107,4 +117,9 @@ const WeightList = styled.div`
   li {
     margin-bottom: 10px;
   }
+`;
+
+const StyledDatePicker = styled(DatePicker)`
+  width: 278px;
+  height: 29px;
 `;

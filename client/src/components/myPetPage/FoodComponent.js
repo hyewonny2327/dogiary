@@ -124,7 +124,12 @@ const FoodContents = styled.div`
   .form-input-name,
   .form-input-content {
     width: 280px;
-    margin: 0 auto;
+    margin-top: 10px;
+  }
+
+  .register-btn {
+    padding: 10px;
+    margin-left: auto;
   }
 `;
 

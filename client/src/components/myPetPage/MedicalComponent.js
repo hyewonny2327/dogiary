@@ -49,14 +49,16 @@ export default function MedicalComponent() {
       <ContainerBox>
         <MedicalContents>
           <span className="span">사료/영양제/간식 정보를 등록하세요.</span>
-          <SmallBtn
-            onClick={(e) => {
-              MedicalPostClick();
-            }}
-          >
-            등록
-          </SmallBtn>
-          <DatePicker
+          <div className="register-btn">
+            <SmallBtn
+              onClick={(e) => {
+                MedicalPostClick();
+              }}
+            >
+              등록
+            </SmallBtn>
+          </div>
+          <StyledDatePicker
             locale={ko}
             selected={startDate}
             onChange={(date) => setStartDate(date)}
@@ -64,7 +66,7 @@ export default function MedicalComponent() {
           />
           <InputBox>
             <input
-              className="form-input"
+              className="form-input-content"
               value={content}
               type="text"
               name="content"
@@ -75,7 +77,7 @@ export default function MedicalComponent() {
           </InputBox>
           <InputBox>
             <input
-              className="form-input"
+              className="form-input-hospital"
               value={hospital}
               type="text"
               name="hospital"
@@ -86,7 +88,7 @@ export default function MedicalComponent() {
           </InputBox>
           <InputBox>
             <input
-              className="form-input"
+              className="form-input-cost"
               value={cost}
               type="text"
               name="cost"
@@ -95,10 +97,12 @@ export default function MedicalComponent() {
               onChange={handleChangeCost}
             ></input>
           </InputBox>
-          <div>
-            <span>건강기록 히스토리</span>
-          </div>
+
           <MedicalList>
+            <div>
+              <span>건강기록 히스토리</span>
+            </div>
+
             <ul>
               <li></li>
             </ul>
@@ -110,15 +114,26 @@ export default function MedicalComponent() {
 }
 
 const MedicalContents = styled.div`
-  // height: 100%;
   display: flex;
   flex-direction: column;
-  // align-items: center;
   justify-content: center;
   padding: 30px;
 
   .span {
     padding: 10px;
+    text-align: left;
+  }
+
+  .form-input-content,
+  .form-input-hospital,
+  .form-input-cost {
+    width: 280px;
+    margin-top: 10px;
+  }
+
+  .register-btn {
+    padding: 10px;
+    margin-left: auto;
   }
 `;
 
@@ -133,4 +148,9 @@ const MedicalList = styled.div`
   li {
     margin-bottom: 10px;
   }
+`;
+
+const StyledDatePicker = styled(DatePicker)`
+  width: 278px;
+  height: 29px;
 `;

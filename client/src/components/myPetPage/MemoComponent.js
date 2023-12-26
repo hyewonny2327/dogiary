@@ -110,7 +110,7 @@ const MemoContents = styled.div`
   .form-input-title,
   .form-input-content {
     width: 280px;
-    margin: 0 auto;
+    margin-top: 10px;
   }
 
   .form-input-content {
