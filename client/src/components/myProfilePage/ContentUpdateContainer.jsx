@@ -7,9 +7,13 @@ import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
 const ContentUpdateContainer = () => {
   //회원정보수정버튼Api
 
+  const onEditClick = () => {
+    console.log('클릭');
+  };
+
   return (
     <ContentWrapper>
-      <Title isEdit />
+      <Title isEdit onEditClick={onEditClick} />
       <Content isEdit />
       <SecessionBtn>
         회원탈퇴

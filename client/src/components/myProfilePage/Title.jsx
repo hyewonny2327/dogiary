@@ -1,6 +1,7 @@
 import { styled } from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
+
 const Title = ({ isEdit, onEditClick }) => {
   return (
     <ProfileTitle>
@@ -23,10 +24,7 @@ const Title = ({ isEdit, onEditClick }) => {
         />
         {isEdit && (
           <EditButton onClick={onEditClick}>
-            <FontAwesomeIcon
-              icon={faCamera}
-              // style={{ backgroundColor: '#BDAF74', color: 'white' }}
-            />
+            <FontAwesomeIcon icon={faCamera} />
           </EditButton>
         )}
       </ImageContainer>
@@ -43,7 +41,6 @@ const ProfileTitle = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-  border: 1px solid red;
 `;
 
 const ImageContainer = styled.div`
@@ -52,16 +49,12 @@ const ImageContainer = styled.div`
 
 const EditButton = styled.button`
   position: absolute;
-  bottom: 0;
-  right: 0;
+  bottom: 10px;
+  right: 10px;
   background-color: #bdaf74;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 1rem;
-
-  &:hover {
-    background-color: #45a049;
-  }
 `;
