@@ -1,17 +1,17 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-export function LongColoredBtn({ text, onClick }) {
+export function LongColoredBtn({ children, onClick }) {
   return (
     <LongBtnStyle className="colored" onClick={onClick}>
-      {text}
+      {children}
     </LongBtnStyle>
   );
 }
-export function LongStrokedBtn({ text, onClick }) {
+export function LongStrokedBtn({ children, onClick }) {
   return (
     <LongBtnStyle className="stroked" onClick={onClick}>
-      {text}
+      {children}
     </LongBtnStyle>
   );
 }

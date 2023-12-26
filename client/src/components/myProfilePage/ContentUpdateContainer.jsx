@@ -1,13 +1,20 @@
 import { styled } from 'styled-components';
 import Title from './Title';
 import Content from './Content';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
 
 const ContentUpdateContainer = () => {
+  //회원정보수정버튼Api
+
   return (
     <ContentWrapper>
       <Title isEdit />
       <Content isEdit />
-      <SecessionBtn>회원탈퇴></SecessionBtn>
+      <SecessionBtn>
+        회원탈퇴
+        <FontAwesomeIcon icon={faAngleRight} />
+      </SecessionBtn>
     </ContentWrapper>
   );
 };
