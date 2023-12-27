@@ -2,21 +2,35 @@ import styled from 'styled-components';
 import { showDiaryWithCursor } from '../../utils/diaryApi';
 import { useEffect, useState, useRef } from 'react';
 import useInfinityScroll from '../../hooks/useInfinityScroll';
-export default function TimelineComponent({ isTimelineClick }) {
-  //? 인피니티 스크롤 넣었는데 영재님이 커서 null 인거 수정하셔야함
-
+export default function TimelineComponent() {
   const [monthlyDiaries, setMonthlyDiaries] = useState([]);
   const [monthAndYear, setMonthAndYear] = useState('');
+  const [currentMonth, setCurrentMonth] = useState('');
 
+  //타임라인 무한스크롤
+  const { setTargetRef } = useInfinityScroll(handleIntersect);
+  const targetRef = useRef(null);
+  const [moreData, setMoreData] = useState(true);
+
+  async function handleIntersect() {
+    console.log('handleIntersect 함수 실행');
+    if (moreData) {
+      await getDiaryData();
+    } else {
+      console.log('끝');
+    }
+  }
   function getCurrentMonthAndYear() {
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth() + 1;
+    setCurrentMonth(currentMonth);
 
     const formattedDate = `${currentYear}-${currentMonth}`;
     setMonthAndYear(formattedDate);
   }
   async function getDiaryData() {
+    console.log('호출!');
     try {
       if (!moreData) {
         console.log('No more data to fetch');
@@ -26,6 +40,7 @@ export default function TimelineComponent({ isTimelineClick }) {
         monthlyDiaries.length > 0
           ? monthlyDiaries[monthlyDiaries.length - 1]._id
           : null;
+      console.log('lastItemId', lastItemId);
       const diaries = await showDiaryWithCursor(lastItemId);
       if (Array.isArray(diaries)) {
         //array인지 체크, 개수보다 이하이면 =>
@@ -44,34 +59,32 @@ export default function TimelineComponent({ isTimelineClick }) {
   }
 
   useEffect(() => {
+    setTargetRef(targetRef.current);
+    getCurrentMonthAndYear();
+  }, []);
+
+  useEffect(() => {
     getCurrentMonthAndYear();
     //getDiaryData();
-    setTargetRef(targetRef.current);
-  }, []); // 최초 렌더링 시에만 실행
-
-  //타임라인 무한스크롤
-  const { setTargetRef } = useInfinityScroll(handleIntersect);
-  const targetRef = useRef(null);
-  const [moreData, setMoreData] = useState(true);
-  async function handleIntersect() {
-    if (moreData) {
-      await getDiaryData();
-    } else {
-      console.log('끝');
-    }
-  }
+  }, [monthAndYear]); // 최초 렌더링 시에만 실행
 
   return (
     <TimeLine>
-      <div className="month">{monthAndYear}</div>
+      <div className="month">{currentMonth} 월</div>
       {monthlyDiaries &&
-        monthlyDiaries.map((diary) => (
-          <div className="post-component" key={`${diary.id}`}>
+        monthlyDiaries.map((diary, index) => (
+          <div className="post-component" key={`${diary._id}-${index}`}>
             <div className="text-container">
               <div>{diary.date}</div>
               <div>{diary.title}</div>
             </div>
-            <div className="image"></div>
+            <img
+              className="image"
+              alt="대표이미지"
+              //배포 후 잘 들어갔는지 확인 필요
+              //   src={diary.imageUrls[0]}
+              src={'/images/147722e1-adc8-4ca0-acea-67826c8af098.png'}
+            ></img>
           </div>
         ))}
       {moreData ? (
@@ -104,5 +117,6 @@ const TimeLine = styled.div`
     width: 350px;
     height: 160px;
     background-color: #fff8e6;
+    border: 1px solid red;
   }
 `;

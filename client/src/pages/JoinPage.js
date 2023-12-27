@@ -43,6 +43,7 @@ function JoinPage() {
       }
       console.log('닉네임 중복체크');
     } catch (error) {
+      console.log(error.statusCode);
       console.error('API 호출 중 에러 발생:', error);
     }
   };
@@ -390,7 +391,7 @@ const JoinContents = styled.div`
 
   .message {
     font-size: 12px;
-    color: red;
+    color: blue;
   }
 `;
 

@@ -79,6 +79,7 @@ export async function showDiaryWithCursor(cursor) {
     } else {
       cursor = '';
     }
+    console.log('커서는', cursor);
     const res = await diaryApi.get(`/paging${cursor}`);
     console.log(res.data.data);
     return res.data.data;
