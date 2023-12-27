@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setSearchInput, setMarkers } from '../../slice/store';
 import { showPlacesByTag } from '../../utils/mapApi';
 import { setTag } from '../../slice/store';
-import useInfinityScroll from '../../hooks/useInfinityScroll';
+
 const TagList = [
   { label: '산책', id: 'tag0' },
   { label: '애견동반', id: 'tag1' },

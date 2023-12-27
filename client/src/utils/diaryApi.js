@@ -18,14 +18,16 @@ diaryApi.interceptors.request.use((config) => {
   if (userToken) {
     config.headers.Authorization = `Bearer ${userToken}`;
   }
-  config.headers['Content-Type'] = 'application/json';
-
   return config;
 });
 
 export async function postMyDiary(postData) {
   try {
-    await diaryApi.post(null, postData);
+    await diaryApi.post(null, postData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   } catch (error) {
     console.error('다이어리 생성하기 api 요청 중 에러 발생', error);
   }
@@ -41,11 +43,47 @@ export async function deleteMyDiary(id) {
 
 export async function showAllDiaries() {
   try {
-    await diaryApi.get(null).then((res) => {
-      const diaryData = res.data.data;
-      return diaryData;
-    });
+    const res = await diaryApi.get(null);
+    const diaryData = res.data.data;
+    return diaryData;
   } catch (error) {
     console.error('모든 다이어리 조회하기 api 요청 중 에러 발생', error);
+  }
+}
+
+export async function showDailyDiaries(date) {
+  try {
+    const res = await diaryApi.get(`?createdAt=${date}`);
+    const dailyDiary = res.data.data;
+    return dailyDiary;
+  } catch (error) {
+    console.log('일간 다이어리 조회하기 api 요청 중 에러 발생', error);
+  }
+}
+
+export async function showMonthlyDiaries(month) {
+  console.log('month: ', month);
+  try {
+    const res = await diaryApi.get(`/month?date=${month}`);
+    const monthlyDiary = res.data.data;
+    return monthlyDiary;
+  } catch (error) {
+    console.log('월간 다이어리 조회하기 api 요청 중 오류 발생');
+  }
+}
+
+export async function showDiaryWithCursor(cursor) {
+  try {
+    if (cursor !== null) {
+      cursor = `?cursor=` + cursor;
+    } else {
+      cursor = '';
+    }
+    console.log('커서는', cursor);
+    const res = await diaryApi.get(`/paging${cursor}`);
+    console.log(res.data.data);
+    return res.data.data;
+  } catch (error) {
+    console.log('커서기준 월간 다이어리 조회하기 api 요청 중 오류발생');
   }
 }

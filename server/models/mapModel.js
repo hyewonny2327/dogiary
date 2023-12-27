@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const path = require("path");
 
 const MapSchema = new mongoose.Schema(
 	{
@@ -16,7 +17,7 @@ const MapSchema = new mongoose.Schema(
 		},
 		imageUrl: {
 			type: String,
-			required: true,
+			default: path.join(__dirname, "../public/images/defaultImage.png"),
 		},
 		content: {
 			type: String,
@@ -41,6 +42,6 @@ const MapSchema = new mongoose.Schema(
 	}
 );
 
-const Map = mongoose.model("Maps", MapSchema);
+const Map = mongoose.model('Maps', MapSchema);
 
 module.exports = Map;

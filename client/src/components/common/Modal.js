@@ -11,6 +11,9 @@ export function Modal({ children, containerStyle }) {
   const closeModal = () => {
     dispatch(setIsOpen(false));
   };
+  const handleContentClick = (e) => {
+    e.stopPropagation();
+  };
 
   return isModalClicked
     ? createPortal(
@@ -18,7 +21,9 @@ export function Modal({ children, containerStyle }) {
           containerStyle={containerStyle}
           onClick={closeModal}
         >
-          <ModalContentStyle>{children}</ModalContentStyle>
+          <ModalContentStyle onClick={handleContentClick}>
+            {children}
+          </ModalContentStyle>
         </ModalContainerStyle>,
         document.body,
       )
@@ -37,9 +42,9 @@ const ModalContainerStyle = styled.div`
 `;
 
 const ModalContentStyle = styled.div`
-  // border-radius: 4px;
-  // background: #FFF;
-  // box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  /* border-radius: 4px; */
+  /* background: #fff; */
+  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); */
 `;
 
 /**
