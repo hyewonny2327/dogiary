@@ -87,7 +87,13 @@ export default function MemoComponent() {
             </div>
 
             <ul>
-              <li></li>
+              {memoList.map((item, index) => (
+                <li key={index} className="content-item">
+                  <span className="title">{item.title}</span>
+                  <span className="date">{item.date.toLocaleDateString()}</span>
+                  <span className="content">{item.title}</span>
+                </li>
+              ))}
             </ul>
           </MemoList>
         </MemoContents>
@@ -134,6 +140,20 @@ const MemoList = styled.div`
 
   li {
     margin-bottom: 10px;
+  }
+
+  .content-item {
+    list-style: none;
+    overflow: hidden;
+  }
+
+  .title,
+  .content {
+    float: right;
+  }
+
+  .date {
+    float: left;
   }
 `;
 

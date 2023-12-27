@@ -19,13 +19,10 @@ export default function WeightComponent() {
   const weightPostClick = async () => {
     try {
       const id = '';
-      const response = await api.post(
-        'http://localhost:8080/api/dogs/${id}/weights',
-        {
-          date: startDate,
-          weight,
-        },
-      );
+      const response = await api.post('/dogs/${id}/weights', {
+        date: startDate,
+        weight,
+      });
       const newWeightData = response.data;
 
       setWeightList([...weightList, newWeightData]);
@@ -124,7 +121,7 @@ const WeightList = styled.div`
 
   .weight-item {
     list-style: none;
-    overflow: hidden; /* 부모 요소의 높이를 자식의 높이에 따라 조절합니다. */
+    overflow: hidden;
   }
 
   .date {
