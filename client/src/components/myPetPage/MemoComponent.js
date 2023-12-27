@@ -82,7 +82,7 @@ export default function MemoComponent() {
           </InputBox>
 
           <MemoList>
-            <div className="span">
+            <div>
               <span>메모 히스토리</span>
             </div>
 
