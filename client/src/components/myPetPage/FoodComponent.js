@@ -123,8 +123,9 @@ const FoodContents = styled.div`
   .form-input-category,
   .form-input-name,
   .form-input-content {
-    width: 280px;
+    width: 270px;
     margin-top: 10px;
+    padding-left: 10px;
   }
 
   .register-btn {
@@ -147,6 +148,9 @@ const FoodList = styled.div`
 `;
 
 const StyledDatePicker = styled(DatePicker)`
-  width: 278px;
+  width: 270px;
   height: 29px;
+  border: 1px solid #bdaf74;
+  border-radius: 4px;
+  padding-left: 10px;
 `;

@@ -5,7 +5,7 @@ import DatePicker from 'react-datepicker';
 import styled from 'styled-components';
 import 'react-datepicker/dist/react-datepicker.css';
 import { ko } from 'date-fns/esm/locale';
-import axios from 'axios';
+import { api } from '../../utils/api';
 
 export default function WeightComponent() {
   const [weight, setWeight] = useState('');
@@ -16,17 +16,19 @@ export default function WeightComponent() {
     setWeight(e.target.value);
   };
 
-  //등록버튼
   const weightPostClick = async () => {
     try {
-      const response = await axios.post(
-        'http://localhost:8080/api/dogs/:id/weights',
+      const id = '';
+      const response = await api.post(
+        'http://localhost:8080/api/dogs/${id}/weights',
         {
           date: startDate,
           weight,
         },
       );
-      setWeightList([...weightList, response.data]);
+      const newWeightData = response.data;
+
+      setWeightList([...weightList, newWeightData]);
       setWeight('');
     } catch (error) {
       console.error('등록에 실패했습니다.', error);
@@ -73,8 +75,9 @@ export default function WeightComponent() {
             </div>
             <ul>
               {weightList.map((item, index) => (
-                <li key={index}>
-                  {item.date}: {item.weight}kg
+                <li key={index} className="weight-item">
+                  <span className="date">{item.date.toLocaleDateString()}</span>
+                  <span className="weight">{item.weight}kg</span>
                 </li>
               ))}
             </ul>
@@ -97,8 +100,9 @@ const WeightContents = styled.div`
   }
 
   .form-input {
-    width: 280px;
+    width: 270px;
     margin-top: 10px;
+    padding-left: 10px;
   }
   .register-btn {
     padding: 10px;
@@ -117,9 +121,25 @@ const WeightList = styled.div`
   li {
     margin-bottom: 10px;
   }
+
+  .weight-item {
+    list-style: none;
+    overflow: hidden; /* 부모 요소의 높이를 자식의 높이에 따라 조절합니다. */
+  }
+
+  .date {
+    float: left;
+  }
+
+  .weight {
+    float: right;
+  }
 `;
 
 const StyledDatePicker = styled(DatePicker)`
-  width: 278px;
+  width: 270px;
   height: 29px;
+  border: 1px solid #bdaf74;
+  border-radius: 4px;
+  padding-left: 10px;
 `;

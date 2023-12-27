@@ -109,8 +109,9 @@ const MemoContents = styled.div`
 
   .form-input-title,
   .form-input-content {
-    width: 280px;
+    width: 270px;
     margin-top: 10px;
+    padding-left: 10px;
   }
 
   .form-input-content {
@@ -137,6 +138,9 @@ const MemoList = styled.div`
 `;
 
 const StyledDatePicker = styled(DatePicker)`
-  width: 278px;
+  width: 270px;
   height: 29px;
+  border: 1px solid #bdaf74;
+  border-radius: 4px;
+  padding-left: 10px;
 `;
