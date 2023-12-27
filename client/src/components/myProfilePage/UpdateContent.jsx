@@ -1,41 +1,26 @@
 import { styled } from 'styled-components';
 import { LongColoredBtn, SmallBtn } from '../common/Buttons';
-import axios from 'axios';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
+import { PasswordCheck, nicknameCheck } from '../../utils/userInformation';
 
-const UpdateContent = () => {
-  const [nickName, setNickName] = useState('');
+const UpdateContent = ({
+  nickName,
+  setNickName,
+  newPassword,
+  setNewPassword,
+  newPasswordConfirmed,
+  setNewPasswordConfirmed,
+  handleUpdate,
+  readUserId,
+  readNickName,
+}) => {
   const nickNameInputRef = useRef(null);
   const passwordInputRef = useRef(null);
-  const [readUserId, setReadUserId] = useState('');
-  const [readNickNmae, setReadNickRead] = useState('');
+
   const [password, setPassword] = useState('');
   const [passwordConfirmed, setPasswordConfirmed] = useState(false);
-  const [newPassword, setNewPassword] = useState('');
-  const [newPasswordConfirmed, setNewPasswordConfirmed] = useState('');
+
   const [isUpdateEnabled, setUpdateEnabled] = useState(false);
-  const userTokenValue = localStorage.getItem('userToken');
-
-  const userIdRead = async () => {
-    try {
-      const response = await axios.get(
-        'http://localhost:8080/api/auth/my-page',
-        {
-          headers: {
-            Authorization: `Bearer ${userTokenValue}`,
-            'Content-type': 'application/json',
-          },
-        },
-      );
-
-      const resultUserId = response.data.data.userId;
-      const resultNickName = response.data.data.nickName;
-      setReadUserId(resultUserId);
-      setReadNickRead(resultNickName);
-    } catch (err) {
-      console.error('에러', err);
-    }
-  };
 
   //input 비워주기
   const clearNicknameInputField = () => {
@@ -50,29 +35,23 @@ const UpdateContent = () => {
     }
   };
 
-  useEffect(() => {
-    userIdRead();
-  }, []);
-
-  //닉네임 중복확인 Api
-  const nicknameCheck = async () => {
-    try {
-      const response = await axios.post(
-        'http://localhost:8080/api/auth/check-nickname',
-        { nickName: nickName },
-      );
-
-      return response.data.data;
-    } catch (error) {
-      console.error('중복 닉네임:', error);
-    }
-  };
-
-  //확인Btn
+  //닉네임 중복 확인 Btn
   const handleNicknameCheck = async () => {
     try {
-      const result = await nicknameCheck();
-
+      // 최소 길이 확인
+      if (nickName.length < 2) {
+        alert('닉네임은 최소 2자 이상이어야 합니다.');
+        return;
+      }
+      // 공백 확인
+      if (nickName.includes(' ')) {
+        alert('닉네임에는 공백을 포함할 수 없습니다. 다시 입력해주세요.');
+        clearNicknameInputField();
+        setUpdateEnabled(false);
+        return;
+      }
+      // 중복 닉네임 확인
+      const result = await nicknameCheck(nickName);
       if (result && result.check) {
         alert('사용 가능한 닉네임입니다.');
         setUpdateEnabled(true);
@@ -86,31 +65,12 @@ const UpdateContent = () => {
     }
   };
 
-  //현재 비밀번호 Api
+  //
 
-  const PasswordCheck = async () => {
-    try {
-      const response = await axios.post(
-        'http://localhost:8080/api/auth/check-password',
-        { password },
-        {
-          headers: {
-            Authorization: `Bearer ${userTokenValue}`,
-            'Content-type': 'application/json',
-          },
-        },
-      );
-
-      return response.data.data;
-    } catch (error) {
-      console.error('비밀번호 확인 오류:', error);
-    }
-  };
-  //확인Btn
+  //현재 비밀번호 확인Btn
   const handlePasswordCheck = async () => {
     try {
-      const result = await PasswordCheck();
-
+      const result = await PasswordCheck(password);
       if (result && result.check) {
         alert('인증되었습니다');
         setPasswordConfirmed(true);
@@ -123,62 +83,6 @@ const UpdateContent = () => {
       }
     } catch (error) {
       console.error('비밀번호 확인 오류:', error);
-    }
-  };
-
-  //수정하기 Api (userID 추후에 제거)
-
-  const userInformationUpdate = async () => {
-    try {
-      const formData = new FormData();
-      formData.append('nickName', nickName);
-      formData.append('userId', 'normaljun95');
-      formData.append('password', newPassword);
-      formData.append(
-        'imageUrl',
-        new Blob(
-          [
-            'C:\\Users\\82103\\Desktop\\MyProject\\dogiary\\dogiary\\server\\public\\defaultImage.png',
-          ],
-          { type: 'image/png' },
-        ),
-      );
-
-      const response = await axios.put(
-        'http://localhost:8080/api/auth/my-page',
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${userTokenValue}`,
-            'Content-Type': 'multipart/form-data',
-          },
-        },
-      );
-
-      return response.data.data;
-    } catch (error) {
-      console.error('Error during update:', error);
-    }
-  };
-
-  const handleUpdate = async () => {
-    try {
-      if (newPassword !== newPasswordConfirmed) {
-        alert('새 비밀번호와 확인이 일치해야 합니다.');
-        return;
-      }
-
-      const result = await userInformationUpdate();
-
-      if (result) {
-        alert('회원정보 수정이 완료되었습니다.');
-        setNewPassword('');
-        setNickName('');
-      } else {
-        alert('수정 실패');
-      }
-    } catch (error) {
-      console.error('업데이트 중 오류 발생:', error);
     }
   };
 
@@ -202,7 +106,7 @@ const UpdateContent = () => {
               type="text"
               id="nickNameInput"
               ref={nickNameInputRef}
-              placeholder={readNickNmae}
+              placeholder={readNickName}
             />
           </label>
           <div>

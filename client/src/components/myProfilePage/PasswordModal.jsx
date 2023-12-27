@@ -88,18 +88,6 @@ font-family: 'Noto Sans KR', sans-serif;
 
 `;
 
-const ModalPage = styled.div`
-  /* width: 390px;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Noto Sans KR', sans-serif;
-  font-weight: 700;
-  color: #5f5013;
-  background-color: red; */
-`;
-
 const ModalContainer = styled.div`
   width: 370px;
   height: 27vh;
@@ -183,10 +171,11 @@ const BtnBox = styled.div`
   & > button:last-child {
     border: none;
     width: 3.5rem;
-    height: 4vh;
+    height: 3vh;
     background-color: #f2d8b2;
     color: black;
     font-family: 'Noto Sans KR';
     font-weight: 700;
+    border-radius: 5px;
   }
 `;
