@@ -1,7 +1,7 @@
 const { body, check, validationResult } = require('express-validator');
 
 const validatePostMapInfo = [
-    body('content').notEmpty().withMessage('이름을 입력하세요.'),
+    body('content').notEmpty().withMessage('내용을 입력하세요.'),
     check('imageUrl').custom((value, { req }) => {
       if (!req.file) {
         throw new Error('이미지를 업로드하세요.');
@@ -18,7 +18,7 @@ const validatePostMapInfo = [
 ];
 
 const validateUpdateMapInfo = [
-    body('content').optional().notEmpty().withMessage('이름을 입력하세요.'),
+    body('content').optional().notEmpty().withMessage('내용을 입력하세요.'),
     check('imageUrl').optional().custom((value, { req }) => {
       if (!req.file) {
         throw new Error('이미지를 업로드하세요.');
