@@ -57,4 +57,7 @@ userRouter.post('/help', validateCheckEmail, userController.sendTemporaryPasswor
 //아이디 찾기
 userRouter.post('/find-id', validateCheckEmail, userController.sendUserId);
 
+//이메일 인증번호 확인
+userRouter.post('/check-number', userController.checkAuthNumber);
+
 module.exports = userRouter;
