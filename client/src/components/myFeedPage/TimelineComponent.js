@@ -71,6 +71,9 @@ export default function TimelineComponent({ isTimelineClick }) {
     if (targetRef && targetRef.current) {
       setTargetRef(targetRef.current);
     }
+    if (targetRef == null) {
+      console.log('null 입니다 onIntersect 호출하지마!! ');
+    }
     getCurrentMonthAndYear();
   }, [targetRef]);
 

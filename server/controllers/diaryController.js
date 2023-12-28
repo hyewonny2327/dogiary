@@ -180,11 +180,10 @@ exports.getMonthDiaries = async (req, res, next) => {
     }
 
     const copyDate = new Date(date);
-
     const year = copyDate.getFullYear();
-
     const month = copyDate.getMonth() + 1;
 
+    // toLocaleDateString()
     const result = await getMonthDiaries(req.currentUserId, year, month);
 
     const message =
