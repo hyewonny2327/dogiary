@@ -52,9 +52,8 @@ function CalendarComponent() {
 
             //console.log('formattedDate', formattedDate);
 
-            const diaryExistsForDate = diaries.some(
-              (diary) => diary.date === formattedDate,
-            );
+            const diaryExistsForDate =
+              diaries && diaries.some((diary) => diary.date === formattedDate);
 
             return diaryExistsForDate ? 'dayPosted' : '';
           }}

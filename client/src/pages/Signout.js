@@ -38,6 +38,7 @@ function SignOut() {
         try {
           await signout();
           Swal.fire('탈퇴가 완료되었습니다.', '화끈하시네요~!', 'success');
+          localStorage.removeItem('userToken');
           navigate('/LoginPage');
           setState(false);
         } catch (err) {

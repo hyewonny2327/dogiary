@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LogoBar, NavBar } from '../components/common/Header';
 import styled from 'styled-components';
 import ProfileComponent from '../components/myPetPage/ProfileComponent';
@@ -6,9 +6,41 @@ import WeightComponent from '../components/myPetPage/WeightComponent';
 import MedicalComponent from '../components/myPetPage/MedicalComponent';
 import FoodComponent from '../components/myPetPage/FoodComponent';
 import MemoComponent from '../components/myPetPage/MemoComponent';
+import { api } from '../utils/api';
 
 export default function MyPetPage() {
   const [tab, setTab] = useState('profile');
+  const [dogInfo, setDogInfo] = useState(null);
+
+  const fetchDogInfo = async (id) => {
+    try {
+      const response = await api.get(`/dogs?id=${id}`);
+
+      console.log('HTTP 상태 코드:', response.status);
+
+      if (response.status === 200) {
+        const data = response.data;
+        setDogInfo(data);
+      } else {
+        console.error(`HTTP error! Status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('조회를 실패했습니다.', error);
+    }
+  };
+
+  useEffect(() => {
+    const dogId = '658c06dec2d4b117198ad677';
+    fetchDogInfo(dogId);
+  }, []);
+
+  useEffect(() => {
+    console.log('dogInfo:', dogInfo);
+    // if (dogInfo && dogInfo.data) {
+    //   const dogType = dogInfo.data.type;
+    //   console.log('강아지 종류:', dogType);
+    // }
+  }, [dogInfo]);
 
   function handleClickTab(clickedTab) {
     setTab(clickedTab);
@@ -54,11 +86,11 @@ export default function MyPetPage() {
             </div>
           </div>
           <div className="content-container">
-            {tab === 'profile' && <ProfileComponent />}
-            {tab === 'weight' && <WeightComponent />}
-            {tab === 'medical' && <MedicalComponent />}
-            {tab === 'food' && <FoodComponent />}
-            {tab === 'memo' && <MemoComponent />}
+            {tab === 'profile' && <ProfileComponent dogInfo={dogInfo} />}
+            {tab === 'weight' && <WeightComponent dogInfo={dogInfo} />}
+            {tab === 'medical' && <MedicalComponent dogInfo={dogInfo} />}
+            {tab === 'food' && <FoodComponent dogInfo={dogInfo} />}
+            {tab === 'memo' && <MemoComponent dogInfo={dogInfo} />}
           </div>
         </PetDiaryContainer>
       </Main>

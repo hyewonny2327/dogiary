@@ -82,7 +82,7 @@ export default function MyFeedPostPage() {
   async function isDuplicateData() {
     const diaries = await showAllDiaries();
     console.log('_date 확인', _date);
-    return diaries.some((diary) => diary.date === _date);
+    return diaries && diaries.some((diary) => diary.date === _date);
   }
 
   const [submitData, setSubmitData] = useState({

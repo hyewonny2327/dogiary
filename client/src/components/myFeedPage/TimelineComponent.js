@@ -14,13 +14,24 @@ export default function TimelineComponent({ isTimelineClick }) {
 
   async function handleIntersect() {
     console.log('handleIntersect 함수 실행');
-    console.log({ moreData });
     if (moreData) {
+      setMoreData(true);
       await getDiaryData();
     } else {
+      setTargetRef(null);
       console.log('끝');
     }
   }
+  useEffect(() => {
+    if (targetRef.current) {
+      setTargetRef(targetRef.current);
+    }
+    if (targetRef == null) {
+      console.log('null 입니다 onIntersect 호출하지마!! ');
+    }
+    getCurrentMonthAndYear();
+  }, []);
+
   function getCurrentMonthAndYear() {
     console.log('getCurrentMonthAndYear호출됨');
     const currentDate = new Date();
@@ -67,16 +78,6 @@ export default function TimelineComponent({ isTimelineClick }) {
     }
   }
 
-  useEffect(() => {
-    if (targetRef && targetRef.current) {
-      setTargetRef(targetRef.current);
-    }
-    if (targetRef == null) {
-      console.log('null 입니다 onIntersect 호출하지마!! ');
-    }
-    getCurrentMonthAndYear();
-  }, [targetRef]);
-
   return (
     <TimeLine>
       <div className="month">{currentMonth}월</div>
@@ -96,7 +97,11 @@ export default function TimelineComponent({ isTimelineClick }) {
             ></img>
           </div>
         ))}
-      {moreData ? <div ref={targetRef}></div> : null}
+      {moreData ? (
+        <div className="target" ref={targetRef}>
+          &nbsp;
+        </div>
+      ) : null}
     </TimeLine>
   );
 }
@@ -106,6 +111,11 @@ const TimeLine = styled.div`
   flex-direction: column;
   align-items: center;
   height: 100%;
+  .target {
+    height: 200px;
+    width: 100px;
+    //background: red;
+  }
   .month {
     margin: 25px 0;
   }

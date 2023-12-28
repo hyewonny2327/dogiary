@@ -59,7 +59,12 @@ export async function showDailyDiaries(date) {
     console.log('해당 날짜에 어떤 데이터를 받아왔나', dailyDiary);
     return dailyDiary;
   } catch (error) {
-    console.log('일간 다이어리 조회하기 api 요청 중 에러 발생', error);
+    if (error.response) {
+      if (error.response.status === 404) {
+        console.log('해당 날짜에 저장된 데이터 없음');
+      }
+    }
+    // console.log('일간 다이어리 조회하기 api 요청 중 에러 발생', error);
   }
 }
 
@@ -88,4 +93,11 @@ export async function showDiaryWithCursor(cursor) {
   } catch (error) {
     console.log('커서기준 월간 다이어리 조회하기 api 요청 중 오류발생');
   }
+}
+
+export async function editDiary(id, data) {
+  try {
+    const res = await diaryApi.put(`/${id}`, data);
+    return res.data.data;
+  } catch {}
 }

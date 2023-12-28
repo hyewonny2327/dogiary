@@ -6,12 +6,11 @@ import { setIsOpen } from '../../slice/store';
 
 import PasswordModal from './PasswordModal';
 
-const ReadContent = () => {
+const ReadContent = ({ readNickName, readUserId, readEmail }) => {
   const dispatch = useDispatch();
   const isModalopen = useSelector((state) => state.modal.isOpen);
 
   const handleEditPage = () => {
-    console.log('클릭');
     dispatch(setIsOpen(true));
   };
 
@@ -21,19 +20,19 @@ const ReadContent = () => {
         <NicknameWrapper>
           <div>닉네임</div>
           <div>
-            <div>몽이마덜</div>
+            <div>{readNickName}</div>
           </div>
         </NicknameWrapper>
         <IdWrapper>
           <div>아이디</div>
           <div>
-            <div>mong333</div>
+            <div>{readUserId}</div>
           </div>
         </IdWrapper>
         <EmailWrapper>
           <div>이메일</div>
           <div>
-            <div>mong@naver.com</div>
+            <div>{readEmail}</div>
           </div>
         </EmailWrapper>
         <ButtonWrapper>

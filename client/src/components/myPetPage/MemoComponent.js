@@ -82,12 +82,18 @@ export default function MemoComponent() {
           </InputBox>
 
           <MemoList>
-            <div className="span">
+            <div>
               <span>메모 히스토리</span>
             </div>
 
             <ul>
-              <li></li>
+              {memoList.map((item, index) => (
+                <li key={index} className="content-item">
+                  <span className="title">{item.title}</span>
+                  <span className="date">{item.date.toLocaleDateString()}</span>
+                  <span className="content">{item.title}</span>
+                </li>
+              ))}
             </ul>
           </MemoList>
         </MemoContents>
@@ -109,8 +115,9 @@ const MemoContents = styled.div`
 
   .form-input-title,
   .form-input-content {
-    width: 280px;
+    width: 270px;
     margin-top: 10px;
+    padding-left: 10px;
   }
 
   .form-input-content {
@@ -134,9 +141,26 @@ const MemoList = styled.div`
   li {
     margin-bottom: 10px;
   }
+
+  .content-item {
+    list-style: none;
+    overflow: hidden;
+  }
+
+  .title,
+  .content {
+    float: right;
+  }
+
+  .date {
+    float: left;
+  }
 `;
 
 const StyledDatePicker = styled(DatePicker)`
-  width: 278px;
+  width: 270px;
   height: 29px;
+  border: 1px solid #bdaf74;
+  border-radius: 4px;
+  padding-left: 10px;
 `;

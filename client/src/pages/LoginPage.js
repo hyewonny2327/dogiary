@@ -4,8 +4,9 @@ import { LongColoredBtn, LongStrokedBtn } from '../components/common/Buttons';
 import { ContainerBox, InputBox } from '../components/common/Boxes'; // Removed StyledContainerBox
 import styled from 'styled-components';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-async function UserLogin(id, pw) {
+async function UserLogin(id, pw, navigate) {
   try {
     console.log(id, pw);
     const response = await axios.post('http://localhost:8080/api/auth/login', {
@@ -15,6 +16,7 @@ async function UserLogin(id, pw) {
     let token = response.data.data.token;
     localStorage.setItem('userToken', token);
     console.log('로그인성공', response.data.data.token);
+    navigate('/myFeed');
   } catch (error) {
     console.log('로그인실패', error);
   }
@@ -22,6 +24,7 @@ async function UserLogin(id, pw) {
 function LoginPage() {
   const [user_Id, setUser_Id] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleChangeUserId = (e) => {
     setUser_Id(e.target.value);
@@ -33,7 +36,10 @@ function LoginPage() {
 
   function handleLogin() {
     console.log(typeof user_Id, typeof password);
-    UserLogin(user_Id, password);
+    UserLogin(user_Id, password, navigate);
+  }
+  function navigateJoin() {
+    navigate('/JoinPage');
   }
 
   return (
@@ -76,7 +82,9 @@ function LoginPage() {
               <LongColoredBtn className="long-btn" onClick={handleLogin}>
                 로그인하기
               </LongColoredBtn>
-              <LongStrokedBtn text={'회원가입'} className="long-btn" />
+              <LongStrokedBtn className="long-btn" onClick={navigateJoin}>
+                회원가입
+              </LongStrokedBtn>
             </div>
           </LoginContainer>
         </ContainerBox>

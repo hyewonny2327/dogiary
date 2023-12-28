@@ -96,16 +96,17 @@ font-family: 'Noto Sans KR', sans-serif;
 
 `;
 
-// const ModalPage = styled.div`
-//   width: 390px;
-//   height: 100vh;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   font-family: 'Noto Sans KR', sans-serif;
-//   font-weight: 700;
-//   color: #5f5013;
-// `;
+const ModalPage = styled.div`
+  /* width: 390px;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 700;
+  color: #5f5013;
+  background-color: red; */
+`;
 
 const ModalContainer = styled.div`
   width: 370px;
