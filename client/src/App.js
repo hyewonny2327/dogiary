@@ -16,9 +16,7 @@ const MyFeedPostPage = React.lazy(
 );
 const MyPlacePage = React.lazy(() => import('./pages/MapPage/MyPlacePage'));
 const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
-const ProfileUpdatePage = React.lazy(
-  () => import('./components/myProfilePage/ProfileUpdatePage'),
-);
+const ProfileUpdatePage = React.lazy(() => import('./pages/ProfileUpdatePage'));
 const MyPetPage = React.lazy(() => import('./pages/MyPetPage'));
 const FindIdPassword = React.lazy(() => import('./pages/FindIdPassword'));
 const SignOut = React.lazy(() => import('./pages/Signout'));

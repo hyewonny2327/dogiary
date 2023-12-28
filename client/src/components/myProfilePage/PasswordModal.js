@@ -3,7 +3,6 @@ import { useRef, useState } from 'react';
 import { Modal } from '../common/Modal';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { InputBox } from '../common/Boxes';
 
 const PasswordModal = () => {
   const navigate = useNavigate();
@@ -41,7 +40,7 @@ const PasswordModal = () => {
       const result = await PasswordCheck();
       result && result.check
         ? navigate('/profile/update')
-        : clearInputField('');
+        : clearInputField(inputRef);
     } catch (error) {
       console.error('비밀번호 확인 오류:', error);
     }
@@ -89,16 +88,17 @@ font-family: 'Noto Sans KR', sans-serif;
 
 `;
 
-// const ModalPage = styled.div`
-//   width: 390px;
-//   height: 100vh;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   font-family: 'Noto Sans KR', sans-serif;
-//   font-weight: 700;
-//   color: #5f5013;
-// `;
+const ModalPage = styled.div`
+  /* width: 390px;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 700;
+  color: #5f5013;
+  background-color: red; */
+`;
 
 const ModalContainer = styled.div`
   width: 370px;

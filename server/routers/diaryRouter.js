@@ -3,7 +3,10 @@ const diaryController = require('../controllers/diaryController');
 
 // 사용자 인증을 위한 미들웨어
 const authenticateUser = require('../middlewares/authenticateUser');
-const { validatePostDiary, validateUpdateDiary } = require('../middlewares/validatorDiary');
+const {
+  validatePostDiary,
+  validateUpdateDiary,
+} = require('../middlewares/validatorDiary');
 const router = Router();
 const { upload } = require('../utils/multer.js');
 

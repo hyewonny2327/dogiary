@@ -1,18 +1,15 @@
 import { styled } from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
-const Title = ({ isEdit, onEditClick }) => {
+import { useEffect } from 'react';
+
+const UpdateTitle = ({ handleImageUpload, readUserImage }) => {
   return (
     <ProfileTitle>
-      <div style={{ fontSize: '2.2rem' }}>
-        {isEdit ? '회원정보 수정' : '회원정보'}
-      </div>
+      <div style={{ fontSize: '2.2rem' }}>회원정보수정</div>
       <ImageContainer>
         <img
-          src={
-            process.env.PUBLIC_URL +
-            '/images/147722e1-adc8-4ca0-acea-67826c8af098.png'
-          }
+          src={readUserImage}
           alt="기본이미지"
           style={{
             width: '130px',
@@ -21,20 +18,23 @@ const Title = ({ isEdit, onEditClick }) => {
             borderRadius: '100px',
           }}
         />
-        {isEdit && (
-          <EditButton onClick={onEditClick}>
-            <FontAwesomeIcon
-              icon={faCamera}
-              // style={{ backgroundColor: '#BDAF74', color: 'white' }}
-            />
+        <label htmlFor="fileInput">
+          <input
+            id="fileInput"
+            type="file"
+            style={{ display: 'none' }}
+            onChange={handleImageUpload}
+          />
+          <EditButton>
+            <FontAwesomeIcon icon={faCamera} className="camera-icon" />
           </EditButton>
-        )}
+        </label>
       </ImageContainer>
     </ProfileTitle>
   );
 };
 
-export default Title;
+export default UpdateTitle;
 
 const ProfileTitle = styled.div`
   width: 100%;
@@ -43,25 +43,23 @@ const ProfileTitle = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-  //border: 1px solid red;
 `;
 
 const ImageContainer = styled.div`
   position: relative;
 `;
 
-const EditButton = styled.button`
+const EditButton = styled.div`
   position: absolute;
-  bottom: 0;
-  right: 0;
+  bottom: 10px;
+  right: 5px;
   background-color: #bdaf74;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 1rem;
-
-  &:hover {
-    background-color: #45a049;
+  & > .camera-icon {
+    width: 30px;
   }
 `;
