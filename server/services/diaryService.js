@@ -66,19 +66,22 @@ exports.getDailyDiaries = async (userId, date) => {
 
   return result;
 };
-// 월간 조회
+// 월간 조회 (월간 조회시 범위는 지정했으나 start만 가져오고 last는 못가져오는 현상 발생하여 11월 검색시 11월 이후 모든 데이터를 지속적으로 가져왔고 => 이후에 type of 확인시 start 는 string last는 object로 전부 string으로 전환하여 범위를 검색하여 정상 기능 작동)
 
 exports.getMonthDiaries = async (userId, year, month) => {
   const startOfMonth = `${year}-${month.toString().padStart(2, '0')}-01`;
   const endOfMonth = new Date(year, month, 1);
-  endOfMonth.setMonth(endOfMonth.getMonth() + 1);
-  endOfMonth.setDate(0); // 이로써 원래 월의 마지막 날이 됩니다.
+  endOfMonth.setMonth(endOfMonth.getMonth());
+  endOfMonth.setDate(endOfMonth.getDate() - 1);
+
+  const endMonth = endOfMonth.toISOString();
+  //toISOStirng 잃어버린 9시간...
 
   const result = await Diary.find({
     userId,
     date: {
-      $gte: startOfMonth,
-      $lt: endOfMonth,
+      $gt: startOfMonth,
+      $lte: endMonth,
     },
   })
     .sort({ date: -1 })
@@ -90,22 +93,10 @@ exports.getMonthDiaries = async (userId, year, month) => {
 
 //커서 기반 페이징
 exports.getCursorDiaries = async (userId, cursor) => {
-  const query = {
-    userId: userId,
-  };
-  if (!cursor) {
-    const recent = await Diary.find({ userId: userId })
-      .sort({ date: -1 })
-      .limit(10)
-      .select('_id createdAt imageUrls title content date userId')
-      .exec();
-    if (!recent || recent.length === 0) {
-      return null;
-    }
-    return recent;
-  }
+  const query = { userId: userId };
+
   if (cursor) {
-    query._id = { $lt: cursor };
+    query._id = { $gt: cursor };
   }
 
   const result = await Diary.find(query)
@@ -113,6 +104,16 @@ exports.getCursorDiaries = async (userId, cursor) => {
     .limit(10)
     .select('_id createdAt imageUrls title content date userId')
     .exec();
+
+  if (!cursor) {
+    const recent = await Diary.find({ userId: userId })
+      .sort({ date: -1 })
+      .limit(10)
+      .select('_id createdAt imageUrls title content date userId')
+      .exec();
+
+    return recent;
+  }
 
   return result;
 };

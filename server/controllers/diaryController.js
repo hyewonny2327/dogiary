@@ -148,19 +148,35 @@ exports.deleteDiary = async (req, res, next) => {
 exports.getDiaries = async (req, res, next) => {
   try {
     const { date } = req.query;
+
+    // 날짜 형식 유효성 검사
     if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
       throw new errorHandler('inputError', commonErrors.inputError, {
         statusCode: 400,
       });
     }
-    const result = date
-      ? await getDailyDiaries(req.currentUserId, date)
-      : await getDiaries(req.currentUserId);
 
-    const message = date
-      ? `${date} 조회가 성공적으로 완료되었습니다.`
-      : '전체 조회가 성공적으로 완료되었습니다.';
-    res.status(200).json(successResponse(result, message));
+    let result;
+
+    // 날짜가 제공된 경우 확인
+    if (date) {
+      result = await getDailyDiaries(req.currentUserId, date);
+    } else {
+      result = await getDiaries(req.currentUserId);
+    }
+
+    // 결과가 비어 있는지 확인
+    if (!result || result.length === 0) {
+      const message = date
+        ? `${date}에 대한 데이터가 없습니다.`
+        : '사용 가능한 데이터가 없습니다.';
+      res.status(404).json(successResponse(null, message));
+    } else {
+      const message = date
+        ? `${date} 쿼리가 성공적으로 완료되었습니다.`
+        : '전체 쿼리가 성공적으로 완료되었습니다.';
+      res.status(200).json(successResponse(result, message));
+    }
   } catch (err) {
     next(err);
   }
@@ -180,11 +196,10 @@ exports.getMonthDiaries = async (req, res, next) => {
     }
 
     const copyDate = new Date(date);
-
     const year = copyDate.getFullYear();
-
     const month = copyDate.getMonth() + 1;
 
+    // toLocaleDateString()
     const result = await getMonthDiaries(req.currentUserId, year, month);
 
     const message =

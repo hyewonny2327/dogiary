@@ -7,6 +7,19 @@ export default function TimelineComponent() {
   const [monthAndYear, setMonthAndYear] = useState('');
   const [currentMonth, setCurrentMonth] = useState('');
 
+  //타임라인 무한스크롤
+  const { setTargetRef } = useInfinityScroll(handleIntersect);
+  const targetRef = useRef(null);
+  const [moreData, setMoreData] = useState(true);
+
+  async function handleIntersect() {
+    console.log('handleIntersect 함수 실행');
+    if (moreData) {
+      await getDiaryData();
+    } else {
+      console.log('끝');
+    }
+  }
   function getCurrentMonthAndYear() {
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
@@ -46,29 +59,21 @@ export default function TimelineComponent() {
   }
 
   useEffect(() => {
+    setTargetRef(targetRef.current);
+    getCurrentMonthAndYear();
+  }, []);
+
+  useEffect(() => {
     getCurrentMonthAndYear();
     //getDiaryData();
-    setTargetRef(targetRef.current);
-  }, []); // 최초 렌더링 시에만 실행
-
-  //타임라인 무한스크롤
-  const { setTargetRef } = useInfinityScroll(handleIntersect);
-  const targetRef = useRef(null);
-  const [moreData, setMoreData] = useState(true);
-  async function handleIntersect() {
-    if (moreData) {
-      await getDiaryData();
-    } else {
-      console.log('끝');
-    }
-  }
+  }, [monthAndYear]); // 최초 렌더링 시에만 실행
 
   return (
     <TimeLine>
       <div className="month">{currentMonth} 월</div>
       {monthlyDiaries &&
-        monthlyDiaries.map((diary) => (
-          <div className="post-component" key={diary._id}>
+        monthlyDiaries.map((diary, index) => (
+          <div className="post-component" key={`${diary._id}-${index}`}>
             <div className="text-container">
               <div>{diary.date}</div>
               <div>{diary.title}</div>

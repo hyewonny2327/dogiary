@@ -13,7 +13,7 @@ export default function useInfinityScroll(onIntersect) {
         }
       }
 
-      observer = new IntersectionObserver(handleIntersect, { threshold: 0.2 });
+      observer = new IntersectionObserver(handleIntersect, { threshold: 0.6 });
       observer.observe(targetRef);
 
       return () => {

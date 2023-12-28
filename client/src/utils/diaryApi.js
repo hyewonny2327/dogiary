@@ -76,10 +76,10 @@ export async function showDiaryWithCursor(cursor) {
   try {
     if (cursor !== null) {
       cursor = `?cursor=` + cursor;
-      console.log(cursor);
     } else {
       cursor = '';
     }
+    console.log('커서는', cursor);
     const res = await diaryApi.get(`/paging${cursor}`);
     console.log(res.data.data);
     return res.data.data;
