@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const mail = require('../utils/mail');
 const User = require('../models/userModel');
+const AuthNumber = require('../models/authNumberModel');
 const errorHandler = require('../middlewares/errorHandler');
 const commonErrors = require('../middlewares/commonErrors');
 
@@ -191,6 +192,12 @@ const userService = {
         statusCode: 500,
       });
     }
+    const existingAuthNumber = await AuthNumber.findOne({ email: email });
+    if (existingAuthNumber) {
+      const sentUpdatedAuthNumber = await AuthNumber.updateOne({ email: email }, { authNumber: randomNumber, createdAt: new Date() });
+    } else {
+      const sentAuthNumber = await AuthNumber.create({ email: email, authNumber: randomNumber });
+    }
     return { authNumber: randomNumber };
   },
 
@@ -287,6 +294,22 @@ const userService = {
       });
     }
   },
+
+  //이메일 인증번호 확인
+  async checkNumber(email, inputAuthNumber) {
+    const mathchedNumber = await AuthNumber.findOne(
+      { email: email },
+      { authNumber: 1 },
+    );
+    if (inputAuthNumber !== mathchedNumber.authNumber) {
+      throw new errorHandler(
+        commonErrors.inputError,
+        '인증번호가 일치하지 않습니다.',
+        { statusCode: 400 },
+      )
+    }
+    return;
+  }
 };
 
 module.exports = userService;
