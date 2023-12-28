@@ -28,7 +28,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-
+app.use('/', express.static('public'));
 app.use('/api/maps', mapRouter);
 app.use('/api/diaries', diaryRouter);
 app.use('/api/auth', userRouter);

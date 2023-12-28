@@ -269,5 +269,10 @@ const LongBtn = styled.div`
     border: 1px solid #bdaf74;
     color: #bdaf74;
   }
+  &:hover {
+    background: #5f5013;
+    color: white;
+    transition: 0.5s;
+  }
 `;
 export default FindIdPassword;

@@ -45,7 +45,7 @@ function LoginPage() {
           <LoginContainer className="container-box">
             <div className="text-box">
               <h3>로그인</h3>
-              <a>로그인을 해서 Dogiary의 서비스를 사용해보세요!</a>
+              <span>로그인을 해서 Dogiary의 서비스를 사용해보세요!</span>
             </div>
             <div className="loginBox">
               <InputBox>

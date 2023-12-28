@@ -69,14 +69,20 @@ export function NavBar() {
     '마이페이지',
     '마이맵',
     '로그인',
+    '회원가입',
+    '랭킹',
+    '비번/아이디찾기',
   ];
   const links = [
     'registerPuppy',
     'myFeed',
-    'myPuppyPage',
-    'myPage',
+    'myPet',
+    'profile',
     'mapPage',
     'LoginPage',
+    'JoinPage',
+    'ranking',
+    'find',
   ];
 
   return (
@@ -135,21 +141,22 @@ const NavBarStyle = styled.div`
 
   padding: 0px 20px;
   position: relative;
+  box-sizing: border-box;
 
   .menu-icon {
     cursor: pointer;
-    padding: 10px 0;
+    //padding: 10px 0;
   }
 `;
 const CategoryContainer = styled.div`
-  height: 88vh;
+  height: 90vh;
   width: 60vw;
   background-color: #fff8e6;
   box-sizing: border-box;
 
   position: absolute;
   left: 0;
-  top: 6vh;
+  top: 5vh;
   padding: 20px 20px;
 
   display: flex;

@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
 export function ContainerBox({ children }) {
   return <ContainerBoxStyle>{children}</ContainerBoxStyle>;
@@ -14,9 +14,7 @@ const ContainerBoxStyle = styled.div`
   height: 513px;
   border-radius: 5px;
   border: 1px solid #bdaf74;
-
   background: #fff;
-
   box-shadow: 0px 8px 13px -3px rgba(0, 0, 0, 0.07);
 `;
 const InputBoxStyle = styled.div`

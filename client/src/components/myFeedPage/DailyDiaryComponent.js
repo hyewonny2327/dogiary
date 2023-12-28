@@ -9,7 +9,7 @@ export default function DailyDiaryComponent({ clickedDate }) {
   const [isNoData, setIsNoData] = useState(false);
   async function callDailyDiaryApi() {
     try {
-      const diaryData = await showDailyDiaries('2023-12-23');
+      const diaryData = await showDailyDiaries('2023-12-26');
       console.log(diaryData);
       if (Array.isArray(diaryData)) {
         if (diaryData.length === 0) {
@@ -20,6 +20,9 @@ export default function DailyDiaryComponent({ clickedDate }) {
         } else {
           setIsNoData(false);
           setDailyDiaries(diaryData);
+          if (diaryData.length < 10) {
+            setMoreData(false);
+          }
         }
       }
     } catch (error) {
@@ -31,11 +34,7 @@ export default function DailyDiaryComponent({ clickedDate }) {
 
   useEffect(() => {
     callDailyDiaryApi();
-  }, [moreData]);
-
-  useEffect(() => {
-    console.log('diary 조회 : ', dailyDiaries);
-  }, [dailyDiaries]);
+  }, []);
 
   //무한스크롤
   const targetRef = useRef(null);
@@ -49,6 +48,7 @@ export default function DailyDiaryComponent({ clickedDate }) {
   async function handleIntersect() {
     if (moreData) {
       //! 커서 보내줘야함. 어떻게 보내줄지 고민중. .
+
       await callDailyDiaryApi();
     } else {
       console.log('끝');
@@ -70,11 +70,11 @@ export default function DailyDiaryComponent({ clickedDate }) {
               <div className="date">{clickedDate}</div>
               <div className="title">{diary.title}</div>
             </div>
-            {[...Array(diary.imageUrl.length)].map((_, index) => (
+            {Array(diary.imageUrls.length).map((_, index) => (
               <div className="content-container" key={`post-${index}`}>
                 <img
                   className="image"
-                  src={diary.imageUrl[index]}
+                  src={diary.imageUrls[index]}
                   alt="업로드된 이미지"
                 ></img>
               </div>
@@ -123,7 +123,7 @@ const DailyDiary = styled.div`
   .image {
     width: 90%;
     height: 200px;
-    border: 1px solid red;
+    //border: 1px solid red;
   }
   .text {
     width: 90%;

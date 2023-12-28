@@ -18,15 +18,16 @@ mapApi.interceptors.request.use((config) => {
   if (userToken) {
     config.headers.Authorization = `Bearer ${userToken}`;
   }
-  config.headers['Content-Type'] = 'application/json';
-
   return config;
 });
 
 export async function registerMyPlace(placeData) {
-  //interceptors 사용하는것처럼 여기서도 try catch 안쓰고 에러처리 할 수 있는 방법은 없는건가 ??
   try {
-    await mapApi.post(null, placeData);
+    await mapApi.post(null, placeData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   } catch (error) {
     console.error('장소 정보 등록하기 api 요청 중 에러 발생', error);
   }
@@ -41,12 +42,14 @@ export async function deleteMyPlace(id) {
     console.error('장소 정보 삭제하기 api 요청 중 에러 발생', error);
   }
 }
-let cursor = '2023-12-23';
-let toggle = true;
-export async function showMyPlaces() {
+
+export async function showMyPlaces(toggle, cursor) {
+  if (cursor) {
+    cursor = '&cursor=' + cursor;
+  }
+  toggle = toggle.toString();
   try {
-    const response = await mapApi.get(`?myMaps=${toggle}&cursor=${cursor}`);
-    console.log(response);
+    const response = await mapApi.get(`?myMaps=${toggle}${cursor}`);
     let placesData = response.data.data;
     return placesData;
   } catch (error) {

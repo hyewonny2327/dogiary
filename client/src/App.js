@@ -20,7 +20,7 @@ const ProfileUpdatePage = React.lazy(() => import('./pages/ProfileUpdatePage'));
 const MyPetPage = React.lazy(() => import('./pages/MyPetPage'));
 const FindIdPassword = React.lazy(() => import('./pages/FindIdPassword'));
 const SignOut = React.lazy(() => import('./pages/Signout'));
-
+const FirstPage = React.lazy(() => import('./pages/FirstPage'));
 function App() {
   return (
     <Provider store={store}>
@@ -39,6 +39,7 @@ function App() {
           <Route path="/myPet" element={<MyPetPage />} />
           <Route path="/find" element={<FindIdPassword />} />
           <Route path="/signout" element={<SignOut />} />
+          <Route path="/mainPage" element={<FirstPage />} />
         </Routes>
       </Suspense>
     </Provider>

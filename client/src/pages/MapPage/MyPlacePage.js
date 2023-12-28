@@ -12,15 +12,19 @@ export default function MyPlacePage() {
   const [myPlaces, setMyPlaces] = useState([]);
   const getData = async () => {
     try {
-      const res = await showMyPlaces();
-      console.log('res', res);
-
+      if (!moreData) {
+        console.log('No more data to fetch');
+        return;
+      }
+      const lastItemId =
+        myPlaces.length > 0 ? myPlaces[myPlaces.length - 1]._id : null;
+      const res = await showMyPlaces(isPublicClicked, lastItemId);
       if (Array.isArray(res)) {
         //array인지 체크, 개수보다 이하이면 =>
-        if (!res || res.length < 5) {
+        if (!res || res.length < 10) {
           // 데이터가 없을 때의 처리
-          console.log('No data available (MY PLACE PAGE)');
           setMoreData(false); // 더 이상 데이터가 없다고 표시
+          setMyPlaces((prev) => [...prev, ...res]);
         } else {
           setMyPlaces((prev) => [...prev, ...res]); // 기존 데이터와 새로운 데이터 합치기
         }
@@ -35,14 +39,10 @@ export default function MyPlacePage() {
   const { setTargetRef } = useInfinityScroll(handleIntersect);
   const targetRef = useRef(null);
   const [moreData, setMoreData] = useState(true);
-  //moreData false 추가
-  useEffect(() => {
-    setTargetRef(targetRef.current); // targetRef.current를 전달
-  }, []);
 
   useEffect(() => {
-    getData();
-  }, [moreData]);
+    setTargetRef(targetRef.current);
+  }, []);
 
   async function handleIntersect() {
     if (moreData) {
@@ -66,13 +66,16 @@ export default function MyPlacePage() {
     }
   }
   const [isPublicClicked, setIsPublicClicked] = useState(true);
-  const [isPrivateClicked, setIsPrivateClicked] = useState(false);
   const [isHover, setIsHover] = useState(Array(myPlaces.length).fill(false));
 
   function handleTabClick() {
     setIsPublicClicked(!isPublicClicked);
-    setIsPrivateClicked(!isPrivateClicked);
   }
+  useEffect(() => {
+    // isPublicClicked 상태가 변경될 때마다 데이터를 다시 호출
+    setMyPlaces([]);
+    setMoreData(true);
+  }, [isPublicClicked]);
   function handleMouseIn(index) {
     setIsHover((prev) => {
       const newHoverState = [...prev];
@@ -88,8 +91,14 @@ export default function MyPlacePage() {
     });
   }
   function handleDeleteClick(id) {
-    console.log(id);
-    deleteMyPlace(id);
+    deleteMyPlace(id)
+      .then(() => {
+        // myPlaces에서 삭제된 데이터를 제외하고 업데이트
+        setMyPlaces((prev) => prev.filter((place) => place._id !== id));
+      })
+      .catch((error) => {
+        console.error('Error deleting data:', error);
+      });
   }
 
   return (
@@ -107,13 +116,14 @@ export default function MyPlacePage() {
             공개
           </div>
           <div
-            className={isPrivateClicked ? 'tab private clicked' : 'tab private'}
+            className={isPublicClicked ? 'tab private' : 'tab private clicked'}
             onClick={() => handleTabClick()}
           >
             비공개
           </div>
         </TabContainer>
         <ListContainer>
+          {myPlaces.length == 0 ? <div>등록된 장소가 없습니다.</div> : ''}
           {myPlaces.map((item, index) => (
             <div className="place-container">
               <div className="left-container">
@@ -183,12 +193,12 @@ const TabContainer = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: flex-start;
+  color: #d9d9d9;
   margin-right: auto;
-  color: #5f5013;
   font-size: 18px;
   font-weight: 700;
   .clicked {
-    color: #d9d9d9;
+    color: #5f5013;
   }
 `;
 const ListContainer = styled.div`

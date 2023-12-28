@@ -89,7 +89,6 @@ function RegisterPlace() {
     setSelectedPlace(newSelectedPlace);
   }
 
-  //! 이미지 업로드 기능 -> form Data 로 수정
   const [uploadedImage, setUploadedImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(imageIcon);
   const formData = new FormData();
@@ -97,11 +96,8 @@ function RegisterPlace() {
     const file = event.target.files[0];
     if (file) {
       //이미지 파일을 form data에 추가해서 state에 form data를 넣는다.
-      formData.append('image', file);
-      if (formData.has('image')) {
-        console.log('Image value:', formData.get('image'));
-      }
-      setUploadedImage(formData);
+
+      setUploadedImage(file);
       //이미지 미리보기
       const reader = new FileReader();
       reader.onload = () => {
@@ -131,31 +127,53 @@ function RegisterPlace() {
     setTextContent(event.target.value);
   }
   //! 등록하기 버튼 클릭 시
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     //post요청보낼 정보들을 저장한다.
+    e.preventDefault();
+
     const submitData = {
       title: selectedPlace.placename,
       toggle: selectedToggle,
       tag: selectedTag,
       content: textContent,
+      imageUrl: uploadedImage,
       position: [selectedPlace.lng, selectedPlace.lat],
       address: selectedPlace.address,
     };
 
     if (submitData.title !== '' && submitData.imageUrl !== imageIcon) {
       //이미지 서버에 업로드
+      try {
+        formData.append('title', submitData.title);
+        formData.append('toggle', submitData.toggle);
+        formData.append('tag', submitData.tag);
+        formData.append('content', submitData.content);
+        formData.append('position', submitData.position);
+        formData.append('imageUrl', submitData.imageUrl);
+        formData.append('address', submitData.address);
+        console.log('submitData 확인', submitData);
+        console.log('폼데이터확인', formData);
+        await registerMyPlace(formData);
 
-      if (formData.has('image')) {
-        //! 폼데이터 수정필요함 아직 구현중..
-        submitData.image = formData.get('image');
+        //폼데이터 확인
+        console.log('폼데이터를 확인해보자 : ', formDataToObject(formData));
+
+        console.log('등록하기 클릭했음');
+        navigate('/mapPage');
+      } catch (error) {
+        console.log('이미지 업로드 중 오류 발생', error);
       }
-      console.log(submitData);
-      registerMyPlace(submitData);
-      console.log('등록하기 클릭했음');
-      navigate('/mapPage');
     } else {
       alert('장소, 이미지를 빠짐없이 작성해주세요');
     }
+  }
+
+  function formDataToObject(formData) {
+    const object = {};
+    formData.forEach((value, key) => {
+      object[key] = value;
+    });
+    return object;
   }
 
   return (
@@ -254,9 +272,13 @@ function RegisterPlace() {
         <LongStrokedBtn onClick={() => navigate('/mapPage')}>
           취소하기
         </LongStrokedBtn>
-        <LongColoredBtn onClick={(e) => handleSubmit(e)}>
+        <button
+          className="submit-button"
+          onClick={(e) => handleSubmit(e)}
+          type="submit"
+        >
           등록하기
-        </LongColoredBtn>
+        </button>
       </BtnContainer>
     </RegisterPlaceContainer>
   );
@@ -282,6 +304,23 @@ const BtnContainer = styled.div`
   height: 87px;
 
   justify-content: space-between;
+  .submit-button {
+    padding: 8px 25px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 281px;
+    height: 38px;
+    border: none;
+
+    font-family: Noto Sans KR;
+    font-size: 100%;
+    font-weight: 500;
+    background: #bdaf74;
+    color: #fff;
+  }
 `;
 const ContentContainerStyle = styled.div`
   height: 100%;
@@ -292,7 +331,7 @@ const ContentContainerStyle = styled.div`
   margin: 2% 5%;
   position: relative;
 `;
-const InputContainerStyle = styled.div`
+const InputContainerStyle = styled.form`
   height: 80%;
   display: flex;
   flex-direction: column;
@@ -341,6 +380,8 @@ const InputContainerStyle = styled.div`
   .content-input {
     margin: 6px;
     height: 125px;
+    width: 100%;
+    border: 1px solid #bdaf74;
   }
 `;
 const PlaceListStyle = styled.div`

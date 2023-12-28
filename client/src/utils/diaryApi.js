@@ -18,8 +18,6 @@ diaryApi.interceptors.request.use((config) => {
   if (userToken) {
     config.headers.Authorization = `Bearer ${userToken}`;
   }
-  config.headers['Content-Type'] = 'application/json';
-
   return config;
 });
 
@@ -60,5 +58,32 @@ export async function showDailyDiaries(date) {
     return dailyDiary;
   } catch (error) {
     console.log('일간 다이어리 조회하기 api 요청 중 에러 발생', error);
+  }
+}
+
+export async function showMonthlyDiaries(month) {
+  console.log('month: ', month);
+  try {
+    const res = await diaryApi.get(`/month?date=${month}`);
+    const monthlyDiary = res.data.data;
+    return monthlyDiary;
+  } catch (error) {
+    console.log('월간 다이어리 조회하기 api 요청 중 오류 발생');
+  }
+}
+
+export async function showDiaryWithCursor(cursor) {
+  try {
+    if (cursor !== null) {
+      cursor = `?cursor=` + cursor;
+    } else {
+      cursor = '';
+    }
+    console.log('커서는', cursor);
+    const res = await diaryApi.get(`/paging${cursor}`);
+    console.log(res.data.data);
+    return res.data.data;
+  } catch (error) {
+    console.log('커서기준 월간 다이어리 조회하기 api 요청 중 오류발생');
   }
 }

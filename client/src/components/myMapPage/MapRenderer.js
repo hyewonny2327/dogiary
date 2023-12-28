@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import markerIcon from '../icons/markerIcon.svg';
 import { useSelector } from 'react-redux';
-import { showAllPlaces } from '../../utils/mapApi';
-import { showPlacesByTag } from '../../utils/mapApi';
+import { showAllPlaces, showPlacesByTag } from '../../utils/mapApi';
 const { kakao } = window;
 
 function MapRenderer() {
@@ -14,6 +13,7 @@ function MapRenderer() {
   const clickedTag = useSelector((state) => state.map.tag);
 
   //태그가 바뀔때마다 api 호출
+  //! 12/26 코드리뷰 중복되는 로직 function으로 묶어서 처리하기
   useEffect(() => {
     if (clickedTag === 'tag4') {
       fetchShowAllPlaces();
