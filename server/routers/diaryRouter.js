@@ -6,7 +6,7 @@ const authenticateUser = require('../middlewares/authenticateUser');
 const {
   validatePostDiary,
   validateUpdateDiary,
-} = require('../middlewares/validatorDiary');
+} = require('../middlewares/validators/validatorDiary');
 const router = Router();
 const { upload } = require('../utils/multer.js');
 
