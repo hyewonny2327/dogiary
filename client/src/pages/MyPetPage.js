@@ -14,13 +14,16 @@ export default function MyPetPage() {
 
   const fetchDogInfo = async (id) => {
     try {
-      const response = await api.get(`dogs?id=${id}`);
+      const response = await api.get(`/dogs?id=${id}`);
 
-      if (response.status !== 200) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+      console.log('HTTP 상태 코드:', response.status);
+
+      if (response.status === 200) {
+        const data = response.data;
+        setDogInfo(data);
+      } else {
+        console.error(`HTTP error! Status: ${response.status}`);
       }
-      const data = response.data;
-      setDogInfo(data);
     } catch (error) {
       console.error('조회를 실패했습니다.', error);
     }
@@ -30,6 +33,14 @@ export default function MyPetPage() {
     const dogId = '658c06dec2d4b117198ad677';
     fetchDogInfo(dogId);
   }, []);
+
+  useEffect(() => {
+    console.log('dogInfo:', dogInfo);
+    // if (dogInfo && dogInfo.data) {
+    //   const dogType = dogInfo.data.type;
+    //   console.log('강아지 종류:', dogType);
+    // }
+  }, [dogInfo]);
 
   function handleClickTab(clickedTab) {
     setTab(clickedTab);

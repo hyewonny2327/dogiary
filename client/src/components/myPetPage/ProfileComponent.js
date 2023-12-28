@@ -1,44 +1,75 @@
-import { useState } from 'react';
+// import { useEffect } from 'react';
 import { ContainerBox } from '../common/Boxes';
 import { LongColoredBtn } from '../common/Buttons';
 import styled from 'styled-components';
-import axios from 'axios';
 
-export default function ProfileComponent() {
+// 나이 계산
+function calculateAge(birthdate) {
+  const today = new Date();
+  const birthDate = new Date(birthdate);
+  let ageYears = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+
+  if (
+    monthDiff < 0 ||
+    (monthDiff === 0 && today.getDate() < birthDate.getDate())
+  ) {
+    ageYears--;
+  }
+
+  const ageMonths = (today.getMonth() - birthDate.getMonth() + 12) % 12;
+  return { years: ageYears, months: ageMonths };
+}
+
+export default function ProfileComponent({ dogInfo }) {
+  // useEffect(() => {
+  //   console.log('dogInfo in ProfileComponent:', dogInfo);
+  // }, [dogInfo]);
+  const age = calculateAge(dogInfo?.data?.birthday);
+
+  const imageUrl = dogInfo?.data?.imageUrl;
+  const altText = dogInfo?.data?.name || 'Dog Image';
+
+  const imageElement = imageUrl ? (
+    <img src={imageUrl} alt={altText} />
+  ) : (
+    <div>이미지를 넣어주세요</div>
+  );
+
   return (
     <div>
       <ContainerBox>
         <ProfileContents>
           <div className="profileInfo">
-            <div className="image">이미지</div>
+            <div className="image">{imageElement}</div>
             <div className="infoContainer">
               <div className="name-age-sex">
                 <div className="name">
                   <span>이름</span>
-                  <div></div>
+                  <div>{dogInfo?.data?.name}</div>
                 </div>
                 <div className="age">
                   <span>나이</span>
-                  <div></div>
+                  <div>{`${age.years}세 ${age.months}개월`}</div>
                 </div>
 
                 <div className="sex">
                   <span>성별</span>
-                  <div></div>
+                  <div>{dogInfo?.data?.sex}</div>
                 </div>
               </div>
               <div className="type-date-birthday">
                 <div className="type">
                   <span>견종</span>
-                  <div></div>
+                  <div>{dogInfo?.data?.type}</div>
                 </div>
                 <div className="date">
                   <span>만난 날</span>
-                  <div></div>
+                  <div>{dogInfo?.data?.date}</div>
                 </div>
                 <div className="birthday">
                   <span>생일</span>
-                  <div></div>
+                  <div>{dogInfo?.data?.birthday}</div>
                 </div>
               </div>
             </div>
