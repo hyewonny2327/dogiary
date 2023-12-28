@@ -4,6 +4,7 @@ import { LongColoredBtn, SmallBtn } from '../components/common/Buttons';
 import { ContainerBox, InputBox } from '../components/common/Boxes'; // Removed StyledContainerBox
 import styled from 'styled-components';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function JoinPage() {
   const [nickname, setNickname] = useState('');
@@ -19,6 +20,7 @@ function JoinPage() {
   const [EmailCheckMsg, setEmailCheckMsg] = useState('');
   const [NumberCheckMsg, setNumberCheckMsg] = useState('');
   const [StayNumber, setStayNumber] = useState('');
+  const navigate = useNavigate();
 
   const handleChangeNickname = (e) => {
     setNickname(e.target.value);
@@ -209,6 +211,7 @@ function JoinPage() {
         password,
       });
       console.log('회원가입 성공');
+      navigate('/LoginPage');
     } catch (error) {
       console.error('회원가입에 실패했습니다.', error);
     }
