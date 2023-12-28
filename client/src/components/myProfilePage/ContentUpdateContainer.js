@@ -39,9 +39,6 @@ const ContentUpdateContainer = () => {
   useEffect(() => {
     fetchData();
   }, []);
-  console.log('userIdReadApi imageUrl@', readUserImage);
-  console.log({ readUserId });
-  console.log({ readNickName });
 
   const handleUpdate = async () => {
     try {
@@ -64,11 +61,11 @@ const ContentUpdateContainer = () => {
       const updatedNickName =
         nickName.trim() || `${Math.floor(Math.random() * 100000000)}`;
 
-      console.log('업데이트 전:', {
-        nickName: updatedNickName,
-        newPassword,
-        imageUrl: userImageFile,
-      });
+      // console.log('업데이트 전:', {
+      //   nickName: updatedNickName,
+      //   newPassword,
+      //   imageUrl: userImageFile,
+      // });
 
       const result = await userInformationUpdate(
         updatedNickName,
@@ -76,7 +73,7 @@ const ContentUpdateContainer = () => {
         userImageFile,
       );
 
-      console.log('Update result:', result);
+  
 
       if (result) {
         alert('회원 정보가 수정되었습니다.');
@@ -93,31 +90,16 @@ const ContentUpdateContainer = () => {
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
-      const url = URL.createObjectURL(file);
-
-      //  const [userImageFile, setUserImageFile] = useState(null); 이미지 업로드 수정버튼
-      setUserImageFile(url);
+      setUserImageFile(file);
     }
   };
 
   //회원탈퇴
-  //탈퇴하기 현재 탈퇴 실패라고 문구는 뜨면서 회원 탈퇴는 성공
-  const handleUserSecession = async () => {
-    try {
-      if (!withdrawalPassword) {
-        alert('다시 입력해주세요');
-        return;
-      }
-      const result = await userSecession();
-      if (result) {
-        localStorage.removeItem('userToken');
-        alert('회원탈퇴가 완료되었습니다.');
-        navigate('/');
-      } else {
-        alert('탈퇴 실패. 에러 상세정보를 확인해주세요.');
-      }
-    } catch (error) {
-      console.error('탈퇴 중 오류 발생:', error);
+  const handleUserSecession = () => {
+    if (!withdrawalPassword) {
+      alert('다시 입력해주세요');
+    } else {
+      navigate('/');
     }
   };
 
@@ -141,7 +123,10 @@ const ContentUpdateContainer = () => {
         readNickName={readNickName}
         setWithdrawalPassword={setWithdrawalPassword}
       />
-      <SecessionBtn onClick={handleUserSecession}>
+      <SecessionBtn
+        onClick={handleUserSecession}
+        disabled={!withdrawalPassword}
+      >
         회원탈퇴
         <FontAwesomeIcon icon={faAngleRight} />
       </SecessionBtn>
