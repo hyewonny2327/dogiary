@@ -1,7 +1,12 @@
-// import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ContainerBox } from '../common/Boxes';
-import { LongColoredBtn } from '../common/Buttons';
+import { LongColoredBtn, LongStrokedBtn } from '../common/Buttons';
+import { Modal } from '../common/Modal';
+import { api } from '../../utils/api';
 import styled from 'styled-components';
+import DogModal from './DogModal';
+import { setIsOpen } from '../../slice/store';
+import { useSelector, useDispatch } from 'react-redux';
 
 // 나이 계산
 function calculateAge(birthdate) {
@@ -22,11 +27,9 @@ function calculateAge(birthdate) {
 }
 
 export default function ProfileComponent({ dogInfo }) {
-  // useEffect(() => {
-  //   console.log('dogInfo in ProfileComponent:', dogInfo);
-  // }, [dogInfo]);
-  const age = calculateAge(dogInfo?.data?.birthday);
+  const [editMode, setEditMode] = useState(false);
 
+  const age = calculateAge(dogInfo?.data?.birthday);
   const imageUrl = dogInfo?.data?.imageUrl;
   const altText = dogInfo?.data?.name || 'Dog Image';
 
@@ -35,6 +38,24 @@ export default function ProfileComponent({ dogInfo }) {
   ) : (
     <div>이미지를 넣어주세요</div>
   );
+
+  const handleEditClick = () => {
+    console.log('버튼이 클릭되었습니다.');
+    setEditMode(true);
+    console.log(editMode);
+    dispatch(setIsOpen(true));
+  };
+
+  const handleModalClose = () => {
+    setEditMode(false);
+  };
+
+  const dispatch = useDispatch();
+  const isModalOpen = useSelector((state) => state.modal.isOpen);
+
+  // useEffect(() => {
+  //   console.log(editMode);
+  // }, [editMode]);
 
   return (
     <div>
@@ -76,8 +97,15 @@ export default function ProfileComponent({ dogInfo }) {
           </div>
         </ProfileContents>
         <DogsBtn>
-          <LongColoredBtn className="dogsBtn">정보 수정하기</LongColoredBtn>
+          <LongColoredBtn className="dogsBtn" onClick={handleEditClick}>
+            정보 수정하기
+          </LongColoredBtn>
         </DogsBtn>
+        {isModalOpen && (
+          <Modal containerStyle={containerStyle}>
+            <DogModal dogInfo={dogInfo?.data} onCancel={handleModalClose} />
+          </Modal>
+        )}
       </ContainerBox>
     </div>
   );
@@ -133,3 +161,4 @@ const DogsBtn = styled.div`
   text-align: center; /* 버튼 텍스트 중앙 정렬을 위해 추가 */
   margin-top: 20px; /* 상단 여백을 추가할 수 있습니다. */
 `;
+const containerStyle = ``;
