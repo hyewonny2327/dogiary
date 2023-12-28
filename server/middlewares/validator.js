@@ -80,7 +80,6 @@ const validateCheckPassword = [
 const validateUpdateUserInfo = [
   body('nickName').optional().notEmpty().withMessage('닉네임을 입력하세요.'),
   body('password').optional().notEmpty().withMessage('비밀번호를 입력하세요.'),
-  // 다른 필드들도 필요한 선택적 검증을 추가할 수 있습니다.
   check('imageUrl').optional().custom((value, { req }) => {
     if (!req.file) {
       throw new Error('이미지를 업로드하세요.');
