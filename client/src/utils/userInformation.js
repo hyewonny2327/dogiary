@@ -54,15 +54,14 @@ export const PasswordCheck = async (password) => {
   }
 };
 
-//수정하기 Api (userID 추후에 제거)
-export const userInformationUpdate = async (nickName, password, imageFile) => {
+//수정하기 Api
+export const userInformationUpdate = async (nickName, password, file) => {
   try {
     const formData = new FormData();
     formData.append('nickName', nickName);
-    formData.append('userId', 'normaljun95');
     formData.append('password', password);
-    if (imageFile) {
-      formData.append('imageUrl', imageFile);
+    if (file instanceof File) {
+      formData.append('imageUrl', file);
     }
 
     const response = await axios.put(
@@ -94,8 +93,7 @@ export const userSecession = async () => {
         },
       },
     );
-
-    return response.data.data;
+    return true;
   } catch (error) {
     console.error('비밀번호 확인 오류:', error);
   }
