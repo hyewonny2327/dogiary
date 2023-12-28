@@ -98,6 +98,7 @@ export default function TimelineComponent({ isTimelineClick }) {
           </div>
         ))}
       {moreData ? (
+        //컨테이너 아래 공간이 좀 있어서 가려져서 관측이 안됨 width를 좀 주니까 해결됨 ㅜㅜ
         <div className="target" ref={targetRef}>
           &nbsp;
         </div>

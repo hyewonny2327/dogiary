@@ -21,8 +21,7 @@ const successResponse = (data, message) => ({
 // 이미지 업로드 공통 함수
 const getImageUrls = async (req) => {
   try {
-    console.log(req.files.length);
-    if (req.files && req.files.length > 0) {
+    if (req.files && req.files?.length > 0) {
       return req.files.map((file) =>
         path.join(__dirname, '../public/images', file.filename),
       );
@@ -31,7 +30,8 @@ const getImageUrls = async (req) => {
         { userId: req.currentUserId },
         { imageUrl: 1 },
       );
-      return matchedUserImage.imageUrl;
+
+      return matchedUserImage?.imageUrl;
     }
   } catch (error) {
     throw new errorHandler(commonErrors.internalError, 'internalError', {

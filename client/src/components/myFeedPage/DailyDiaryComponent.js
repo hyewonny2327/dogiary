@@ -69,7 +69,7 @@ export default function DailyDiaryComponent({ clickedDate }) {
       //저장하기
       const data = {
         title: inputTitle ? inputTitle : originTitle,
-        content: [inputContent ? inputContent : originContent],
+        content: inputContent ? inputContent : originContent,
       };
       await editDiary(id, data);
       callDailyDiaryApi();
