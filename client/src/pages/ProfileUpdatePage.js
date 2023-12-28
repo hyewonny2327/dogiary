@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
-import { LogoBar, NavBar } from '../common/Header';
-import ContentUpdateContainer from './ContentUpdateContainer';
+import { LogoBar, NavBar } from '../components/common/Header';
+import ContentUpdateContainer from '../components/myProfilePage/ContentUpdateContainer';
 
 const ProfileUpdatePage = () => {
   return (

@@ -11,12 +11,14 @@ export const userIdRead = async () => {
         'Content-type': 'application/json',
       },
     });
-    const { userId, nickName, email } = response.data.data;
-    return { userId, nickName, email };
+
+    const { userId, nickName, email, imageUrl } = response.data.data;
+    return { userId, nickName, email, imageUrl };
   } catch (err) {
     console.error('에러', err);
   }
 };
+
 //닉네임 중복확인 Api
 export const nicknameCheck = async (nickName) => {
   try {
@@ -79,10 +81,11 @@ export const userInformationUpdate = async (nickName, password, imageFile) => {
     console.error('Error during update:', error);
   }
 };
+
 //탈퇴하기Api
 export const userSecession = async () => {
   try {
-    const response = await axios.Delete(
+    const response = await axios.delete(
       'http://localhost:8080/api/auth/my-page',
       {
         headers: {

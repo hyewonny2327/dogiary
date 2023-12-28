@@ -3,7 +3,7 @@ import { LongColoredBtn, SmallBtn } from '../common/Buttons';
 import { useRef, useState } from 'react';
 import { PasswordCheck, nicknameCheck } from '../../utils/userInformation';
 
-const UpdateContent = ({
+const UpdateContentMain = ({
   nickName,
   setNickName,
   newPassword,
@@ -13,14 +13,14 @@ const UpdateContent = ({
   handleUpdate,
   readUserId,
   readNickName,
+  setUpdateEnabled,
+  isUpdateEnabled,
+  setWithdrawalPassword,
 }) => {
   const nickNameInputRef = useRef(null);
   const passwordInputRef = useRef(null);
-
   const [password, setPassword] = useState('');
   const [passwordConfirmed, setPasswordConfirmed] = useState(false);
-
-  const [isUpdateEnabled, setUpdateEnabled] = useState(false);
 
   //input 비워주기
   const clearNicknameInputField = () => {
@@ -46,7 +46,9 @@ const UpdateContent = ({
       // 공백 확인
       if (nickName.includes(' ')) {
         alert('닉네임에는 공백을 포함할 수 없습니다. 다시 입력해주세요.');
+        // 비워주기
         clearNicknameInputField();
+        // 조건 boolean
         setUpdateEnabled(false);
         return;
       }
@@ -54,10 +56,12 @@ const UpdateContent = ({
       const result = await nicknameCheck(nickName);
       if (result && result.check) {
         alert('사용 가능한 닉네임입니다.');
+        // 조건 boolean
         setUpdateEnabled(true);
       } else {
         alert('중복된 닉네임입니다. 다시 입력해주세요.');
         clearNicknameInputField();
+        // 조건 boolean
         setUpdateEnabled(false);
       }
     } catch (error) {
@@ -73,17 +77,29 @@ const UpdateContent = ({
       const result = await PasswordCheck(password);
       if (result && result.check) {
         alert('인증되었습니다');
+        // 새 비밀번호 재 확인
         setPasswordConfirmed(true);
+        // 조건 boolean
         setUpdateEnabled(true);
+        setWithdrawalPassword(true);
       } else {
         alert('다시 한번 입력해주세요');
         clearPasswordInputField();
+        // 새 비밀번호 재 확인
         setPasswordConfirmed(false);
+        // 조건 boolean
         setUpdateEnabled(false);
+        setWithdrawalPassword(false);
       }
     } catch (error) {
       console.error('비밀번호 확인 오류:', error);
     }
+  };
+
+  //새 비밀번호
+
+  const handleNewPassword = (e) => {
+    setNewPassword(e.target.value);
   };
 
   return (
@@ -149,7 +165,7 @@ const UpdateContent = ({
             type="password"
             id="newPasswordInput"
             value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
+            onChange={handleNewPassword}
           />
         </label>
       </NewPasswordWrapper>
@@ -177,7 +193,7 @@ const UpdateContent = ({
   );
 };
 
-export default UpdateContent;
+export default UpdateContentMain;
 
 const ProfileContent = styled.div`
   width: 80%;

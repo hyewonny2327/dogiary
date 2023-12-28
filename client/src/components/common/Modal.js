@@ -11,15 +11,19 @@ export function Modal({ children, containerStyle }) {
   const closeModal = () => {
     dispatch(setIsOpen(false));
   };
+  const handleContentClick = (e) => {
+    e.stopPropagation();
+  };
 
   return isModalClicked
     ? createPortal(
         <ModalContainerStyle
           containerStyle={containerStyle}
-          //우선닫아두기
-          // onClick={closeModal}
+          onClick={closeModal}
         >
-          <ModalContentStyle>{children}</ModalContentStyle>
+          <ModalContentStyle onClick={handleContentClick}>
+            {children}
+          </ModalContentStyle>
         </ModalContainerStyle>,
         document.body,
       )
