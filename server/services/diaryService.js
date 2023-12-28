@@ -90,22 +90,10 @@ exports.getMonthDiaries = async (userId, year, month) => {
 
 //커서 기반 페이징
 exports.getCursorDiaries = async (userId, cursor) => {
-  const query = {
-    userId: userId,
-  };
-  if (!cursor) {
-    const recent = await Diary.find({ userId: userId })
-      .sort({ date: -1 })
-      .limit(10)
-      .select('_id createdAt imageUrls title content date userId')
-      .exec();
-    if (!recent || recent.length === 0) {
-      return null;
-    }
-    return recent;
-  }
+  const query = { userId: userId };
+
   if (cursor) {
-    query._id = { $lt: cursor };
+    query._id = { $gt: cursor };
   }
 
   const result = await Diary.find(query)
@@ -113,6 +101,16 @@ exports.getCursorDiaries = async (userId, cursor) => {
     .limit(10)
     .select('_id createdAt imageUrls title content date userId')
     .exec();
+
+  if (!cursor) {
+    const recent = await Diary.find({ userId: userId })
+      .sort({ date: -1 })
+      .limit(10)
+      .select('_id createdAt imageUrls title content date userId')
+      .exec();
+
+    return recent;
+  }
 
   return result;
 };

@@ -47,7 +47,7 @@ export async function showMyPlaces(toggle, cursor) {
   if (cursor) {
     cursor = '&cursor=' + cursor;
   }
-  toggle = toggle.toString();
+  // toggle = toggle.toString();
   try {
     const response = await mapApi.get(`?myMaps=${toggle}${cursor}`);
     let placesData = response.data.data;

@@ -32,10 +32,6 @@ export default function DailyDiaryComponent({ clickedDate }) {
     }
   }
 
-  useEffect(() => {
-    callDailyDiaryApi();
-  }, []);
-
   //무한스크롤
   const targetRef = useRef(null);
   const { setTargetRef } = useInfinityScroll(handleIntersect);
