@@ -62,12 +62,12 @@ function FirstPage() {
 }
 const Wraper = styled.div`
   width: 100vw;
-  height: 88vh;
+  height: 100vh;
   background: black;
 `;
 const MainUi = styled.div`
   width: 100%;
-  height: 100%;
+  height: 88vh;
   background: #FFF8E6;
   display: flex;
   align-items: center;
