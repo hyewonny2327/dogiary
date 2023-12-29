@@ -23,14 +23,12 @@ function CalendarComponent() {
       day: 'numeric',
     });
 
-    //console.log('선택한 날짜 : ', formattedDate)
     setClickedDate(formattedDate);
     dispatch(setIsOpen(true));
   };
 
   async function getDiaryData() {
     const diary = await showAllDiaries();
-    console.log(diary);
     setDiaries(diary);
   }
   useEffect(() => {
@@ -49,9 +47,6 @@ function CalendarComponent() {
           onClickDay={handleDateClick}
           tileClassName={({ date, view }) => {
             const formattedDate = dayjs(date).format('YYYY-MM-DD');
-
-            //console.log('formattedDate', formattedDate);
-
             const diaryExistsForDate =
               diaries && diaries.some((diary) => diary.date === formattedDate);
 

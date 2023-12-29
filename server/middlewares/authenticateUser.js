@@ -16,7 +16,6 @@ const authenticateUser = (req, res, next) => {
     console.log(req.currentUserId);
     next();
   } catch (err) {
-    console.error('인증 오류', err);
     return res.status(401).json({ error: '인증되지 않음. 잘못된 토큰.' });
   }
 };

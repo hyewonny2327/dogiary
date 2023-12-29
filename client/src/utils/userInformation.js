@@ -30,9 +30,7 @@ export const PasswordCheck = async (password) => {
     const response = await api.post('/auth/check-password', { password });
 
     return response.data.data;
-  } catch (error) {
-    console.error('비밀번호 확인 오류:', error);
-  }
+  } catch (error) {}
 };
 
 //수정하기 Api

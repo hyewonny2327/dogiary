@@ -18,10 +18,11 @@ function RegisterDog() {
   const [submitImage, setSubmitImage] = useState(null);
   const fileInputRef = useRef();
   const navigate = useNavigate();
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
 
-    if (file && file.type.startsWith('image/')) {
+    if (file) {
       //파일 보여주기
       const reader = new FileReader();
       setSubmitImage(file);
@@ -31,7 +32,6 @@ function RegisterDog() {
       };
 
       reader.readAsDataURL(file);
-      console.log(file);
     }
   };
 
@@ -43,48 +43,31 @@ function RegisterDog() {
   const [dogName, setDogName] = useState('');
   const [breed, setBreed] = useState('');
   const [gender, setGender] = useState('');
-
+  const formData = new FormData();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const dogInfo = {
-      imageUrl: 'image',
-      name: dogName,
-      type: breed,
-      sex: gender,
-      date: metDate.toISOString().split('T')[0],
-      birthday: birthDate.toISOString().split('T')[0],
-    };
-
-    // const formData = new FormData();
-    // formData.append('imageUrl', submitImage);
-    // formData.append('name', dogName);
-    // formData.append('type', breed);
-    // formData.append('sex', gender);
-    // formData.append('date', metDate.toISOString().split('T')[0]);
-    // formData.append('birthday', birthDate.toISOString().split('T')[0]);
-    console.log(
-      submitImage,
-      dogName,
-      breed,
-      gender,
-      metDate.toISOString().split('T')[0],
-      birthDate.toISOString().split('T')[0],
-    );
+    if (submitImage === null) {
+      alert('이미지를 넣어주세요');
+    }
 
     try {
-      const response = await api.post('/dogs', dogInfo, {
+      formData.append('imageUrl', submitImage);
+      formData.append('name', dogName);
+      formData.append('type', breed);
+      formData.append('sex', gender);
+      formData.append('date', metDate.toISOString().split('T')[0]);
+      formData.append('birthday', birthDate.toISOString().split('T')[0]);
+      await api.post('/dogs', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
+      navigate('/myDogs');
 
-      console.log(response.data);
       // 데이터 전송 후 페이지 이동url적기
-      window.location.href = '이동할 페이지 URL';
-    } catch (error) {
-      console.error('서버로 데이터 전송 중 오류 발생:', error);
-    }
+    } catch (error) {}
   };
+
   return (
     <div>
       <LogoBar></LogoBar>
@@ -94,13 +77,11 @@ function RegisterDog() {
         style={{
           width: '100%',
           height: '100vh',
-          backgroundColor: 'red',
           display: 'flex',
           justifyContent: 'center',
         }}
       >
         <Abc>
-          {/*직관적인 이름으로 변경하되 작동 잘되면 없애도됨 추후 확인 필요->확인해보니까 틀이 무너져서 추후 직관적 이름 변경하기!*/}
           <CenteredDiv>
             <div className="title">반려견 등록하기</div>
 
@@ -113,13 +94,11 @@ function RegisterDog() {
             <PreviewContainer onClick={triggerFileInput} image={image}>
               {image && <ImagePreview src={image} alt="Preview" show={true} />}
               {!image && <div className="camera"></div>}
-              {/* <위에꺼 구현이안됨> */}
             </PreviewContainer>
           </CenteredDiv>
 
           <div>
             <CenteredDiv>
-              {/* 다 만들어보고 ContainerBox 들어간게 이쁜지 확인 */}
               <CenContent>
                 <StyledInput
                   type="text"
@@ -146,6 +125,7 @@ function RegisterDog() {
                   </option>
                   <option value="수컷">수컷</option>
                   <option value="암컷">암컷</option>
+                  <option value="중성">중성</option>
                 </StyledSelect>
               </Combine>
               <DateContainer>
@@ -173,22 +153,15 @@ function RegisterDog() {
             </CenteredDiv>
           </div>
           <CenteredDiv>
-            <div>
-              <LongColoredBtn className="sendData" onClick={handleSubmit}>
-                Save
-                {/*(누르면 마이페이지로 이동과 함께 api를 통해 저장된 반려견 정보를 보내기 ) */}
-              </LongColoredBtn>
-            </div>
-            <div
-              className="Cancelbtn"
-              onClick={() => {
-                navigate('/갈페이지등록해놓기');
-              }}
+            <button
+              type="submit"
+              className="sendData"
+              onClick={(e) => handleSubmit(e)}
             >
-              <LongStrokedBtn>
-                Cancel
-                {/* (누르면 마이페이지로이동) */}
-              </LongStrokedBtn>
+              Save
+            </button>
+            <div className="Cancelbtn">
+              <LongStrokedBtn>Cancel</LongStrokedBtn>
             </div>
           </CenteredDiv>
         </Abc>
@@ -243,6 +216,23 @@ const CenteredDiv = styled.div`
   .title {
     font-size: 24px;
   }
+  .sendData {
+    padding: 8px 25px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 281px;
+    height: 38px;
+    border: none;
+
+    font-family: Noto Sans KR;
+    font-size: 100%;
+    font-weight: 500;
+    background: #bdaf74;
+    color: #fff;
+  }
 `;
 const StyledInput = styled.input`
   font-family: Noto Sans KR;
@@ -270,7 +260,7 @@ const CenContent = styled.div`
   padding: 0 10px;
 `;
 
-const Abc = styled.div`
+const Abc = styled.form`
   display: flex;
   width: 390px;
   height: 100vh;

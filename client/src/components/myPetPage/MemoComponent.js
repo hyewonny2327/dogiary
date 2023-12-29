@@ -40,11 +40,6 @@ export default function MemoComponent({ dogInfo, apiCall }) {
       console.error('등록에 실패했습니다.', error);
     }
   };
-
-  useEffect(() => {
-    console.log('dogInfo:', dogInfo);
-  }, [dogInfo]);
-
   return (
     <>
       <ContainerBox>

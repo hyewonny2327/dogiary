@@ -32,15 +32,11 @@ function JoinPage() {
         nickName: nickname,
       });
 
-      console.log(response);
-      console.log(nickname); // 확인용 로그
-
       if (response.data.check === false) {
         setNicknameCheckMsg('중복된 닉네임입니다.');
       } else {
         setNicknameCheckMsg('사용 가능한 닉네임입니다.');
       }
-      console.log('닉네임 중복체크');
     } catch (error) {
       console.log(error.statusCode);
       console.error('API 호출 중 에러 발생:', error);
@@ -52,19 +48,16 @@ function JoinPage() {
   };
 
   const handleClickUserId = async () => {
-    console.log(typeof user_Id);
     try {
       const response = await api.post('auth/check-id', {
         userId: user_Id,
       });
 
-      console.log(response);
       if (!response.data.check) {
         setUserIdCheckMsg('사용 가능한 아이디 입니다.');
       } else {
         setUserIdCheckMsg('중복된 아이디입니다.');
       }
-      console.log('아이디 중복체크');
     } catch (error) {
       console.error('API 호출 중 에러 발생:', error);
     }
@@ -75,7 +68,6 @@ function JoinPage() {
   };
 
   const handleClickEmail = async () => {
-    console.log(email);
     try {
       const response = await api.post('auth/check-email', {
         email: email,
@@ -87,7 +79,6 @@ function JoinPage() {
           setEmailCheckMsg('해당 이메일로 인증번호를 보냈습니다.');
           setStayNumber(response.data.data.authNumber);
         }
-        console.log('ok');
       }
     } catch (error) {
       console.error('API 호출 중 에러 발생:', error);
@@ -99,11 +90,8 @@ function JoinPage() {
   };
 
   const handleClickNumber = () => {
-    console.log(number);
-    console.log(StayNumber);
     if (Number(number) === Number(StayNumber)) {
       setNumberCheckMsg('인증번호가 확인되었습니다.');
-      console.log('ok');
     } else {
       setNumberCheckMsg('인증번호가 틀렸습니다.');
     }
@@ -112,7 +100,6 @@ function JoinPage() {
   const PasswordValid = (Password) => {
     const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,20}$/;
     const isValid = passwordRegex.test(Password);
-    console.log(`Password: ${Password}, isValid: ${isValid}`); //디버깅 확인하려고 넣은 것
     return isValid;
   };
 
@@ -159,28 +146,28 @@ function JoinPage() {
       !password ||
       !CheckPassword
     ) {
-      console.error('모든 항목을 입력해주세요.');
+      alert('모든 항목을 입력해주세요.');
       return;
     }
 
     // 중복 체크 여부 확인
     if (nicknameCheckMsg !== '사용 가능한 닉네임입니다.') {
-      console.error('닉네임이 유효하지 않습니다.');
+      alert('닉네임이 유효하지 않습니다.');
       return;
     }
 
     if (UserIdCheckMsg !== '사용 가능한 아이디 입니다.') {
-      console.error('아이디가 유효하지 않습니다.');
+      alert('아이디가 유효하지 않습니다.');
       return;
     }
 
     if (EmailCheckMsg !== '해당 이메일로 인증번호를 보냈습니다.') {
-      console.error('이메일 또는 이메일 인증이 유효하지 않습니다.');
+      alert('이메일 또는 이메일 인증이 유효하지 않습니다.');
       return;
     }
 
     if (NumberCheckMsg !== '인증번호가 확인되었습니다.') {
-      console.error('인증번호가 유효하지 않습니다.');
+      alert('인증번호가 유효하지 않습니다.');
       return;
     }
 
@@ -189,7 +176,7 @@ function JoinPage() {
       pwdMsg !== '안전한 비밀번호입니다.' ||
       confirmPwdMsg !== '비밀번호가 일치합니다.'
     ) {
-      console.error('비밀번호 또는 비밀번호 확인이 유효하지 않습니다.');
+      alert('비밀번호 또는 비밀번호 확인이 유효하지 않습니다.');
       return;
     }
 
@@ -201,8 +188,8 @@ function JoinPage() {
         nickName: nickname,
         password,
       });
-      console.log('회원가입 성공');
-      navigate('/LoginPage');
+      alert('회원가입 성공');
+      navigate('/loginPage');
     } catch (error) {
       console.error('회원가입에 실패했습니다.', error);
     }

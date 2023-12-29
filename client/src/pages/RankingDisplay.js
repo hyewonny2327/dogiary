@@ -5,18 +5,19 @@ import axios from 'axios';
 import { api } from '.././utils/api';
 import {
   RankingContainer,
+  RankContainer,
   RankingImage,
   RankingText,
   UserInfo,
 } from '../pages/rankstyled';
 
-
-
 function RankingDisplay({ userRanking, nickName, count }) {
   return (
     <RankingContainer>
-      <RankingImage src={rankingImage} alt="foot" />
-      <RankingText>{userRanking}</RankingText>
+      <RankContainer>
+        <RankingImage src={rankingImage} alt="foot" />
+        <RankingText>{userRanking}</RankingText>
+      </RankContainer>
       <UserInfo>
         {nickName} ({count})
       </UserInfo>
