@@ -6,6 +6,7 @@ import axios from 'axios';
 import { InputBox } from '../common/Boxes';
 import { setIsOpen } from '../../slice/store';
 import { useDispatch } from 'react-redux';
+import { callMapApi } from '../../utils';
 
 const PasswordModal = () => {
   const navigate = useNavigate();
@@ -21,8 +22,8 @@ const PasswordModal = () => {
   //패스워드 체크 Api
   const PasswordCheck = async () => {
     try {
-      const response = await axios.post(
-        'http://localhost:8080/api/auth/check-password',
+      const response = await callMapApi.post(
+        '/auth/check-password',
         { password },
         {
           headers: {

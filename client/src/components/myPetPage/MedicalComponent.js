@@ -28,15 +28,12 @@ export default function MedicalComponent() {
 
   const MedicalPostClick = async () => {
     try {
-      const response = await axios.post(
-        'http://localhost:8080/api/dogs/:id/medicals/:id',
-        {
-          content,
-          date: startDate,
-          cost,
-          hospital,
-        },
-      );
+      const response = await api.post('/dogs/:id/medicals/:id', {
+        content,
+        date: startDate,
+        cost,
+        hospital,
+      });
       setMedicalList([...medicalList, response.data]);
       setContent('');
     } catch (error) {
