@@ -3,13 +3,13 @@ import { LogoBar, NavBar } from '../components/common/Header';
 import { LongColoredBtn, LongStrokedBtn } from '../components/common/Buttons';
 import { ContainerBox, InputBox } from '../components/common/Boxes'; // Removed StyledContainerBox
 import styled from 'styled-components';
-import axios from 'axios';
+import { api } from '../utils/api';
 import { useNavigate } from 'react-router-dom';
 
 async function UserLogin(id, pw, navigate) {
   try {
     console.log(id, pw);
-    const response = await axios.post('http://localhost:8080/api/auth/login', {
+    const response = await api.post('auth/login', {
       userId: id,
       password: pw,
     });
