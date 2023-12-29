@@ -79,7 +79,7 @@ function RegisterDog() {
       });
 
       console.log(response.data);
-      // 데이터 전송 후 페이지 이동
+      // 데이터 전송 후 페이지 이동url적기
       window.location.href = '이동할 페이지 URL';
     } catch (error) {
       console.error('서버로 데이터 전송 중 오류 발생:', error);
