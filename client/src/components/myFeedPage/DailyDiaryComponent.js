@@ -1,12 +1,22 @@
 import styled from 'styled-components';
-import { showDailyDiaries } from '../../utils/diaryApi';
+import {
+  deleteMyDiary,
+  editDiary,
+  showDailyDiaries,
+} from '../../utils/diaryApi';
 import { useEffect, useRef, useState } from 'react';
 import dogIcon from '../../components/icons/dogIcon.svg';
 import useInfinityScroll from '../../hooks/useInfinityScroll';
 import dayjs from 'dayjs';
+import moreIcon from '../../components/icons/moreIcon.svg';
+
 export default function DailyDiaryComponent({ clickedDate }) {
   const [dailyDiaries, setDailyDiaries] = useState([]);
   const [isNoData, setIsNoData] = useState(false);
+  const [isMoreBtnClicked, setIsMoreBtnClicked] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [inputTitle, setInputTitle] = useState();
+  const [inputContent, setInputContent] = useState();
   async function callDailyDiaryApi() {
     try {
       const formattedDate = formatDateString(clickedDate);
@@ -28,10 +38,6 @@ export default function DailyDiaryComponent({ clickedDate }) {
       }
     } catch (error) {
       // setIsNoData(true);
-      console.log(
-        '일간 다이어리 조회하기 중 에러 발생 in DailyDiaryComponent',
-        error,
-      );
     }
   }
 
@@ -50,7 +56,49 @@ export default function DailyDiaryComponent({ clickedDate }) {
 
     return isoFormattedDate;
   }
+  function handleMoreBtnClick() {
+    setIsMoreBtnClicked((prev) => !prev);
+  }
 
+  //수정하기 버튼 클릭 -> 수정하기/ 저장하기
+  async function handleClickEdit(id, originTitle, originContent) {
+    if (isEditMode === false) {
+      //수정하기
+      setIsEditMode(true);
+    } else {
+      //저장하기
+      const data = {
+        title: inputTitle ? inputTitle : originTitle,
+        content: inputContent ? inputContent : originContent,
+      };
+      await editDiary(id, data);
+      callDailyDiaryApi();
+      setIsEditMode(false);
+    }
+  }
+  async function handleClickDelete() {
+    if (Array.isArray(dailyDiaries)) {
+      const id = dailyDiaries[0]._id;
+      await deleteMyDiary(id).then(() => {
+        callDailyDiaryApi();
+      });
+    }
+  }
+  function handleEditTitle(e) {
+    let title = e.target.value;
+    setInputTitle(title);
+  }
+  function handleEditContent(e) {
+    let content = e.target.value;
+    if (content === null) {
+      setInputContent();
+    }
+    setInputContent(content);
+  }
+
+  useEffect(() => {
+    console.log(isEditMode);
+  }, [isEditMode]);
   useEffect(() => {
     callDailyDiaryApi();
   }, []);
@@ -70,23 +118,72 @@ export default function DailyDiaryComponent({ clickedDate }) {
       {isNoData === false &&
         dailyDiaries.map((diary, index) => (
           <DailyDiary>
-            <div className="title-container" key={`diary-${index}`}>
-              <div className="date">{clickedDate}</div>
-              <div className="title">{diary.title}</div>
-            </div>
-            {Array(diary.imageUrls.length).map((_, imageIndex) => (
-              <div
-                className="content-container"
-                // key={`post-${index}-${imageIndex}`}
-              >
+            <div className="header-container">
+              {isEditMode ? (
+                <div className="title-container" key={`diary-${index}`}>
+                  <div className="date">{clickedDate}</div>
+                  <input
+                    onChange={(e) => handleEditTitle(e)}
+                    className="title"
+                    placeholder={diary.title}
+                  ></input>
+                </div>
+              ) : (
+                <div className="title-container" key={`diary-${index}`}>
+                  <div className="date">{clickedDate}</div>
+                  <div className="title">{diary.title}</div>
+                </div>
+              )}
+
+              <div>
+                {isMoreBtnClicked && (
+                  <div className="menu-container">
+                    <div
+                      className="menu-item"
+                      onClick={() =>
+                        handleClickEdit(diary._id, diary.title, diary.content)
+                      }
+                    >
+                      {isEditMode ? '저장하기' : '수정하기'}
+                    </div>
+                    <div className="line"></div>
+                    <div className="menu-item" onClick={handleClickDelete}>
+                      삭제하기
+                    </div>
+                  </div>
+                )}
                 <img
-                  className="image"
-                  src={diary.imageUrls[index]}
-                  alt="업로드된 이미지"
+                  className="more-icon"
+                  src={moreIcon}
+                  alt="수정,삭제하기"
+                  onClick={handleMoreBtnClick}
                 ></img>
               </div>
-            ))}
-            <div className="text">{diary.content}</div>
+            </div>
+            {isEditMode ? (
+              <input
+                className="text"
+                placeholder={diary.content}
+                onChange={(e) => handleEditContent(e)}
+              />
+            ) : (
+              <div className="text">{diary.content}</div>
+            )}
+            <div className="image-container">
+              {diary.imageUrls.map((_, imageIndex) => (
+                <div
+                  className="content-container"
+                  key={`post-${index}-${imageIndex}`}
+                >
+                  <img
+                    className="image"
+                    // src={diary.imageUrls[index]}
+                    src="/images/147722e1-adc8-4ca0-acea-67826c8af098.png"
+                    alt="업로드된 이미지"
+                  ></img>
+                </div>
+              ))}
+            </div>
           </DailyDiary>
         ))}
       {/* {moreData ? (
@@ -109,10 +206,51 @@ const DailyDiary = styled.div`
   align-items: center;
   color: #5f5013;
   font-family: Noto Sans KR;
+  .header-container {
+    position: relative;
+    width: 100%;
+  }
+  .more-icon {
+    position: absolute;
+    top: 24px;
+    left: 90vw;
+  }
+  .menu-container {
+    position: absolute;
+    width: 100px;
+    height: 50px;
+    top: 40px;
+    right: 10vw;
+    background: #f2d8b2;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  .line {
+    background: #fff;
+    width: 100%;
+    height: 1px;
+  }
+  .menu-item {
+    text-align: center;
+    width: 100%;
+  }
+  .menu-item:hover {
+    background: #bdaf74;
+
+    font-weight: 500;
+    color: #fff;
+  }
+
   .title-container {
     margin: 23px 0;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
   }
   .content-container {
     width: 80%;
@@ -127,16 +265,28 @@ const DailyDiary = styled.div`
     box-sizing: border-box;
     margin: 2rem 0;
   }
+  .image-container {
+    width: 100%;
+    height: 50vh;
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
   .image {
     width: 90%;
-    height: 200px;
+    height: 300px;
+    object-fit: contain;
     //border: 1px solid red;
   }
   .text {
     width: 90%;
     height: 100px;
     margin: 20px 0;
-    border: 1px solid blue;
+    padding: 0 20px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #bdaf74;
+    overflow: auto;
   }
 `;
 
