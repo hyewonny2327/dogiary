@@ -10,14 +10,18 @@ import useInfinityScroll from '../../hooks/useInfinityScroll';
 
 export default function MyPlacePage() {
   const [myPlaces, setMyPlaces] = useState([]);
+  const [isPublicClicked, setIsPublicClicked] = useState(true);
+  const [isHover, setIsHover] = useState(Array(myPlaces.length).fill(false));
   const getData = async () => {
     try {
       if (!moreData) {
         console.log('No more data to fetch');
+
         return;
       }
       const lastItemId =
         myPlaces.length > 0 ? myPlaces[myPlaces.length - 1]._id : null;
+      console.log('공개,비공개 클릭', isPublicClicked);
       const res = await showMyPlaces(isPublicClicked, lastItemId);
       if (Array.isArray(res)) {
         //array인지 체크, 개수보다 이하이면 =>
@@ -40,14 +44,13 @@ export default function MyPlacePage() {
   const targetRef = useRef(null);
   const [moreData, setMoreData] = useState(true);
 
-  useEffect(() => {
-    setTargetRef(targetRef.current);
-  }, []);
-
   async function handleIntersect() {
     if (moreData) {
+      console.log('handleIntersect 실행, 지금 공개상태는?', isPublicClicked);
+      setMoreData(true);
       await getData();
     } else {
+      setTargetRef(null);
       console.log('끝');
     }
   }
@@ -65,17 +68,27 @@ export default function MyPlacePage() {
       return '몰라';
     }
   }
-  const [isPublicClicked, setIsPublicClicked] = useState(true);
-  const [isHover, setIsHover] = useState(Array(myPlaces.length).fill(false));
 
   function handleTabClick() {
-    setIsPublicClicked(!isPublicClicked);
-  }
-  useEffect(() => {
-    // isPublicClicked 상태가 변경될 때마다 데이터를 다시 호출
-    setMyPlaces([]);
+    setIsPublicClicked((prevIsPublicClicked) => !prevIsPublicClicked);
     setMoreData(true);
-  }, [isPublicClicked]);
+
+    console.log('탭을 클릭했습니다');
+  }
+
+  useEffect(() => {
+    // isPublicClicked 상태가 변경될 때 감시
+    setMyPlaces([]);
+    setTargetRef(targetRef.current);
+  }, [isPublicClicked, targetRef]);
+
+  useEffect(() => {
+    // targetRef가 null이 아닌 경우에만 targetRef 설정
+    if (targetRef.current) {
+      setTargetRef(targetRef.current);
+    }
+    console.log('targetRef변경', targetRef.current);
+  }, []);
   function handleMouseIn(index) {
     setIsHover((prev) => {
       const newHoverState = [...prev];
@@ -150,9 +163,7 @@ export default function MyPlacePage() {
             </div>
           ))}
           {/* 여기에 타겟? */}
-          {moreData ? (
-            <div ref={targetRef} onIntersect={handleIntersect}></div>
-          ) : null}
+          {moreData ? <div ref={targetRef}></div> : null}
         </ListContainer>
       </MyPlaceContainer>
     </PageContainer>
@@ -160,7 +171,7 @@ export default function MyPlacePage() {
 }
 
 const PageContainer = styled.div`
-  height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;

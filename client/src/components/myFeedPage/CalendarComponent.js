@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,10 +6,13 @@ import styled from 'styled-components';
 import { setIsOpen } from '../../slice/store';
 import { Modal } from '../common/Modal';
 import DailyDiaryComponent from './DailyDiaryComponent';
+import { showAllDiaries } from '../../utils/diaryApi';
+import dayjs from 'dayjs';
 
 function CalendarComponent() {
   const [value, setValue] = useState(new Date());
   const [clickedDate, setClickedDate] = useState(0);
+  const [diaries, setDiaries] = useState([]);
 
   const dispatch = useDispatch();
   const isModalOpen = useSelector((state) => state.modal.isOpen);
@@ -25,6 +28,15 @@ function CalendarComponent() {
     dispatch(setIsOpen(true));
   };
 
+  async function getDiaryData() {
+    const diary = await showAllDiaries();
+    console.log(diary);
+    setDiaries(diary);
+  }
+  useEffect(() => {
+    getDiaryData();
+  }, []);
+
   return (
     <div>
       <CalendarStyle>
@@ -35,6 +47,16 @@ function CalendarComponent() {
             date.toLocaleString('en', { day: 'numeric' })
           }
           onClickDay={handleDateClick}
+          tileClassName={({ date, view }) => {
+            const formattedDate = dayjs(date).format('YYYY-MM-DD');
+
+            //console.log('formattedDate', formattedDate);
+
+            const diaryExistsForDate =
+              diaries && diaries.some((diary) => diary.date === formattedDate);
+
+            return diaryExistsForDate ? 'dayPosted' : '';
+          }}
         />
       </CalendarStyle>
       {isModalOpen && (
@@ -148,7 +170,11 @@ const CalendarStyle = styled.div`
     margin: 6px 0;
     text-align: center;
   }
-
+  .dayPosted {
+    background-image: url('/images/footImage.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
   .react-calendar__tile--active {
     background: #fff8e6;
   }
