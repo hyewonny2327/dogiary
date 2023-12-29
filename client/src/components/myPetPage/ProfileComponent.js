@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { ContainerBox } from '../common/Boxes';
 import { LongColoredBtn, LongStrokedBtn } from '../common/Buttons';
 import { Modal } from '../common/Modal';
-import { api } from '../../utils/api';
 import styled from 'styled-components';
 import DogModal from './DogModal';
 import { setIsOpen } from '../../slice/store';
 import { useSelector, useDispatch } from 'react-redux';
+import dogImg from '../../dog.jpg';
 
 // 나이 계산
 function calculateAge(birthdate) {
@@ -34,7 +34,11 @@ export default function ProfileComponent({ dogInfo }) {
   const altText = dogInfo?.data?.name || 'Dog Image';
 
   const imageElement = imageUrl ? (
-    <img src={imageUrl} alt={altText} />
+    <img
+      src={imageUrl}
+      alt={altText}
+      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+    />
   ) : (
     <div>이미지를 넣어주세요</div>
   );
@@ -53,44 +57,42 @@ export default function ProfileComponent({ dogInfo }) {
   const dispatch = useDispatch();
   const isModalOpen = useSelector((state) => state.modal.isOpen);
 
-  // useEffect(() => {
-  //   console.log(editMode);
-  // }, [editMode]);
-
   return (
     <div>
       <ContainerBox>
         <ProfileContents>
           <div className="profileInfo">
             <div className="image">{imageElement}</div>
-            <div className="infoContainer">
-              <div className="name-age-sex">
-                <div className="name">
-                  <span>이름</span>
-                  <div>{dogInfo?.data?.name}</div>
-                </div>
-                <div className="age">
-                  <span>나이</span>
-                  <div>{`${age.years}세 ${age.months}개월`}</div>
-                </div>
+            <div>
+              <div className="infoContainer">
+                <div className="name-age-sex">
+                  <div className="name">
+                    <span>이름: </span>
+                    <div>{dogInfo?.data?.name}</div>
+                  </div>
+                  <div className="age">
+                    <span>나이: </span>
+                    <div>{`${age.years}세`}</div>
+                  </div>
 
-                <div className="sex">
-                  <span>성별</span>
-                  <div>{dogInfo?.data?.sex}</div>
+                  <div className="sex">
+                    <span>성별: </span>
+                    <div>{dogInfo?.data?.sex}</div>
+                  </div>
                 </div>
-              </div>
-              <div className="type-date-birthday">
-                <div className="type">
-                  <span>견종</span>
-                  <div>{dogInfo?.data?.type}</div>
-                </div>
-                <div className="date">
-                  <span>만난 날</span>
-                  <div>{dogInfo?.data?.date}</div>
-                </div>
-                <div className="birthday">
-                  <span>생일</span>
-                  <div>{dogInfo?.data?.birthday}</div>
+                <div className="type-date-birthday">
+                  <div className="type">
+                    <span>견종: </span>
+                    <div>{dogInfo?.data?.type}</div>
+                  </div>
+                  <div className="date">
+                    <span>만난 날: </span>
+                    <div>{dogInfo?.data?.date}</div>
+                  </div>
+                  <div className="birthday">
+                    <span>생일: </span>
+                    <div>{dogInfo?.data?.birthday}</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -113,25 +115,38 @@ export default function ProfileComponent({ dogInfo }) {
 
 const ProfileContents = styled.div`
   padding: 10px;
-
   display: flex;
   flex-direction: row;
-
+  align-items: center;
+  justify-content: center;
   .image {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 65vw;
+    height: 20vh;
+    background: black;
+    margin-bottom: 3vh;
+    margin-top: 2vh;
   }
 
   .profileInfo {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    // background: black;
     align-items: center;
-
     .infoContainer {
       display: flex;
+      padding: 0 2vh 0 2vh;
       justify-content: space-between;
-      width: 100%;
+      align-items: center;
+      width: 65vw;
+      height: 20vh;
+      margin-top: 1vh;
+      // background: black;
+      border: solid 1px #bdaf74;
+      border-radius: 1vh;
     }
     .name-age-sex,
     .type-date-birthday {
@@ -148,7 +163,12 @@ const ProfileContents = styled.div`
     .birthday {
       display: flex;
       justify-content: space-between;
+      align-items: space-around;
       width: 100%;
+      height: 20%;
+      margin-bottom: 2vh;
+      font-size: 14px;
+      margin-right: 2vh;
     }
   }
 `;
