@@ -23,7 +23,7 @@ const getImageUrls = async (req) => {
   try {
     if (req.files && req.files?.length > 0) {
       return req.files.map((file) =>
-        path.join(__dirname, '../public/images', file.filename),
+        path.join(__dirname, '../public/images', req.file.filename),
       );
     } else {
       const matchedUserImage = await User.findOne(

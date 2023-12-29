@@ -26,6 +26,6 @@ export function useAuth() {
     if (pathname) {
       getUserAuth();
     }
-  }, [pathname]);
+  }, [pathname, isAuth]);
   return isAuth;
 }

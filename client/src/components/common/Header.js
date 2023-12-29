@@ -5,39 +5,41 @@ import menuIcon from '../icons/menuIcon.svg';
 
 //로고, 마이페이지 버튼이 있는 상단 로고 bar
 export function LogoBar() {
+  let navigate = useNavigate();
   return (
     <LogoBarStyle>
       <Logo>Dogiary</Logo>
-      <svg
-        className="myPage-icon"
-        xmlns="http://www.w3.org/2000/svg"
-        width="36"
-        height="36"
-        viewBox="0 0 36 36"
-        fill="none"
-      >
-        <path
-          d="M18 1C8.61116 1 1 8.61116 1 18C1 27.3888 8.61116 35 18 35C27.3888 35 35 27.3888 35 18C35 8.61116 27.3888 1 18 1Z"
-          stroke="#5F5013"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M4.86066 28.7879C4.86066 28.7879 8.64999 23.9502 18 23.9502C27.35 23.9502 31.1394 28.7879 31.1394 28.7879"
-          stroke="#5F5013"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M18 17.9998C20.8168 17.9998 23.1 15.7165 23.1 12.8998C23.1 10.0832 20.8168 7.7998 18 7.7998C15.1833 7.7998 12.9 10.0832 12.9 12.8998C12.9 15.7165 15.1833 17.9998 18 17.9998Z"
-          stroke="#5F5013"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+      <div className="myPage-icon" onClick={() => navigate('/profile')}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="36"
+          height="36"
+          viewBox="0 0 36 36"
+          fill="none"
+        >
+          <path
+            d="M18 1C8.61116 1 1 8.61116 1 18C1 27.3888 8.61116 35 18 35C27.3888 35 35 27.3888 35 18C35 8.61116 27.3888 1 18 1Z"
+            stroke="#5F5013"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M4.86066 28.7879C4.86066 28.7879 8.64999 23.9502 18 23.9502C27.35 23.9502 31.1394 28.7879 31.1394 28.7879"
+            stroke="#5F5013"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M18 17.9998C20.8168 17.9998 23.1 15.7165 23.1 12.8998C23.1 10.0832 20.8168 7.7998 18 7.7998C15.1833 7.7998 12.9 10.0832 12.9 12.8998C12.9 15.7165 15.1833 17.9998 18 17.9998Z"
+            stroke="#5F5013"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
     </LogoBarStyle>
   );
 }
@@ -64,27 +66,19 @@ export function NavBar() {
 
   const categories = [
     '강아지 등록하기',
-    '내 피드 들어가기',
     '내 반려견 페이지',
+    '내 피드',
     '마이페이지',
     '마이맵',
-    '내장소보기',
-    '로그인',
-    '회원가입',
-    '랭킹',
-    '비번/아이디찾기',
+    '맵 랭킹',
   ];
   const links = [
-    'registerPuppy',
+    'registerDog',
+    'myDogs',
     'myFeed',
-    'myPet',
     'profile',
     'mapPage',
-    'mapPage/myPlace',
-    'loginPage',
-    'JoinPage',
     'ranking',
-    'find',
   ];
 
   return (
@@ -122,6 +116,8 @@ const LogoBarStyle = styled.div`
   padding: 0px 20px;
 
   .myPage-icon {
+    width: 36px;
+    height: 36px;
     cursor: pointer;
   }
 `;

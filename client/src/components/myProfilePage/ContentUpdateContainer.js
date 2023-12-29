@@ -73,8 +73,6 @@ const ContentUpdateContainer = () => {
         userImageFile,
       );
 
-  
-
       if (result) {
         alert('회원 정보가 수정되었습니다.');
         navigate('/profile');
@@ -97,9 +95,9 @@ const ContentUpdateContainer = () => {
   //회원탈퇴
   const handleUserSecession = () => {
     if (!withdrawalPassword) {
-      alert('다시 입력해주세요');
+      alert('현재 비밀번호 인증 후, 탈퇴가 가능합니다');
     } else {
-      navigate('/');
+      navigate('/signOut');
     }
   };
 
@@ -123,10 +121,7 @@ const ContentUpdateContainer = () => {
         readNickName={readNickName}
         setWithdrawalPassword={setWithdrawalPassword}
       />
-      <SecessionBtn
-        onClick={handleUserSecession}
-        disabled={!withdrawalPassword}
-      >
+      <SecessionBtn onClick={handleUserSecession}>
         회원탈퇴
         <FontAwesomeIcon icon={faAngleRight} />
       </SecessionBtn>
@@ -154,4 +149,5 @@ const SecessionBtn = styled.button`
   font-size: 16px;
   font-weight: 700;
   color: #b6b6b6;
+  cursor: pointer;
 `;

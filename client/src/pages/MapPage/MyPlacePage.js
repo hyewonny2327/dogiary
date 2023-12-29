@@ -7,11 +7,13 @@ import deleteIcon from '../../components/icons/deleteIcon.svg';
 import deleteIconHover from '../../components/icons/deleteIconHover.svg';
 import { deleteMyPlace } from '../../utils';
 import useInfinityScroll from '../../hooks/useInfinityScroll';
+import { useNavigate } from 'react-router-dom';
 
 export default function MyPlacePage() {
   const [myPlaces, setMyPlaces] = useState([]);
   const [isPublicClicked, setIsPublicClicked] = useState(true);
   const [isHover, setIsHover] = useState(Array(myPlaces.length).fill(false));
+  const navigate = useNavigate();
   const getData = async () => {
     try {
       if (!moreData) {
@@ -113,6 +115,9 @@ export default function MyPlacePage() {
         console.error('Error deleting data:', error);
       });
   }
+  function handleReturnClick() {
+    navigate('/mapPage');
+  }
 
   return (
     <PageContainer>
@@ -133,6 +138,9 @@ export default function MyPlacePage() {
             onClick={() => handleTabClick()}
           >
             비공개
+          </div>
+          <div className="return-btn" onClick={() => handleReturnClick()}>
+            맵으로 돌아가기
           </div>
         </TabContainer>
         <ListContainer>
@@ -202,14 +210,26 @@ const TabContainer = styled.div`
   margin: 10px 0;
   box-sizing: content-box;
   display: flex;
+  width: 90%;
   justify-content: space-evenly;
-  align-items: flex-start;
+  align-items: center;
   color: #d9d9d9;
-  margin-right: auto;
+  // margin-right: auto;
   font-size: 18px;
   font-weight: 700;
   .clicked {
     color: #5f5013;
+  }
+  .return-btn {
+    margin-left: auto;
+    font-weight: 500;
+    font-size: 13px;
+    color: #f2d8b2;
+    cursor: pointer;
+  }
+  .tab {
+    margin-right: 5px;
+    cursor: pointer;
   }
 `;
 const ListContainer = styled.div`

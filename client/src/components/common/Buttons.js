@@ -28,6 +28,7 @@ const LongBtnStyle = styled.div`
   align-items: center;
   width: 281px;
   height: 38px;
+  cursor: pointer;
 
   font-family: Noto Sans KR;
   font-size: 100%;
@@ -52,6 +53,7 @@ const SmallBtnStyle = styled.div`
   align-items: center;
   border-radius: 4px;
   background: #bdaf74;
+  cursor: pointer;
 
   color: #fff;
   font-family: Noto Sans KR;

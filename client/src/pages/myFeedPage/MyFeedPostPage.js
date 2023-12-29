@@ -94,7 +94,7 @@ export default function MyFeedPostPage() {
 
   function handleSubmit(e) {
     console.log('클릭됨');
-    //e.preventDefault();
+    e.preventDefault();
 
     if (_title === '' || _date === '') {
       alert('날짜, 제목을 빠짐없이 입력해주세요');

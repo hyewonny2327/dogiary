@@ -3,8 +3,10 @@ import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './slice/store';
 import LoadingSpinner from './components/common/LoadingSpinner';
-
+import { useAuth } from './hooks/useAuth';
 // Lazy-loaded components
+const RegisterDog = React.lazy(() => import('./pages/RegisterDog'));
+const Ranking = React.lazy(() => import('./pages/Ranking'));
 const MainPage = React.lazy(() => import('./pages/MainPage'));
 const MyMapPage = React.lazy(() => import('./pages/MapPage/MyMapPage'));
 const RegisterPlace = React.lazy(() => import('./pages/MapPage/RegisterPlace'));
@@ -38,6 +40,7 @@ function App() {
   useEffect(() => {
     getUserAuth();
   }, [pathname]);
+
   return (
     <Provider store={store}>
       <Suspense fallback={<LoadingSpinner />}>
@@ -56,9 +59,11 @@ function App() {
               <Route path="/profile/update" element={<ProfileUpdatePage />} />
               <Route path="/myPet" element={<MyPetPage />} />
               <Route path="/find" element={<FindIdPassword />} />
-              <Route path="/signout" element={<SignOut />} />
+              <Route path="/signOut" element={<SignOut />} />
               <Route path="/mainPage" element={<FirstPage />} />
-              <Route path="/mydogs" element={<MyDogsPage />} />
+              <Route path="/myDogs" element={<MyDogsPage />} />
+              <Route path="/rankings" element={<Ranking />} />
+              <Route path="/registerDog" element={<RegisterDog />} />
             </>
           )}
           <Route path="/" element={<MainPage />} />

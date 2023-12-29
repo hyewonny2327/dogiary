@@ -68,12 +68,11 @@ const Wraper = styled.div`
 const MainUi = styled.div`
   width: 100%;
   height: 88vh;
-  background: #FFF8E6;
+  background: #fff8e6;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  }
 `;
 const TextDiv = styled.div`
   width: 100%;

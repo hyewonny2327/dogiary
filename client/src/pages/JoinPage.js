@@ -3,7 +3,7 @@ import { LogoBar, NavBar } from '../components/common/Header';
 import { LongColoredBtn, SmallBtn } from '../components/common/Buttons';
 import { ContainerBox, InputBox } from '../components/common/Boxes'; // Removed StyledContainerBox
 import styled from 'styled-components';
-import axios from 'axios';
+import { api } from '../utils/api';
 import { useNavigate } from 'react-router-dom';
 
 function JoinPage() {
@@ -28,12 +28,9 @@ function JoinPage() {
 
   const handleClickNickname = async () => {
     try {
-      const response = await axios.post(
-        'http://localhost:8080/api/auth/check-nickname',
-        {
-          nickName: nickname,
-        },
-      );
+      const response = await api.post('auth/check-nickname', {
+        nickName: nickname,
+      });
 
       console.log(response);
       console.log(nickname); // 확인용 로그
@@ -57,12 +54,9 @@ function JoinPage() {
   const handleClickUserId = async () => {
     console.log(typeof user_Id);
     try {
-      const response = await axios.post(
-        'http://localhost:8080/api/auth/check-id',
-        {
-          userId: user_Id,
-        },
-      );
+      const response = await api.post('auth/check-id', {
+        userId: user_Id,
+      });
 
       console.log(response);
       if (!response.data.check) {
@@ -83,12 +77,9 @@ function JoinPage() {
   const handleClickEmail = async () => {
     console.log(email);
     try {
-      const response = await axios.post(
-        'http://localhost:8080/api/auth/check-email',
-        {
-          email: email,
-        },
-      );
+      const response = await api.post('auth/check-email', {
+        email: email,
+      });
       if (response.status === 200) {
         if (response.data === null) {
           setEmailCheckMsg('중복된 이메일입니다.');
@@ -204,7 +195,7 @@ function JoinPage() {
 
     // 회원가입 요청
     try {
-      await axios.post('http://localhost:8080/api/auth/sign-up', {
+      await api.post('auth/sign-up', {
         email,
         userId: user_Id,
         nickName: nickname,
