@@ -7,10 +7,19 @@ import MedicalComponent from '../components/myPetPage/MedicalComponent';
 import FoodComponent from '../components/myPetPage/FoodComponent';
 import MemoComponent from '../components/myPetPage/MemoComponent';
 import { api } from '../utils/api';
+import { useLocation } from 'react-router-dom';
 
 export default function MyPetPage() {
   const [tab, setTab] = useState('profile');
   const [dogInfo, setDogInfo] = useState(null);
+
+  const location = useLocation();
+  const id = location.state.id;
+
+  useEffect(() => {
+    const dogId = id;
+    fetchDogInfo(dogId);
+  }, [id]);
 
   const fetchDogInfo = async (id) => {
     try {
@@ -28,11 +37,6 @@ export default function MyPetPage() {
       console.error('조회를 실패했습니다.', error);
     }
   };
-
-  useEffect(() => {
-    const dogId = '658c06dec2d4b117198ad677';
-    fetchDogInfo(dogId);
-  }, []);
 
   useEffect(() => {
     console.log('dogInfo:', dogInfo);

@@ -23,7 +23,7 @@ function MyDogs() {
   };
   const handleClick = (item) => {
     console.log('Clicked Item:', item);
-    navigate(`/myPet?id=${item._id}`);
+    navigate(`/myPet`, { state: { id: item._id } });
   };
 
   useEffect(() => {
