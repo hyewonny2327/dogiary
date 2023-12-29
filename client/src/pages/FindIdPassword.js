@@ -32,7 +32,7 @@ function FindIdPassword() {
       };
 
       const response = await axios.post(
-        'http://localhost:8080/api/auth/find-id',
+        'http://kdt-sw-7-team09.elicecoding.com/api/auth/find-id',
         data,
       );
       await Swal.fire(
@@ -60,7 +60,7 @@ function FindIdPassword() {
         email: inputValue,
       };
       const response = await axios.post(
-        'http://localhost:8080/api/auth/help',
+        'http://kdt-sw-7-team09.elicecoding.com/api/auth/help',
         data,
       );
       await Swal.fire(
