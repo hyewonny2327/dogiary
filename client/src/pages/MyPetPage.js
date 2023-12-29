@@ -94,7 +94,9 @@ export default function MyPetPage() {
             {tab === 'weight' && <WeightComponent dogInfo={dogInfo} />}
             {tab === 'medical' && <MedicalComponent dogInfo={dogInfo} />}
             {tab === 'food' && <FoodComponent dogInfo={dogInfo} />}
-            {tab === 'memo' && <MemoComponent dogInfo={dogInfo} />}
+            {tab === 'memo' && (
+              <MemoComponent dogInfo={dogInfo} setDogInfo={setDogInfo} />
+            )}
           </div>
         </PetDiaryContainer>
       </Main>

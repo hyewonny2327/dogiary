@@ -1,14 +1,9 @@
 import { styled } from 'styled-components';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  userIdRead,
-  userInformationUpdate,
-  userSecession,
-} from '../../utils/userInformation';
+import { userIdRead, userInformationUpdate } from '../../utils/userInformation';
 import UpdateTitle from './UpdateTitle';
 import UpdateContentMain from './UpdateContentMain';
 
@@ -20,16 +15,15 @@ const ContentUpdateContainer = () => {
   const [userImageFile, setUserImageFile] = useState(null);
   const [isUpdateEnabled, setUpdateEnabled] = useState(false);
   const [readUserId, setReadUserId] = useState('');
-  const [readNickName, setReadNickName] = useState('');
   const [readUserImage, setReadUserImage] = useState('');
   const navigate = useNavigate();
 
-  // // userIdRead Api
+  // userIdRead Api
   const fetchData = async () => {
     try {
       const { userId, nickName, imageUrl } = await userIdRead();
       setReadUserId(userId);
-      setReadNickName(nickName);
+      setNickName(nickName);
       setReadUserImage(imageUrl);
     } catch (err) {
       console.error('데이터를 불러오는 중 오류 발생:', err);
@@ -57,24 +51,14 @@ const ContentUpdateContainer = () => {
         alert('새 비밀번호와 확인이 일치해야 합니다.');
         return;
       }
-      //꼼수발동
-      const updatedNickName =
-        nickName.trim() || `${Math.floor(Math.random() * 100000000)}`;
 
-      // console.log('업데이트 전:', {
-      //   nickName: updatedNickName,
-      //   newPassword,
-      //   imageUrl: userImageFile,
-      // });
+      const updatedNickName = nickName.trim();
 
       const result = await userInformationUpdate(
         updatedNickName,
         newPassword,
         userImageFile,
       );
-
-  
-
       if (result) {
         alert('회원 정보가 수정되었습니다.');
         navigate('/profile');
@@ -96,10 +80,10 @@ const ContentUpdateContainer = () => {
 
   //회원탈퇴
   const handleUserSecession = () => {
-    if (!withdrawalPassword) {
-      alert('다시 입력해주세요');
+    if (withdrawalPassword === false) {
+      alert('비밀번호 확인을 완료해주세요.');
     } else {
-      navigate('/');
+      navigate('/signout');
     }
   };
 
@@ -120,13 +104,9 @@ const ContentUpdateContainer = () => {
         setUpdateEnabled={setUpdateEnabled}
         isUpdateEnabled={isUpdateEnabled}
         readUserId={readUserId}
-        readNickName={readNickName}
         setWithdrawalPassword={setWithdrawalPassword}
       />
-      <SecessionBtn
-        onClick={handleUserSecession}
-        disabled={!withdrawalPassword}
-      >
+      <SecessionBtn onClick={handleUserSecession}>
         회원탈퇴
         <FontAwesomeIcon icon={faAngleRight} />
       </SecessionBtn>
@@ -144,7 +124,7 @@ const ContentWrapper = styled.div`
   align-items: center;
 `;
 
-const SecessionBtn = styled.button`
+const SecessionBtn = styled.div`
   border: none;
   width: 80%;
   height: 50px;
@@ -154,4 +134,5 @@ const SecessionBtn = styled.button`
   font-size: 16px;
   font-weight: 700;
   color: #b6b6b6;
+  cursor: pointer;
 `;

@@ -66,7 +66,7 @@ const userController = {
 
       const { nickName, password } = req.body;
 
-      const checkNick = await userService.checkNickname(nickName);
+      const checkNick = await userService.checkUserNickname(userId, nickName);
 
       const matchedUserImage = await User.findOne(
         { userId: userId },
@@ -213,7 +213,7 @@ const userController = {
     } catch (error) {
       next(error);
     }
-  }
+  },
 };
 
 module.exports = userController;
