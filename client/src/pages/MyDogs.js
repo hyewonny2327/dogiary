@@ -15,14 +15,12 @@ function MyDogs() {
     try {
       const response = await api.get('/dogs');
       setDogs(response.data.data);
-      console.log(response.data.data);
     } catch (err) {
       console.log(err);
       return Promise.reject(err); // 실패 시 reject
     }
   };
   const handleClick = (item) => {
-    console.log('Clicked Item:', item);
     navigate(`/myPet`, { state: { id: item._id } });
   };
 
@@ -43,7 +41,7 @@ function MyDogs() {
               <DogCard key={index} onClick={() => handleClick(item)}>
                 <ImgDiv>
                   <img
-                    src={dogImg}
+                    src={item.imageUrl}
                     alt="dogImage"
                     style={{
                       width: '100%',

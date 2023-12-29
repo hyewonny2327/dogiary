@@ -40,11 +40,6 @@ export default function MemoComponent({ dogInfo }) {
       console.error('등록에 실패했습니다.', error);
     }
   };
-
-  useEffect(() => {
-    console.log('dogInfo:', dogInfo);
-  }, [dogInfo]);
-
   return (
     <>
       <ContainerBox>
@@ -104,8 +99,6 @@ export default function MemoComponent({ dogInfo }) {
               <div>전체보기</div>
             </MemoHistory>
             <MemoHistoryItems>
-              {/* 반복될아이템 */}
-
               {_id.memos.map((item, index) => (
                 <MemoHistoryItemWrapper key={index}>
                   <Item>

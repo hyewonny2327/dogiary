@@ -54,19 +54,15 @@ export async function showMyPlaces(toggle, cursor) {
     const response = await mapApi.get(`?myMaps=${toggle}${cursor}`);
     let placesData = response.data.data;
     return placesData;
-  } catch (error) {
-    console.error('내장소 호출하기 api 요청 중 오류발생', error);
-  }
+  } catch (error) {}
 }
 
 export async function showAllPlaces() {
   try {
-    //console.log(userToken);
     const response = await mapApi.get(null);
     return response;
   } catch (error) {
-    console.log('등록된 장소정보없음');
-    return;
+    console.error('등록된 장소정보없음', error);
   }
 }
 
@@ -74,7 +70,5 @@ export async function showPlacesByTag(tag) {
   try {
     const response = await mapApi.get(`?tag=${tag}`);
     return response.data.data;
-  } catch (error) {
-    console.error('태그별 장소 조회 중 오류 발생', error);
-  }
+  } catch (error) {}
 }

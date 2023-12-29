@@ -227,6 +227,7 @@ const TabContainer = styled.div`
     width: 40%;
     height: 90%;
     // background: blue;
+    cursor: pointer;
   }
   .clicked {
     // background: black;
@@ -256,6 +257,7 @@ const LongBtn = styled.div`
   align-items: center;
   width: ${(props) => props.width || '354px'};
   height: ${(props) => props.height || '513px'};
+  cursor: pointer;
 
   font-family: Noto Sans KR;
   font-size: 100%;

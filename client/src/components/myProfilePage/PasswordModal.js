@@ -6,6 +6,7 @@ import axios from 'axios';
 import { InputBox } from '../common/Boxes';
 import { setIsOpen } from '../../slice/store';
 import { useDispatch } from 'react-redux';
+import { callMapApi } from '../../utils';
 
 const PasswordModal = () => {
   const navigate = useNavigate();
@@ -21,8 +22,8 @@ const PasswordModal = () => {
   //패스워드 체크 Api
   const PasswordCheck = async () => {
     try {
-      const response = await axios.post(
-        'http://localhost:8080/api/auth/check-password',
+      const response = await callMapApi.post(
+        '/auth/check-password',
         { password },
         {
           headers: {
@@ -33,9 +34,7 @@ const PasswordModal = () => {
       );
 
       return response.data.data;
-    } catch (error) {
-      console.error('비밀번호 확인 오류:', error);
-    }
+    } catch (error) {}
   };
   //확인Btn
 
@@ -52,13 +51,12 @@ const PasswordModal = () => {
         clearInputField();
         alert('잘못된 비밀번호입니다. 다시 시도해주세요.');
       }
-    } catch (error) {
-      console.error('비밀번호 확인 오류:', error);
-    }
+    } catch (error) {}
   };
 
   const handlePasswordPage = () => {
     navigate('/find');
+    dispatch(setIsOpen(false));
   };
 
   return (

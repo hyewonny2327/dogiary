@@ -24,9 +24,6 @@ export default function MyPetPage() {
   const fetchDogInfo = async (id) => {
     try {
       const response = await api.get(`/dogs?id=${id}`);
-
-      console.log('HTTP 상태 코드:', response.status);
-
       if (response.status === 200) {
         const data = response.data;
         setDogInfo(data);
@@ -37,14 +34,6 @@ export default function MyPetPage() {
       console.error('조회를 실패했습니다.', error);
     }
   };
-
-  useEffect(() => {
-    console.log('dogInfo:', dogInfo);
-    // if (dogInfo && dogInfo.data) {
-    //   const dogType = dogInfo.data.type;
-    //   console.log('강아지 종류:', dogType);
-    // }
-  }, [dogInfo]);
 
   function handleClickTab(clickedTab) {
     setTab(clickedTab);

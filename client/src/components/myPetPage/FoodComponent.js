@@ -44,9 +44,6 @@ export default function FoodComponent({ dogInfo }) {
       console.error('등록에 실패했습니다.', error);
     }
   };
-  useEffect(() => {
-    console.log(foodList);
-  }, []);
 
   return (
     <div>

@@ -59,6 +59,7 @@ const ContentUpdateContainer = () => {
         newPassword,
         userImageFile,
       );
+
       if (result) {
         alert('회원 정보가 수정되었습니다.');
         navigate('/profile');
@@ -83,7 +84,7 @@ const ContentUpdateContainer = () => {
     if (withdrawalPassword === false) {
       alert('비밀번호 확인을 완료해주세요.');
     } else {
-      navigate('/signout');
+      navigate('/signOut');
     }
   };
 

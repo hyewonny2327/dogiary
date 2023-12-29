@@ -119,7 +119,7 @@ function MyMapPage() {
                     navigate('/mapPage/myPlace');
                   }}
                 >
-                  내 장소 보기 (32)
+                  내 장소 보기
                 </div>
                 <div className="line"></div>
                 <div
@@ -130,6 +130,16 @@ function MyMapPage() {
                   }}
                 >
                   장소 등록하기
+                </div>
+                <div className="line"></div>
+                <div
+                  className="text"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate('/rankings');
+                  }}
+                >
+                  랭킹 보기
                 </div>
               </ModalContainerStyle>
             )}
@@ -174,6 +184,7 @@ const SearchContainer = styled.div`
     margin: 10px 5px;
     border-radius: 4px;
     border: none;
+    cursor: pointer;
   }
   .text-input {
     background-color: #fff;
@@ -216,6 +227,7 @@ const MyMapIcon = styled.div`
   position: fixed;
   bottom: 22px;
   right: 29px;
+  cursor: pointer;
 `;
 
 const ModalContainerStyle = styled.div`
@@ -224,7 +236,7 @@ const ModalContainerStyle = styled.div`
   right: 0;
 
   width: 207px;
-  height: 106px;
+  height: 120px;
   border-radius: 5px;
   background: #5f5013;
 
