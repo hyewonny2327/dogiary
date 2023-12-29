@@ -26,12 +26,7 @@ const getImageUrls = async (req) => {
         path.join(__dirname, '../public/images', file.filename),
       );
     } else {
-      const matchedUserImage = await User.findOne(
-        { userId: req.currentUserId },
-        { imageUrl: 1 },
-      );
-
-      return matchedUserImage?.imageUrl;
+      return path.join(__dirname, '../public/images', 'diaryImageDefault.png');
     }
   } catch (error) {
     throw new errorHandler(commonErrors.internalError, 'internalError', {
