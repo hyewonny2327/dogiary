@@ -88,12 +88,11 @@ const Wraper = styled.div`
 const ContentUi = styled.div`
   width: 100%;
   height: 88vh;
-  background: #FFF;
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  }
 `;
 const DogDiv = styled.div`
   width: 90%;
