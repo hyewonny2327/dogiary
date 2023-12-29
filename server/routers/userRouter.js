@@ -2,7 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const authenticateUser = require('../middlewares/authenticateUser.js');
 const userController = require('../controllers/userController');
-const { validateSignUp, validateSignIn, validateUpdateUserInfo, validateCheckPassword, validateCheckUserId, validateCheckNickname, validateCheckEmail } = require('../middlewares/validator');
+const { validateSignUp, validateSignIn, validateUpdateUserInfo, validateCheckPassword, validateCheckUserId, validateCheckNickname, validateCheckEmail, validateAuthNumber } = require('../middlewares/validators/validatorUser.js');
 const userRouter = express.Router();
 const { upload } = require('../utils/multer.js');
 
@@ -58,6 +58,6 @@ userRouter.post('/help', validateCheckEmail, userController.sendTemporaryPasswor
 userRouter.post('/find-id', validateCheckEmail, userController.sendUserId);
 
 //이메일 인증번호 확인
-userRouter.post('/check-number', userController.checkAuthNumber);
+userRouter.post('/check-number', validateAuthNumber, userController.checkAuthNumber);
 
 module.exports = userRouter;

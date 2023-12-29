@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ContainerBox, InputBox } from '../common/Boxes';
 import { SmallBtn } from '../common/Buttons';
 import DatePicker from 'react-datepicker';
@@ -13,6 +13,10 @@ export default function MemoComponent({ dogInfo }) {
   const [startDate, setStartDate] = useState(new Date());
   const [memoList, setMemoList] = useState([]);
 
+  const userTokenValue = localStorage.getItem('userToken');
+
+  const _id = dogInfo?.data._id;
+
   const handleChangeTitle = (e) => {
     setTitle(e.target.value);
   };
@@ -24,25 +28,54 @@ export default function MemoComponent({ dogInfo }) {
   const memoPostClick = async () => {
     try {
       const response = await axios.post(
-        'http://localhost:8080/api/dogs/:id/memos',
+        `http://localhost:8080/api/dogs/${_id}/memos`,
         {
           date: startDate,
           title,
           content,
         },
+        {
+          headers: {
+            Authorization: `Bearer ${userTokenValue}`,
+            'Content-type': 'application/json',
+          },
+        },
       );
-      setMemoList([...memoList, response.data]);
-      setTitle('');
+      const data = response.data;
+
+      return data;
     } catch (error) {
       console.error('등록에 실패했습니다.', error);
     }
   };
 
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/dogs/${_id}/memos`,
+        {
+          headers: {
+            Authorization: `Bearer ${userTokenValue}`,
+            'Content-type': 'application/json',
+          },
+        },
+      );
+      const data = response.data.data.data;
+      setMemoList(data);
+      console.log('배열이냐?', memoList);
+    } catch (err) {
+      console.error('error', err);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, [_id]);
+
   return (
     <div>
       <ContainerBox>
         <MemoContents>
-          <span className="span">진료기록을 등록하세요.</span>
+          <span className="span">메모를 등록하세요.</span>
           <div className="register-btn">
             <SmallBtn
               onClick={(e) => {
@@ -61,7 +94,7 @@ export default function MemoComponent({ dogInfo }) {
           <InputBox>
             <input
               className="form-input-title"
-              value={title}
+              // value={title}
               type="text"
               name="title"
               id="title"
@@ -87,13 +120,13 @@ export default function MemoComponent({ dogInfo }) {
             </div>
 
             <ul>
-              {memoList.map((item, index) => (
+              {/* {memoList.map((item, index) => (
                 <li key={index} className="content-item">
                   <span className="title">{item.title}</span>
-                  <span className="date">{item.date.toLocaleDateString()}</span>
+                  <span className="date">{item.date}</span>
                   <span className="content">{item.title}</span>
                 </li>
-              ))}
+              ))} */}
             </ul>
           </MemoList>
         </MemoContents>

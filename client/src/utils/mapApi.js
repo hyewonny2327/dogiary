@@ -46,6 +46,8 @@ export async function deleteMyPlace(id) {
 export async function showMyPlaces(toggle, cursor) {
   if (cursor) {
     cursor = '&cursor=' + cursor;
+  } else {
+    cursor = '';
   }
   toggle = toggle.toString();
   try {
