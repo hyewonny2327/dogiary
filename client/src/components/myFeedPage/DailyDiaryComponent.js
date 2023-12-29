@@ -1,15 +1,27 @@
 import styled from 'styled-components';
-import { showDailyDiaries } from '../../utils/diaryApi';
+import {
+  deleteMyDiary,
+  editDiary,
+  showDailyDiaries,
+} from '../../utils/diaryApi';
 import { useEffect, useRef, useState } from 'react';
 import dogIcon from '../../components/icons/dogIcon.svg';
 import useInfinityScroll from '../../hooks/useInfinityScroll';
+import dayjs from 'dayjs';
+import moreIcon from '../../components/icons/moreIcon.svg';
 
 export default function DailyDiaryComponent({ clickedDate }) {
   const [dailyDiaries, setDailyDiaries] = useState([]);
   const [isNoData, setIsNoData] = useState(false);
+  const [isMoreBtnClicked, setIsMoreBtnClicked] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [inputTitle, setInputTitle] = useState();
+  const [inputContent, setInputContent] = useState();
   async function callDailyDiaryApi() {
     try {
-      const diaryData = await showDailyDiaries('2023-12-26');
+      const formattedDate = formatDateString(clickedDate);
+      console.log(formattedDate);
+      const diaryData = await showDailyDiaries(formattedDate);
       console.log(diaryData);
       if (Array.isArray(diaryData)) {
         if (diaryData.length === 0) {
@@ -18,73 +30,165 @@ export default function DailyDiaryComponent({ clickedDate }) {
             '다이어리 정보 없음 -> state설정해서 기본 배경화면 보여주기',
           );
         } else {
-          setIsNoData(false);
           setDailyDiaries(diaryData);
-          if (diaryData.length < 10) {
-            setMoreData(false);
-          }
+          //setIsNoData(false);
         }
+      } else {
+        setIsNoData(true);
       }
     } catch (error) {
-      console.error(
-        '일간 다이어리 조회하기 중 에러 발생 in DailyDiaryComponent',
-      );
+      // setIsNoData(true);
     }
   }
 
+  function formatDateString(clickedDate) {
+    // '2023년 12월 23일' 형식의 문자열에서 숫자만 추출
+    const dateArray = clickedDate.match(/\d+/g);
+
+    // 추출한 숫자를 이용하여 day.js 객체 생성
+    //! day js 지우기 1!!!! 그냥 split 쓰기
+    const formattedDate = dayjs(
+      `${dateArray[0]}-${dateArray[1]}-${dateArray[2]}`,
+    );
+
+    // day.js를 사용하여 원하는 형식으로 포맷팅
+    const isoFormattedDate = formattedDate.format('YYYY-MM-DD');
+
+    return isoFormattedDate;
+  }
+  function handleMoreBtnClick() {
+    setIsMoreBtnClicked((prev) => !prev);
+  }
+
+  //수정하기 버튼 클릭 -> 수정하기/ 저장하기
+  async function handleClickEdit(id, originTitle, originContent) {
+    if (isEditMode === false) {
+      //수정하기
+      setIsEditMode(true);
+    } else {
+      //저장하기
+      const data = {
+        title: inputTitle ? inputTitle : originTitle,
+        content: inputContent ? inputContent : originContent,
+      };
+      await editDiary(id, data);
+      callDailyDiaryApi();
+      setIsEditMode(false);
+    }
+  }
+  async function handleClickDelete() {
+    if (Array.isArray(dailyDiaries)) {
+      const id = dailyDiaries[0]._id;
+      await deleteMyDiary(id).then(() => {
+        callDailyDiaryApi();
+      });
+    }
+  }
+  function handleEditTitle(e) {
+    let title = e.target.value;
+    setInputTitle(title);
+  }
+  function handleEditContent(e) {
+    let content = e.target.value;
+    if (content === null) {
+      setInputContent();
+    }
+    setInputContent(content);
+  }
+
+  useEffect(() => {
+    console.log(isEditMode);
+  }, [isEditMode]);
   useEffect(() => {
     callDailyDiaryApi();
   }, []);
-
-  //무한스크롤
-  const targetRef = useRef(null);
-  const { setTargetRef } = useInfinityScroll(handleIntersect);
-  const [moreData, setMoreData] = useState(true);
-
   useEffect(() => {
-    setTargetRef(targetRef.current);
-  }, []);
-
-  async function handleIntersect() {
-    if (moreData) {
-      //! 커서 보내줘야함. 어떻게 보내줄지 고민중. .
-
-      await callDailyDiaryApi();
-    } else {
-      console.log('끝');
-    }
-  }
+    setDailyDiaries([]);
+    console.log(isNoData);
+  }, [isNoData]);
   return (
     <Container>
-      {isNoData && (
+      {isNoData === true && (
         <NoDataContainer>
           <img src={dogIcon} alt="강아지이미지"></img>
           <div>저장된데이터가 없습니다.</div>
           <div>추억을 기록해주세요!</div>
         </NoDataContainer>
       )}
-      {!isNoData &&
+      {isNoData === false &&
         dailyDiaries.map((diary, index) => (
           <DailyDiary>
-            <div className="title-container" key={`diary-${index}`}>
-              <div className="date">{clickedDate}</div>
-              <div className="title">{diary.title}</div>
-            </div>
-            {Array(diary.imageUrls.length).map((_, index) => (
-              <div className="content-container" key={`post-${index}`}>
+            <div className="header-container">
+              {isEditMode ? (
+                <div className="title-container" key={`diary-${index}`}>
+                  <div className="date">{clickedDate}</div>
+                  <input
+                    onChange={(e) => handleEditTitle(e)}
+                    className="title"
+                    placeholder={diary.title}
+                  ></input>
+                </div>
+              ) : (
+                <div className="title-container" key={`diary-${index}`}>
+                  <div className="date">{clickedDate}</div>
+                  <div className="title">{diary.title}</div>
+                </div>
+              )}
+
+              <div>
+                {isMoreBtnClicked && (
+                  <div className="menu-container">
+                    <div
+                      className="menu-item"
+                      onClick={() =>
+                        handleClickEdit(diary._id, diary.title, diary.content)
+                      }
+                    >
+                      {isEditMode ? '저장하기' : '수정하기'}
+                    </div>
+                    <div className="line"></div>
+                    <div className="menu-item" onClick={handleClickDelete}>
+                      삭제하기
+                    </div>
+                  </div>
+                )}
                 <img
-                  className="image"
-                  src={diary.imageUrls[index]}
-                  alt="업로드된 이미지"
+                  className="more-icon"
+                  src={moreIcon}
+                  alt="수정,삭제하기"
+                  onClick={handleMoreBtnClick}
                 ></img>
               </div>
-            ))}
-            <div className="text">{diary.content}</div>
+            </div>
+            {isEditMode ? (
+              <input
+                className="text"
+                placeholder={diary.content}
+                onChange={(e) => handleEditContent(e)}
+              />
+            ) : (
+              <div className="text">{diary.content}</div>
+            )}
+            <div className="image-container">
+              {diary.imageUrls.map((_, imageIndex) => (
+                <div
+                  className="content-container"
+                  key={`post-${index}-${imageIndex}`}
+                >
+                  <img
+                    className="image"
+                    // src={diary.imageUrls[index]}
+                    src="/images/147722e1-adc8-4ca0-acea-67826c8af098.png"
+                    alt="업로드된 이미지"
+                  ></img>
+                </div>
+              ))}
+            </div>
           </DailyDiary>
         ))}
-      {moreData ? (
+      {/* {moreData ? (
         <div ref={targetRef} onIntersect={handleIntersect}></div>
-      ) : null}
+      ) : null} */}
     </Container>
   );
 }
@@ -102,10 +206,51 @@ const DailyDiary = styled.div`
   align-items: center;
   color: #5f5013;
   font-family: Noto Sans KR;
+  .header-container {
+    position: relative;
+    width: 100%;
+  }
+  .more-icon {
+    position: absolute;
+    top: 24px;
+    left: 90vw;
+  }
+  .menu-container {
+    position: absolute;
+    width: 100px;
+    height: 50px;
+    top: 40px;
+    right: 10vw;
+    background: #f2d8b2;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  .line {
+    background: #fff;
+    width: 100%;
+    height: 1px;
+  }
+  .menu-item {
+    text-align: center;
+    width: 100%;
+  }
+  .menu-item:hover {
+    background: #bdaf74;
+
+    font-weight: 500;
+    color: #fff;
+  }
+
   .title-container {
     margin: 23px 0;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
   }
   .content-container {
     width: 80%;
@@ -120,16 +265,28 @@ const DailyDiary = styled.div`
     box-sizing: border-box;
     margin: 2rem 0;
   }
+  .image-container {
+    width: 100%;
+    height: 50vh;
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
   .image {
     width: 90%;
-    height: 200px;
+    height: 300px;
+    object-fit: contain;
     //border: 1px solid red;
   }
   .text {
     width: 90%;
     height: 100px;
     margin: 20px 0;
-    border: 1px solid blue;
+    padding: 0 20px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #bdaf74;
+    overflow: auto;
   }
 `;
 

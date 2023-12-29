@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { showDiaryWithCursor } from '../../utils/diaryApi';
 import { useEffect, useState, useRef } from 'react';
 import useInfinityScroll from '../../hooks/useInfinityScroll';
-export default function TimelineComponent() {
+export default function TimelineComponent({ isTimelineClick }) {
   const [monthlyDiaries, setMonthlyDiaries] = useState([]);
   const [monthAndYear, setMonthAndYear] = useState('');
   const [currentMonth, setCurrentMonth] = useState('');
@@ -15,41 +15,61 @@ export default function TimelineComponent() {
   async function handleIntersect() {
     console.log('handleIntersect 함수 실행');
     if (moreData) {
+      setMoreData(true);
       await getDiaryData();
     } else {
+      setTargetRef(null);
       console.log('끝');
     }
   }
+  useEffect(() => {
+    if (targetRef.current) {
+      setTargetRef(targetRef.current);
+    }
+    if (targetRef == null) {
+      console.log('null 입니다 onIntersect 호출하지마!! ');
+    }
+    getCurrentMonthAndYear();
+  }, []);
+
   function getCurrentMonthAndYear() {
+    console.log('getCurrentMonthAndYear호출됨');
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth() + 1;
     setCurrentMonth(currentMonth);
 
     const formattedDate = `${currentYear}-${currentMonth}`;
-    setMonthAndYear(formattedDate);
+    return formattedDate;
+    //setMonthAndYear(formattedDate);
   }
   async function getDiaryData() {
-    console.log('호출!');
+    console.log('getDiaryData 호출!');
+    console.log('moreData', moreData);
     try {
       if (!moreData) {
         console.log('No more data to fetch');
         return;
       }
+      console.log('diaries 확인', monthlyDiaries);
       const lastItemId =
         monthlyDiaries.length > 0
           ? monthlyDiaries[monthlyDiaries.length - 1]._id
           : null;
       console.log('lastItemId', lastItemId);
+
       const diaries = await showDiaryWithCursor(lastItemId);
+      console.log(diaries);
       if (Array.isArray(diaries)) {
         //array인지 체크, 개수보다 이하이면 =>
         if (!diaries || diaries.length < 10) {
+          // 데이터가 없을 때의 처리
           setMoreData(false); // 더 이상 데이터가 없다고 표시
           setMonthlyDiaries((prev) => [...prev, ...diaries]);
         } else {
           setMonthlyDiaries((prev) => [...prev, ...diaries]); // 기존 데이터와 새로운 데이터 합치기
         }
+        //setTargetRef(targetRef.current);
       } else {
         console.log('배열이 아님');
       }
@@ -58,19 +78,9 @@ export default function TimelineComponent() {
     }
   }
 
-  useEffect(() => {
-    setTargetRef(targetRef.current);
-    getCurrentMonthAndYear();
-  }, []);
-
-  useEffect(() => {
-    getCurrentMonthAndYear();
-    //getDiaryData();
-  }, [monthAndYear]); // 최초 렌더링 시에만 실행
-
   return (
     <TimeLine>
-      <div className="month">{currentMonth} 월</div>
+      <div className="month">{currentMonth}월</div>
       {monthlyDiaries &&
         monthlyDiaries.map((diary, index) => (
           <div className="post-component" key={`${diary._id}-${index}`}>
@@ -88,7 +98,10 @@ export default function TimelineComponent() {
           </div>
         ))}
       {moreData ? (
-        <div ref={targetRef} onIntersect={handleIntersect}></div>
+        //컨테이너 아래 공간이 좀 있어서 가려져서 관측이 안됨 width를 좀 주니까 해결됨 ㅜㅜ
+        <div className="target" ref={targetRef}>
+          &nbsp;
+        </div>
       ) : null}
     </TimeLine>
   );
@@ -99,6 +112,11 @@ const TimeLine = styled.div`
   flex-direction: column;
   align-items: center;
   height: 100%;
+  .target {
+    height: 200px;
+    width: 100px;
+    //background: red;
+  }
   .month {
     margin: 25px 0;
   }

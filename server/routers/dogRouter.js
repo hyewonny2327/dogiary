@@ -5,7 +5,7 @@ const authenticateUser = require('../middlewares/authenticateUser.js');
 const {
   validatePostDogInfo,
   validateUpdateDogInfo,
-} = require('../middlewares/validatorDog.js');
+} = require('../middlewares/validators/validatorDog.js');
 
 const { upload } = require('../utils/multer.js');
 // POST: /dogs - 새로운 강아지 생성
