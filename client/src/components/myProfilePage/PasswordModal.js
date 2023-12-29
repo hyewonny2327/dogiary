@@ -45,13 +45,20 @@ const PasswordModal = () => {
     try {
       const result = await PasswordCheck();
 
-      result && result.check
-        ? navigate('/profile/update')
-        : clearInputField('');
-      dispatch(setIsOpen(false));
+      if (result && result.check) {
+        navigate('/profile/update');
+        dispatch(setIsOpen(false));
+      } else {
+        clearInputField();
+        alert('잘못된 비밀번호입니다. 다시 시도해주세요.');
+      }
     } catch (error) {
       console.error('비밀번호 확인 오류:', error);
     }
+  };
+
+  const handlePasswordPage = () => {
+    navigate('/find');
   };
 
   return (
@@ -73,7 +80,7 @@ const PasswordModal = () => {
           </label>
         </ContentBox>
         <BtnBox>
-          <button>비밀번호 찾기</button>
+          <button onClick={handlePasswordPage}>비밀번호 찾기</button>
           <button onClick={handlePasswordCheck}>확인</button>
         </BtnBox>
       </ModalContainer>
@@ -187,6 +194,7 @@ const BtnBox = styled.div`
     color: #5f5013;
     font-family: 'Noto Sans KR';
     font-weight: 700;
+    cursor: pointer;
   }
   & > button:last-child {
     border: none;
@@ -196,5 +204,6 @@ const BtnBox = styled.div`
     color: black;
     font-family: 'Noto Sans KR';
     font-weight: 700;
+    cursor: pointer;
   }
 `;

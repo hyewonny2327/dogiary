@@ -122,7 +122,6 @@ const UpdateContentMain = ({
               type="text"
               id="nickNameInput"
               ref={nickNameInputRef}
-              placeholder={readNickName}
             />
           </label>
           <div>
