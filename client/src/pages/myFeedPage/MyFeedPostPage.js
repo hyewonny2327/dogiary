@@ -24,7 +24,7 @@ export default function MyFeedPostPage() {
   const [diaryData, setDiaryData] = useState([]);
   const [_title, setTitle] = useState('');
   const [_date, setDate] = useState('');
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState();
 
   const handleAddContent = () => {
     setCount((prev) => prev + 1);
@@ -135,6 +135,7 @@ export default function MyFeedPostPage() {
                 selected={startDate}
                 onChange={(date) => handleDateInput(date)}
                 dateFormat={'yyyy-MM-dd'}
+                placeholderText="날짜를 선택하세요"
               />
             </InputBox>
             <InputBox>
@@ -150,7 +151,7 @@ export default function MyFeedPostPage() {
             {[...Array(count)].map((_, index) => (
               <ContentBox
                 key={`diaryContent-${index}`}
-                uploadedImage={uploadedImages}
+                imageUrl={imageUrl}
                 handleImageUpload={(event) => handleImageUpload(event, index)}
                 index={index}
               />
@@ -188,14 +189,14 @@ export default function MyFeedPostPage() {
   );
 }
 
-export function ContentBox({ uploadedImage, handleImageUpload, index }) {
+export function ContentBox({ imageUrl, handleImageUpload, index }) {
   function handleCloseBtn() {}
   return (
     <ContentContainer className="container">
       <img src={closeBtn} className="close-btn" onClick={handleCloseBtn} />
       <ImageContainer>
         <img
-          src={uploadedImage[index] ? uploadedImage[index] : imageIcon}
+          src={imageUrl[index] ? imageUrl[index] : imageIcon}
           className="uploadedImage"
         ></img>
         <input
@@ -205,7 +206,7 @@ export function ContentBox({ uploadedImage, handleImageUpload, index }) {
           name={`ImageStyle-${index}`}
           onChange={(event) => handleImageUpload(event, index)}
         />
-        {!uploadedImage[index] ? (
+        {!imageUrl[index] ? (
           <label className="upload-btn" htmlFor={`file-input-${index}`}>
             이미지 업로드
           </label>

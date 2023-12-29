@@ -42,19 +42,18 @@ export default function DailyDiaryComponent({ clickedDate }) {
   }
 
   function formatDateString(clickedDate) {
-    // '2023년 12월 23일' 형식의 문자열에서 숫자만 추출
-    const dateArray = clickedDate.match(/\d+/g);
+    console.log(clickedDate.split(' ')[0]);
 
-    // 추출한 숫자를 이용하여 day.js 객체 생성
-    //! day js 지우기 1!!!! 그냥 split 쓰기
-    const formattedDate = dayjs(
-      `${dateArray[0]}-${dateArray[1]}-${dateArray[2]}`,
-    );
-
-    // day.js를 사용하여 원하는 형식으로 포맷팅
-    const isoFormattedDate = formattedDate.format('YYYY-MM-DD');
-
-    return isoFormattedDate;
+    const year = clickedDate.split(' ')[0].replace('년', '');
+    const month = clickedDate.split(' ')[1].replace('월', '');
+    const day = clickedDate.split(' ')[2].replace('일', '');
+    console.log(year, month, day);
+    const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(
+      2,
+      '0',
+    )}`;
+    console.log('formatted date', formattedDate);
+    return formattedDate;
   }
   function handleMoreBtnClick() {
     setIsMoreBtnClicked((prev) => !prev);
@@ -177,8 +176,8 @@ export default function DailyDiaryComponent({ clickedDate }) {
                 >
                   <img
                     className="image"
-                    // src={diary.imageUrls[index]}
-                    src="/images/147722e1-adc8-4ca0-acea-67826c8af098.png"
+                    src={diary.imageUrls[imageIndex]}
+                    // src="/images/147722e1-adc8-4ca0-acea-67826c8af098.png"
                     alt="업로드된 이미지"
                   ></img>
                 </div>

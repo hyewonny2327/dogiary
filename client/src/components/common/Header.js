@@ -81,7 +81,7 @@ export function NavBar() {
     'profile',
     'mapPage',
     'mapPage/myPlace',
-    'LoginPage',
+    'loginPage',
     'JoinPage',
     'ranking',
     'find',

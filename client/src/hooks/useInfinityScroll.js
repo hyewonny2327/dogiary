@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 export default function useInfinityScroll(onIntersect) {
   const [targetRef, setTargetRef] = useState(null);
   function handleIntersect([entry], obs) {
-    console.log('hook 안에서 handleIntersect 호출', entry);
+    // console.log('hook 안에서 handleIntersect 호출', entry);
 
     if (entry.isIntersecting) {
-      console.log('onIntersect 호출');
+      // console.log('onIntersect 호출');
       obs.unobserve(entry.target);
       onIntersect();
     }

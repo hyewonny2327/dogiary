@@ -211,7 +211,7 @@ function JoinPage() {
         password,
       });
       console.log('회원가입 성공');
-      navigate('/LoginPage');
+      navigate('/loginPage');
     } catch (error) {
       console.error('회원가입에 실패했습니다.', error);
     }
