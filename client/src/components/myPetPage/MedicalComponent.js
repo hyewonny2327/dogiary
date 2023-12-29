@@ -6,7 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { ko } from 'date-fns/esm/locale';
 import { SmallBtn } from '../common/Buttons';
 import axios from 'axios';
-
+import { api } from '../../utils/api';
 export default function MedicalComponent() {
   const [content, setContent] = useState('');
   const [hospital, setHospital] = useState('');

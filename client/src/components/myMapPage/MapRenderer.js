@@ -18,27 +18,32 @@ function MapRenderer() {
     if (clickedTag === 'tag4') {
       fetchShowAllPlaces();
       return;
-    }
+    } else {
+      console.log(clickedTag);
 
-    showPlacesByTag(clickedTag)
-      .then((placesData) => {
-        if (!placesData) {
-          // 데이터가 없을 때의 처리
-          console.log('No data available');
-          setPositions([]);
-          setTitles([]);
-          return;
-        }
-        const _positions = placesData.map((place) => ({
-          lat: place.position[1],
-          lng: place.position[0],
-        }));
-        const _titles = placesData.map((place) => place.title);
-        setPositions(_positions);
-        setTitles(_titles);
-        setIsMarkerClicked(Array(_positions.length).fill(false));
-      })
-      .catch((error) => {});
+      showPlacesByTag(clickedTag)
+        .then((placesData) => {
+          console.log('데이터 확인', placesData);
+          if (!placesData) {
+            // 데이터가 없을 때의 처리
+            console.log('No data available');
+            setPositions([]);
+            setTitles([]);
+            return;
+          }
+          const _positions = placesData.map((place) => ({
+            lat: place.position[1],
+            lng: place.position[0],
+          }));
+          const _titles = placesData.map((place) => place.title);
+          setPositions(_positions);
+          setTitles(_titles);
+          setIsMarkerClicked(Array(_positions.length).fill(false));
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   }, [clickedTag]);
 
   useEffect(() => {
@@ -64,6 +69,7 @@ function MapRenderer() {
         if (!placesData) {
           return;
         }
+        console.log(placesData);
         const _positions = placesData.map((place) => ({
           lat: place.position[1],
           lng: place.position[0],

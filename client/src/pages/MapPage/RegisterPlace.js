@@ -146,7 +146,8 @@ function RegisterPlace() {
         formData.append('toggle', submitData.toggle);
         formData.append('tag', submitData.tag);
         formData.append('content', submitData.content);
-        formData.append('position', submitData.position);
+        formData.append('position[0]', selectedPlace.lng);
+        formData.append('position[1]', selectedPlace.lat);
         formData.append('imageUrl', submitData.imageUrl);
         formData.append('address', submitData.address);
         await registerMyPlace(formData);

@@ -6,7 +6,7 @@ import axios from 'axios';
 import { InputBox } from '../common/Boxes';
 import { setIsOpen } from '../../slice/store';
 import { useDispatch } from 'react-redux';
-import { callMapApi } from '../../utils';
+import { api } from '../../utils/api';
 
 const PasswordModal = () => {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const PasswordModal = () => {
   //패스워드 체크 Api
   const PasswordCheck = async () => {
     try {
-      const response = await callMapApi.post(
+      const response = await api.post(
         '/auth/check-password',
         { password },
         {
@@ -34,7 +34,9 @@ const PasswordModal = () => {
       );
 
       return response.data.data;
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
   //확인Btn
 
