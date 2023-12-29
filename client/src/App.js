@@ -30,7 +30,7 @@ function App() {
     <Provider store={store}>
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>
-        <Route path="/RegisterDog" element={<RegisterDog />} />
+          <Route path="/registerDog" element={<RegisterDog />} />
           <Route path="/ranking" element={<Ranking />} />
           <Route path="/" element={<MainPage />} />
           <Route path="/mapPage" element={<MyMapPage />} />
