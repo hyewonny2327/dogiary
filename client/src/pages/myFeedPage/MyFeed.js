@@ -5,19 +5,29 @@ import CalendarComponent from '../../components/myFeedPage/CalendarComponent';
 import styled from 'styled-components';
 import TimelineComponent from '../../components/myFeedPage/TimelineComponent';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { setIsTimelineClicked } from '../../slice/store';
 
 function MyFeed() {
-  const [isCalendarClick, setIsCalendarClicked] = useState(true);
-  const [isTimelineClick, setIsTimelineClicked] = useState(false);
+  //const [isCalendarClick, setIsCalendarClicked] = useState(true);
+  //const [isTimelineClick, setIsTimelineClicked] = useState(false);
+
+  const dispatch = useDispatch();
+  const isTimelineClicked = useSelector(
+    (state) => state.feedTab.isTimelineClicked,
+  );
+
   const navigate = useNavigate();
 
   function handleClickTab(tab) {
     if (tab === 'calendar') {
-      setIsCalendarClicked(!isCalendarClick);
-      setIsTimelineClicked(!isTimelineClick);
+      dispatch(setIsTimelineClicked(false));
+      // setIsCalendarClicked(!isCalendarClick);
+      // setIsTimelineClicked(!isTimelineClick);
     } else if (tab === 'timeline') {
-      setIsCalendarClicked(!isCalendarClick);
-      setIsTimelineClicked(!isTimelineClick);
+      dispatch(setIsTimelineClicked(true));
+      // setIsCalendarClicked(!isCalendarClick);
+      // setIsTimelineClicked(!isTimelineClick);
     }
   }
   function handleButtonClick() {
@@ -34,22 +44,20 @@ function MyFeed() {
           <div className="tab-container">
             <div
               onClick={() => handleClickTab('calendar')}
-              className={isCalendarClick ? 'clicked' : ''}
+              className={isTimelineClicked ? '' : 'clicked'}
             >
               캘린더
             </div>
             <div
               onClick={() => handleClickTab('timeline')}
-              className={isTimelineClick ? 'clicked' : ''}
+              className={isTimelineClicked ? 'clicked' : ''}
             >
               타임라인
             </div>
           </div>
           <div className="content-container">
-            {isCalendarClick && <CalendarComponent />}
-            {isTimelineClick && (
-              <TimelineComponent isTimelineClick={isTimelineClick} />
-            )}
+            {!isTimelineClicked && <CalendarComponent />}
+            {isTimelineClicked && <TimelineComponent />}
           </div>
         </CalendarContainer>
         <LongColoredBtn onClick={handleButtonClick}>

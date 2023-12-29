@@ -2,7 +2,8 @@ import styled from 'styled-components';
 import { showDiaryWithCursor } from '../../utils/diaryApi';
 import { useEffect, useState, useRef } from 'react';
 import useInfinityScroll from '../../hooks/useInfinityScroll';
-export default function TimelineComponent({ isTimelineClick }) {
+import { useSelector } from 'react-redux';
+export default function TimelineComponent() {
   const [monthlyDiaries, setMonthlyDiaries] = useState([]);
   const [monthAndYear, setMonthAndYear] = useState('');
   const [currentMonth, setCurrentMonth] = useState('');
@@ -12,7 +13,9 @@ export default function TimelineComponent({ isTimelineClick }) {
   const { setTargetRef } = useInfinityScroll(handleIntersect);
   const targetRef = useRef(null);
   const [moreData, setMoreData] = useState(true);
-
+  const isTimelineClicked = useSelector(
+    (state) => state.feedTab.isTimelineClicked,
+  );
   async function handleIntersect() {
     if (moreData) {
       setMoreData(true);
@@ -28,7 +31,7 @@ export default function TimelineComponent({ isTimelineClick }) {
     }
 
     getCurrentMonthAndYear();
-  }, []);
+  }, [isTimelineClicked]);
 
   function getCurrentMonthAndYear() {
     const currentDate = new Date();
@@ -45,20 +48,14 @@ export default function TimelineComponent({ isTimelineClick }) {
         console.log('No more data to fetch');
         return;
       }
-      // console.log('diaries 확인', monthlyDiaries);
       const lastItemId =
         monthlyDiaries.length > 0
           ? monthlyDiaries[monthlyDiaries.length - 1]._id
           : null;
-      // console.log('lastItemId', lastItemId);
-
       const diaries = await showDiaryWithCursor(lastItemId);
-      console.log(diaries);
       if (Array.isArray(diaries)) {
-        //array인지 체크, 개수보다 이하이면 =>
         if (!diaries || diaries.length < 10) {
-          // 데이터가 없을 때의 처리
-          setMoreData(false); // 더 이상 데이터가 없다고 표시
+          setMoreData(false);
           setMonthlyDiaries((prev) => [...prev, ...diaries]);
         } else {
           setMonthlyDiaries((prev) => [...prev, ...diaries]); // 기존 데이터와 새로운 데이터 합치기

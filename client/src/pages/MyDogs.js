@@ -15,14 +15,14 @@ function MyDogs() {
     try {
       const response = await api.get('/dogs');
       setDogs(response.data.data);
-      console.log(response.data.data);
+      // console.log(response.data.data);
     } catch (err) {
       console.log(err);
       return Promise.reject(err); // 실패 시 reject
     }
   };
   const handleClick = (item) => {
-    console.log('Clicked Item:', item);
+    // console.log('Clicked Item:', item);
     navigate(`/myPet`, { state: { id: item._id } });
   };
 

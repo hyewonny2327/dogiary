@@ -32,7 +32,6 @@ function RegisterDog() {
       };
 
       reader.readAsDataURL(file);
-      console.log(file);
     }
   };
 
@@ -56,7 +55,7 @@ function RegisterDog() {
       formData.append('date', metDate.toISOString().split('T')[0]);
       formData.append('birthday', birthDate.toISOString().split('T')[0]);
 
-      console.log('폼데이터를 확인해보자 : ', formDataToObject(formData));
+      // console.log('폼데이터를 확인해보자 : ', formDataToObject(formData));
 
       await api.post('/dogs', formData, {
         headers: {

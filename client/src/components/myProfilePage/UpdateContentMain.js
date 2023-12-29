@@ -122,7 +122,6 @@ const UpdateContentMain = ({
               type="text"
               id="nickNameInput"
               ref={nickNameInputRef}
-              placeholder={readNickName}
             />
           </label>
           <div>
@@ -364,6 +363,7 @@ const PasswordWrapper = styled.div`
       display: flex;
       justify-content: end;
       align-items: center;
+      cursor: pointer;
     }
   }
 `;
@@ -461,6 +461,6 @@ const ButtonWrapper = styled.div`
   height: 6vh;
   justify-content: center;
   align-items: center;
-
+  cursor: pointer;
   border-radius: 5px;
 `;

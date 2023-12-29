@@ -22,7 +22,7 @@ function MapRenderer() {
 
     showPlacesByTag(clickedTag)
       .then((placesData) => {
-        console.log(placesData);
+        // console.log(placesData);
         if (!placesData) {
           // 데이터가 없을 때의 처리
           console.log('No data available');

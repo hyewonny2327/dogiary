@@ -23,7 +23,7 @@ export default function useInfinityScroll(onIntersect) {
       };
     }
   }, [handleIntersect, targetRef]);
-  console.log('타겟은?', targetRef);
+  // console.log('타겟은?', targetRef);
 
   return { setTargetRef };
 }

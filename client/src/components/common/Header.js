@@ -78,7 +78,7 @@ export function NavBar() {
     'myFeed',
     'profile',
     'mapPage',
-    'ranking',
+    'rankings',
   ];
 
   return (

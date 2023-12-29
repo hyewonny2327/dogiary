@@ -151,17 +151,17 @@ function RegisterPlace() {
         formData.append('position', submitData.position);
         formData.append('imageUrl', submitData.imageUrl);
         formData.append('address', submitData.address);
-        console.log('submitData 확인', submitData);
-        console.log('폼데이터확인', formData);
+        // console.log('submitData 확인', submitData);
+        // console.log('폼데이터확인', formData);
         await registerMyPlace(formData);
 
         //폼데이터 확인
-        console.log('폼데이터를 확인해보자 : ', formDataToObject(formData));
+        // console.log('폼데이터를 확인해보자 : ', formDataToObject(formData));
 
-        console.log('등록하기 클릭했음');
+        // console.log('등록하기 클릭했음');
         navigate('/mapPage');
       } catch (error) {
-        console.log('이미지 업로드 중 오류 발생', error);
+        // console.log('이미지 업로드 중 오류 발생', error);
       }
     } else {
       alert('장소, 이미지를 빠짐없이 작성해주세요');

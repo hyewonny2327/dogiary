@@ -60,7 +60,7 @@ export default function MyFeedPostPage() {
 
   function handleTitleInput(e) {
     const inputTitle = e.target.value;
-    console.log(inputTitle);
+    // console.log(inputTitle);
     setTitle(inputTitle);
   }
   function handleDateInput(date) {

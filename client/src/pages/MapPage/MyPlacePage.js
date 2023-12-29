@@ -23,7 +23,7 @@ export default function MyPlacePage() {
       }
       const lastItemId =
         myPlaces.length > 0 ? myPlaces[myPlaces.length - 1]._id : null;
-      console.log('공개,비공개 클릭', isPublicClicked);
+      // console.log('공개,비공개 클릭', isPublicClicked);
       const res = await showMyPlaces(isPublicClicked, lastItemId);
       if (Array.isArray(res)) {
         //array인지 체크, 개수보다 이하이면 =>
@@ -48,12 +48,12 @@ export default function MyPlacePage() {
 
   async function handleIntersect() {
     if (moreData) {
-      console.log('handleIntersect 실행, 지금 공개상태는?', isPublicClicked);
+      // console.log('handleIntersect 실행, 지금 공개상태는?', isPublicClicked);
       setMoreData(true);
       await getData();
     } else {
       setTargetRef(null);
-      console.log('끝');
+      // console.log('끝');
     }
   }
 
@@ -75,7 +75,7 @@ export default function MyPlacePage() {
     setIsPublicClicked((prevIsPublicClicked) => !prevIsPublicClicked);
     setMoreData(true);
 
-    console.log('탭을 클릭했습니다');
+    // console.log('탭을 클릭했습니다');
   }
 
   useEffect(() => {
@@ -89,7 +89,7 @@ export default function MyPlacePage() {
     if (targetRef.current) {
       setTargetRef(targetRef.current);
     }
-    console.log('targetRef변경', targetRef.current);
+    // console.log('targetRef변경', targetRef.current);
   }, []);
   function handleMouseIn(index) {
     setIsHover((prev) => {

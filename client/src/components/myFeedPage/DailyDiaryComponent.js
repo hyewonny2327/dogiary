@@ -20,39 +20,33 @@ export default function DailyDiaryComponent({ clickedDate }) {
   async function callDailyDiaryApi() {
     try {
       const formattedDate = formatDateString(clickedDate);
-      console.log(formattedDate);
       const diaryData = await showDailyDiaries(formattedDate);
-      console.log(diaryData);
       if (Array.isArray(diaryData)) {
         if (diaryData.length === 0) {
           setIsNoData(true);
-          console.log(
-            '다이어리 정보 없음 -> state설정해서 기본 배경화면 보여주기',
-          );
         } else {
           setDailyDiaries(diaryData);
-          //setIsNoData(false);
         }
       } else {
         setIsNoData(true);
       }
     } catch (error) {
-      // setIsNoData(true);
+      console.error(error);
     }
   }
 
   function formatDateString(clickedDate) {
-    console.log(clickedDate.split(' ')[0]);
+    // console.log(clickedDate.split(' ')[0]);
 
     const year = clickedDate.split(' ')[0].replace('년', '');
     const month = clickedDate.split(' ')[1].replace('월', '');
     const day = clickedDate.split(' ')[2].replace('일', '');
-    console.log(year, month, day);
+    // console.log(year, month, day);
     const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(
       2,
       '0',
     )}`;
-    console.log('formatted date', formattedDate);
+    // console.log('formatted date', formattedDate);
     return formattedDate;
   }
   function handleMoreBtnClick() {
@@ -96,14 +90,10 @@ export default function DailyDiaryComponent({ clickedDate }) {
   }
 
   useEffect(() => {
-    console.log(isEditMode);
-  }, [isEditMode]);
-  useEffect(() => {
     callDailyDiaryApi();
   }, []);
   useEffect(() => {
     setDailyDiaries([]);
-    console.log(isNoData);
   }, [isNoData]);
   return (
     <Container>
