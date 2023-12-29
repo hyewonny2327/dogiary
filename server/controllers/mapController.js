@@ -117,7 +117,7 @@ const mapController = {
 const getImageUrl = async (req) => {
   try {
     if (req.file && req.file.filename !== undefined) {
-      return path.join('../public/images', req.file.filename);
+      return path.join(__dirname, '../public/images', file.filename);
     } else {
       throw new errorHandler(
         commonErrors.argumentError,

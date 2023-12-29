@@ -33,27 +33,23 @@ function SignOut() {
       confirmButtonText: '승인',
       cancelButtonText: '취소',
       reverseButtons: true,
-    })
-      .then(async (result) => {
-        if (result.isConfirmed) {
-          try {
-            await signout();
-            Swal.fire('탈퇴가 완료되었습니다.', '화끈하시네요~!', 'success');
-          } catch (err) {
-            Swal.fire(
-              '탈퇴를 실패하였습니다',
-              '로그인상태를 확인하여주세요',
-              'error',
-            );
-          }
-        }
-      })
-      .then(() => {
-        if (state) {
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await signout();
+          Swal.fire('탈퇴가 완료되었습니다.', '화끈하시네요~!', 'success');
+          localStorage.removeItem('userToken');
           navigate('/LoginPage');
           setState(false);
+        } catch (err) {
+          Swal.fire(
+            '탈퇴를 실패하였습니다',
+            '로그인상태를 확인하여주세요',
+            'error',
+          );
         }
-      });
+      }
+    });
   };
 
   return (
@@ -146,6 +142,11 @@ const LongBtn = styled.div`
     background: #fff;
     border: 1px solid #bdaf74;
     color: #bdaf74;
+  }
+  &:hover {
+    background: #5f5013;
+    color: white;
+    transition: 0.5s;
   }
 `;
 

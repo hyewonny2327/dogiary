@@ -2,11 +2,14 @@ const express = require('express');
 const dogController = require('../controllers/dogController.js');
 const router = express.Router();
 const authenticateUser = require("../middlewares/authenticateUser.js");
+const { validatePostDogInfo, validateUpdateDogInfo } = require("../middlewares/validators/validatorDog.js");
+
 const { upload } = require("../utils/multer.js");
 // POST: /dogs - 새로운 강아지 생성
 router.post(
 	"/",
 	authenticateUser,
+	validatePostDogInfo,
 	upload.single("imageUrl"),
 	dogController.postDog
 );
@@ -15,6 +18,7 @@ router.post(
 router.put(
 	"/:id",
 	authenticateUser,
+	validateUpdateDogInfo,
 	upload.single("imageUrl"),
 	dogController.putDog
 );

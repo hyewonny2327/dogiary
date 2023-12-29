@@ -21,7 +21,6 @@ const userController = {
       const loginData = req.body;
       const result = await userService.signIn(loginData);
 
-      // res.cookie("Authorization", `Bearer ${result.token}`, { httpOnly: true });
       res.status(200).json({
         error: null,
         data: result,
@@ -34,12 +33,10 @@ const userController = {
   //로그아웃
   async signOutUser(req, res, next) {
     try {
-      // const userToken = req.cookies.Authorization?.split(" ")[1] ?? "null";
-      // const userToken = req.headers.cookie.split("%20")[1] ?? "null";
       const userToken = req.headers.authorization || null;
-      const result = await userService.signOut(userToken);
+      const tokenValue = userToken.split('Bearer ')[1];
+      const result = await userService.signOut(tokenValue);
 
-      // res.clearCookie("Authorization");
       res.status(204).send();
     } catch (error) {
       next(error);
@@ -110,7 +107,6 @@ const userController = {
 
       const result = await userService.deleteUserInfo(userId);
 
-      // res.clearCookie("Authorization");
       res.status(204).send();
     } catch (error) {
       next(error);
@@ -206,6 +202,18 @@ const userController = {
       next(error);
     }
   },
+
+  //이메일 인증번호 확인
+  async checkAuthNumber(req, res, next) {
+    try {
+      const { email, inputAuthNumber } = req.body;
+
+      const result = await userService.checkNumber(email, inputAuthNumber);
+      res.status(200).json({ check: true });
+    } catch (error) {
+      next(error);
+    }
+  }
 };
 
 module.exports = userController;
