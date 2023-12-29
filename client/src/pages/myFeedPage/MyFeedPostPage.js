@@ -9,9 +9,11 @@ import {
 } from '../../components/common/Buttons';
 import plusIcon from '../../components/icons/plusIcon.svg';
 import { useNavigate } from 'react-router-dom';
-import { postMyDiary } from '../../utils/diaryApi';
+import { postMyDiary, showAllDiaries } from '../../utils/diaryApi';
 import closeBtn from '../../components/icons/closeBtn.svg';
-
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import dayjs from 'dayjs';
 export default function MyFeedPostPage() {
   const navigate = useNavigate();
   const [count, setCount] = useState(1); // 복제할 개수를 상태로 관리
@@ -19,6 +21,10 @@ export default function MyFeedPostPage() {
   const [inputText, setInputText] = useState([]);
   const [imageUrl, setImageUrl] = useState([]);
   const formData = new FormData();
+  const [diaryData, setDiaryData] = useState([]);
+  const [_title, setTitle] = useState('');
+  const [_date, setDate] = useState('');
+  const [startDate, setStartDate] = useState(new Date());
 
   const handleAddContent = () => {
     setCount((prev) => prev + 1);
@@ -52,16 +58,31 @@ export default function MyFeedPostPage() {
     setInputText(text);
   }
 
-  const [_title, setTitle] = useState('');
-  const [_date, setDate] = useState('');
-
   function handleTitleInput(e) {
     const inputTitle = e.target.value;
+    console.log(inputTitle);
     setTitle(inputTitle);
   }
-  function handleDateInput(e) {
-    const inputDate = e.target.value;
-    setDate(inputDate);
+  function handleDateInput(date) {
+    //이미 날짜 저장이 되어있으면 alert
+    setStartDate(date);
+    const dateFormat = dayjs(date).format('YYYY-MM-DD');
+    console.log(typeof dateFormat);
+    setDate(dateFormat);
+  }
+  useEffect(() => {
+    isDuplicateData().then((res) => {
+      if (res === true) {
+        alert(
+          '이미 게시물이 작성되어있는 날짜입니다. 기존 게시물을 수정해주세요.',
+        );
+      }
+    });
+  }, [_date]);
+  async function isDuplicateData() {
+    const diaries = await showAllDiaries();
+    console.log('_date 확인', _date);
+    return diaries && diaries.some((diary) => diary.date === _date);
   }
 
   const [submitData, setSubmitData] = useState({
@@ -72,19 +93,20 @@ export default function MyFeedPostPage() {
   });
 
   function handleSubmit(e) {
-    e.preventDefault();
-    //! 폼데이터로 저장하기 아직 구현중 ..
-    formData.append('title', _title);
-    formData.append('date', _date);
-    formData.append('content', inputText);
-    //배열 형태의 이미지
-    uploadedImages.forEach((image, index) => {
-      formData.append(`imageUrls`, image);
-    });
+    console.log('클릭됨');
+    //e.preventDefault();
 
     if (_title === '' || _date === '') {
       alert('날짜, 제목을 빠짐없이 입력해주세요');
     } else {
+      console.log('제목 잘 들어갔나', _title);
+      formData.append('title', _title);
+      formData.append('date', _date);
+      formData.append('content', inputText);
+      //배열 형태의 이미지
+      uploadedImages.forEach((image, index) => {
+        formData.append(`imageUrls`, image);
+      });
       console.log('formData', formData);
       fetchDiaryData(formData);
     }
@@ -108,12 +130,12 @@ export default function MyFeedPostPage() {
         <Content>
           <TitleContainer>
             <InputBox>
-              <input
+              <DatePicker
                 className="title-box"
-                type="text"
-                placeholder="날짜를 입력하세요"
-                onChange={(e) => handleDateInput(e)}
-              ></input>
+                selected={startDate}
+                onChange={(date) => handleDateInput(date)}
+                dateFormat={'yyyy-MM-dd'}
+              />
             </InputBox>
             <InputBox>
               <input
@@ -129,7 +151,6 @@ export default function MyFeedPostPage() {
               <ContentBox
                 key={`diaryContent-${index}`}
                 uploadedImage={uploadedImages}
-                f
                 handleImageUpload={(event) => handleImageUpload(event, index)}
                 index={index}
               />
@@ -244,9 +265,11 @@ const TitleContainer = styled.div`
   }
   .title-box {
     margin: 5px 0;
-
     font-weight: 700;
     color: #383030;
+  }
+  .react-datepicker-wrapper {
+    width: 100%;
   }
 `;
 const PlusIcon = styled.img`

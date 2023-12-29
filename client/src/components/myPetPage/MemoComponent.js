@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ContainerBox, InputBox } from '../common/Boxes';
 import { SmallBtn } from '../common/Buttons';
 import DatePicker from 'react-datepicker';
@@ -7,11 +7,15 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { ko } from 'date-fns/esm/locale';
 import axios from 'axios';
 
-export default function MemoComponent() {
+export default function MemoComponent({ dogInfo }) {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [startDate, setStartDate] = useState(new Date());
   const [memoList, setMemoList] = useState([]);
+
+  const userTokenValue = localStorage.getItem('userToken');
+
+  const _id = dogInfo?.data._id;
 
   const handleChangeTitle = (e) => {
     setTitle(e.target.value);
@@ -24,25 +28,54 @@ export default function MemoComponent() {
   const memoPostClick = async () => {
     try {
       const response = await axios.post(
-        'http://localhost:8080/api/dogs/:id/memos',
+        `http://localhost:8080/api/dogs/${_id}/memos`,
         {
           date: startDate,
           title,
           content,
         },
+        {
+          headers: {
+            Authorization: `Bearer ${userTokenValue}`,
+            'Content-type': 'application/json',
+          },
+        },
       );
-      setMemoList([...memoList, response.data]);
-      setTitle('');
+      const data = response.data;
+
+      return data;
     } catch (error) {
       console.error('등록에 실패했습니다.', error);
     }
   };
 
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/dogs/${_id}/memos`,
+        {
+          headers: {
+            Authorization: `Bearer ${userTokenValue}`,
+            'Content-type': 'application/json',
+          },
+        },
+      );
+      const data = response.data.data.data;
+      setMemoList(data);
+      console.log('배열이냐?', memoList);
+    } catch (err) {
+      console.error('error', err);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, [_id]);
+
   return (
     <div>
       <ContainerBox>
         <MemoContents>
-          <span className="span">진료기록을 등록하세요.</span>
+          <span className="span">메모를 등록하세요.</span>
           <div className="register-btn">
             <SmallBtn
               onClick={(e) => {
@@ -61,7 +94,7 @@ export default function MemoComponent() {
           <InputBox>
             <input
               className="form-input-title"
-              value={title}
+              // value={title}
               type="text"
               name="title"
               id="title"
@@ -82,12 +115,18 @@ export default function MemoComponent() {
           </InputBox>
 
           <MemoList>
-            <div className="span">
+            <div>
               <span>메모 히스토리</span>
             </div>
 
             <ul>
-              <li></li>
+              {/* {memoList.map((item, index) => (
+                <li key={index} className="content-item">
+                  <span className="title">{item.title}</span>
+                  <span className="date">{item.date}</span>
+                  <span className="content">{item.title}</span>
+                </li>
+              ))} */}
             </ul>
           </MemoList>
         </MemoContents>
@@ -109,8 +148,9 @@ const MemoContents = styled.div`
 
   .form-input-title,
   .form-input-content {
-    width: 280px;
+    width: 270px;
     margin-top: 10px;
+    padding-left: 10px;
   }
 
   .form-input-content {
@@ -134,9 +174,26 @@ const MemoList = styled.div`
   li {
     margin-bottom: 10px;
   }
+
+  .content-item {
+    list-style: none;
+    overflow: hidden;
+  }
+
+  .title,
+  .content {
+    float: right;
+  }
+
+  .date {
+    float: left;
+  }
 `;
 
 const StyledDatePicker = styled(DatePicker)`
-  width: 278px;
+  width: 270px;
   height: 29px;
+  border: 1px solid #bdaf74;
+  border-radius: 4px;
+  padding-left: 10px;
 `;

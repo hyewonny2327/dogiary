@@ -3,6 +3,9 @@ import { useRef, useState } from 'react';
 import { Modal } from '../common/Modal';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { InputBox } from '../common/Boxes';
+import { setIsOpen } from '../../slice/store';
+import { useDispatch } from 'react-redux';
 
 const PasswordModal = () => {
   const navigate = useNavigate();
@@ -35,12 +38,17 @@ const PasswordModal = () => {
     }
   };
   //확인Btn
+
+  const dispatch = useDispatch();
+
   const handlePasswordCheck = async (inputRef) => {
     try {
       const result = await PasswordCheck();
+
       result && result.check
         ? navigate('/profile/update')
-        : clearInputField(inputRef);
+        : clearInputField('');
+      dispatch(setIsOpen(false));
     } catch (error) {
       console.error('비밀번호 확인 오류:', error);
     }

@@ -5,6 +5,8 @@ import store from './slice/store';
 import LoadingSpinner from './components/common/LoadingSpinner';
 
 // Lazy-loaded components
+const RegisterDog = React.lazy(() => import('./pages/RegisterDog'));
+const Ranking = React.lazy(() => import('./pages/Ranking'));
 const MainPage = React.lazy(() => import('./pages/MainPage'));
 const MyMapPage = React.lazy(() => import('./pages/MapPage/MyMapPage'));
 const RegisterPlace = React.lazy(() => import('./pages/MapPage/RegisterPlace'));
@@ -28,6 +30,8 @@ function App() {
     <Provider store={store}>
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>
+          <Route path="/registerDog" element={<RegisterDog />} />
+          <Route path="/ranking" element={<Ranking />} />
           <Route path="/" element={<MainPage />} />
           <Route path="/mapPage" element={<MyMapPage />} />
           <Route path="/mapPage/myPlace" element={<MyPlacePage />} />
