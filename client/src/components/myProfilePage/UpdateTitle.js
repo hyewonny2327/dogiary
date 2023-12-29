@@ -1,7 +1,6 @@
 import { styled } from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
-import { useEffect } from 'react';
 
 const UpdateTitle = ({ handleImageUpload, readUserImage }) => {
   return (

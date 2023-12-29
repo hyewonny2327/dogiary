@@ -148,6 +148,19 @@ const userService = {
     }
   },
 
+  //개인정보수정 닉네임 중복 확인
+  async checkUserNickname(userId, nickName) {
+    const existingUser = await User.findOne({ nickName: nickName });
+    if (userId === existingUser.userId) {
+      return;
+    } else if (existingUser) {
+      throw new errorHandler(
+        commonErrors.inputError,
+        '이미 존재하는 닉네임 입니다.',
+        { statusCode: 400 },
+      );
+    }
+  },
   //이메일 중복 확인
   async checkEmail(email) {
     const existingUser = await User.findOne({ email: email });
@@ -194,9 +207,15 @@ const userService = {
     }
     const existingAuthNumber = await AuthNumber.findOne({ email: email });
     if (existingAuthNumber) {
-      const sentUpdatedAuthNumber = await AuthNumber.updateOne({ email: email }, { authNumber: randomNumber, createdAt: new Date() });
+      const sentUpdatedAuthNumber = await AuthNumber.updateOne(
+        { email: email },
+        { authNumber: randomNumber, createdAt: new Date() },
+      );
     } else {
-      const sentAuthNumber = await AuthNumber.create({ email: email, authNumber: randomNumber });
+      const sentAuthNumber = await AuthNumber.create({
+        email: email,
+        authNumber: randomNumber,
+      });
     }
     return { authNumber: randomNumber };
   },
@@ -306,10 +325,10 @@ const userService = {
         commonErrors.inputError,
         '인증번호가 일치하지 않습니다.',
         { statusCode: 400 },
-      )
+      );
     }
     return;
-  }
+  },
 };
 
 module.exports = userService;

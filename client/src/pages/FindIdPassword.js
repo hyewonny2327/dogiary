@@ -32,7 +32,7 @@ function FindIdPassword() {
       };
 
       const response = await axios.post(
-        'http://localhost:8080/api/auth/find-id',
+        'http://kdt-sw-7-team09.elicecoding.com/api/auth/find-id',
         data,
       );
       await Swal.fire(
@@ -60,7 +60,7 @@ function FindIdPassword() {
         email: inputValue,
       };
       const response = await axios.post(
-        'http://localhost:8080/api/auth/help',
+        'http://kdt-sw-7-team09.elicecoding.com/api/auth/help',
         data,
       );
       await Swal.fire(
@@ -227,6 +227,7 @@ const TabContainer = styled.div`
     width: 40%;
     height: 90%;
     // background: blue;
+    cursor: pointer;
   }
   .clicked {
     // background: black;
@@ -256,6 +257,7 @@ const LongBtn = styled.div`
   align-items: center;
   width: ${(props) => props.width || '354px'};
   height: ${(props) => props.height || '513px'};
+  cursor: pointer;
 
   font-family: Noto Sans KR;
   font-size: 100%;

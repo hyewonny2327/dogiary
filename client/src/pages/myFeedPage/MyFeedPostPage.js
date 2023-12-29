@@ -24,7 +24,7 @@ export default function MyFeedPostPage() {
   const [diaryData, setDiaryData] = useState([]);
   const [_title, setTitle] = useState('');
   const [_date, setDate] = useState('');
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState();
 
   const handleAddContent = () => {
     setCount((prev) => prev + 1);
@@ -60,14 +60,12 @@ export default function MyFeedPostPage() {
 
   function handleTitleInput(e) {
     const inputTitle = e.target.value;
-    console.log(inputTitle);
     setTitle(inputTitle);
   }
   function handleDateInput(date) {
     //이미 날짜 저장이 되어있으면 alert
     setStartDate(date);
     const dateFormat = dayjs(date).format('YYYY-MM-DD');
-    console.log(typeof dateFormat);
     setDate(dateFormat);
   }
   useEffect(() => {
@@ -81,7 +79,6 @@ export default function MyFeedPostPage() {
   }, [_date]);
   async function isDuplicateData() {
     const diaries = await showAllDiaries();
-    console.log('_date 확인', _date);
     return diaries && diaries.some((diary) => diary.date === _date);
   }
 
@@ -93,13 +90,11 @@ export default function MyFeedPostPage() {
   });
 
   function handleSubmit(e) {
-    console.log('클릭됨');
-    //e.preventDefault();
+    e.preventDefault();
 
     if (_title === '' || _date === '') {
       alert('날짜, 제목을 빠짐없이 입력해주세요');
     } else {
-      console.log('제목 잘 들어갔나', _title);
       formData.append('title', _title);
       formData.append('date', _date);
       formData.append('content', inputText);
@@ -107,7 +102,6 @@ export default function MyFeedPostPage() {
       uploadedImages.forEach((image, index) => {
         formData.append(`imageUrls`, image);
       });
-      console.log('formData', formData);
       fetchDiaryData(formData);
     }
   }
@@ -135,6 +129,7 @@ export default function MyFeedPostPage() {
                 selected={startDate}
                 onChange={(date) => handleDateInput(date)}
                 dateFormat={'yyyy-MM-dd'}
+                placeholderText="날짜를 선택하세요"
               />
             </InputBox>
             <InputBox>
@@ -150,7 +145,7 @@ export default function MyFeedPostPage() {
             {[...Array(count)].map((_, index) => (
               <ContentBox
                 key={`diaryContent-${index}`}
-                uploadedImage={uploadedImages}
+                imageUrl={imageUrl}
                 handleImageUpload={(event) => handleImageUpload(event, index)}
                 index={index}
               />
@@ -188,14 +183,14 @@ export default function MyFeedPostPage() {
   );
 }
 
-export function ContentBox({ uploadedImage, handleImageUpload, index }) {
+export function ContentBox({ imageUrl, handleImageUpload, index }) {
   function handleCloseBtn() {}
   return (
     <ContentContainer className="container">
       <img src={closeBtn} className="close-btn" onClick={handleCloseBtn} />
       <ImageContainer>
         <img
-          src={uploadedImage[index] ? uploadedImage[index] : imageIcon}
+          src={imageUrl[index] ? imageUrl[index] : imageIcon}
           className="uploadedImage"
         ></img>
         <input
@@ -205,7 +200,7 @@ export function ContentBox({ uploadedImage, handleImageUpload, index }) {
           name={`ImageStyle-${index}`}
           onChange={(event) => handleImageUpload(event, index)}
         />
-        {!uploadedImage[index] ? (
+        {!imageUrl[index] ? (
           <label className="upload-btn" htmlFor={`file-input-${index}`}>
             이미지 업로드
           </label>

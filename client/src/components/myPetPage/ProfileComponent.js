@@ -40,23 +40,15 @@ export default function ProfileComponent({ dogInfo }) {
   );
 
   const handleEditClick = () => {
-    console.log('버튼이 클릭되었습니다.');
     setEditMode(true);
-    console.log(editMode);
     dispatch(setIsOpen(true));
   };
 
   const handleModalClose = () => {
     setEditMode(false);
   };
-
   const dispatch = useDispatch();
   const isModalOpen = useSelector((state) => state.modal.isOpen);
-
-  // useEffect(() => {
-  //   console.log(editMode);
-  // }, [editMode]);
-
   return (
     <div>
       <ContainerBox>

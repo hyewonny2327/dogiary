@@ -3,22 +3,21 @@ import { LogoBar, NavBar } from '../components/common/Header';
 import { LongColoredBtn, LongStrokedBtn } from '../components/common/Buttons';
 import { ContainerBox, InputBox } from '../components/common/Boxes'; // Removed StyledContainerBox
 import styled from 'styled-components';
-import axios from 'axios';
+import { api } from '../utils/api';
 import { useNavigate } from 'react-router-dom';
 
 async function UserLogin(id, pw, navigate) {
   try {
-    console.log(id, pw);
-    const response = await axios.post('http://localhost:8080/api/auth/login', {
+    const response = await api.post('auth/login', {
       userId: id,
       password: pw,
     });
     let token = response.data.data.token;
     localStorage.setItem('userToken', token);
-    console.log('로그인성공', response.data.data.token);
+    alert('로그인성공');
     navigate('/myFeed');
   } catch (error) {
-    console.log('로그인실패', error);
+    alert('로그인실패 다시 시도하세요');
   }
 }
 function LoginPage() {
@@ -35,7 +34,6 @@ function LoginPage() {
   };
 
   function handleLogin() {
-    console.log(typeof user_Id, typeof password);
     UserLogin(user_Id, password, navigate);
   }
   function navigateJoin() {

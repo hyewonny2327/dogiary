@@ -39,7 +39,7 @@ function SignOut() {
           await signout();
           Swal.fire('탈퇴가 완료되었습니다.', '화끈하시네요~!', 'success');
           localStorage.removeItem('userToken');
-          navigate('/LoginPage');
+          navigate('/loginPage');
           setState(false);
         } catch (err) {
           Swal.fire(
@@ -84,6 +84,7 @@ function SignOut() {
 const Wraper = styled.div`
   width: 100%;
   height: 100vh;
+  font-family: Noto Sans KR;
   //   background: black;
 `;
 const UiDiv = styled.div`

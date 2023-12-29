@@ -7,17 +7,23 @@ import MedicalComponent from '../components/myPetPage/MedicalComponent';
 import FoodComponent from '../components/myPetPage/FoodComponent';
 import MemoComponent from '../components/myPetPage/MemoComponent';
 import { api } from '../utils/api';
+import { useLocation } from 'react-router-dom';
 
 export default function MyPetPage() {
   const [tab, setTab] = useState('profile');
   const [dogInfo, setDogInfo] = useState(null);
 
+  const location = useLocation();
+  const id = location.state.id;
+
+  useEffect(() => {
+    const dogId = id;
+    fetchDogInfo(dogId);
+  }, [id]);
+
   const fetchDogInfo = async (id) => {
     try {
       const response = await api.get(`/dogs?id=${id}`);
-
-      console.log('HTTP 상태 코드:', response.status);
-
       if (response.status === 200) {
         const data = response.data;
         setDogInfo(data);
@@ -28,19 +34,6 @@ export default function MyPetPage() {
       console.error('조회를 실패했습니다.', error);
     }
   };
-
-  useEffect(() => {
-    const dogId = '658c06dec2d4b117198ad677';
-    fetchDogInfo(dogId);
-  }, []);
-
-  useEffect(() => {
-    console.log('dogInfo:', dogInfo);
-    // if (dogInfo && dogInfo.data) {
-    //   const dogType = dogInfo.data.type;
-    //   console.log('강아지 종류:', dogType);
-    // }
-  }, [dogInfo]);
 
   function handleClickTab(clickedTab) {
     setTab(clickedTab);
@@ -90,7 +83,9 @@ export default function MyPetPage() {
             {tab === 'weight' && <WeightComponent dogInfo={dogInfo} />}
             {tab === 'medical' && <MedicalComponent dogInfo={dogInfo} />}
             {tab === 'food' && <FoodComponent dogInfo={dogInfo} />}
-            {tab === 'memo' && <MemoComponent dogInfo={dogInfo} />}
+            {tab === 'memo' && (
+              <MemoComponent dogInfo={dogInfo} setDogInfo={setDogInfo} />
+            )}
           </div>
         </PetDiaryContainer>
       </Main>

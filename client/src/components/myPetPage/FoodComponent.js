@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ContainerBox, InputBox } from '../common/Boxes';
 import { SmallBtn } from '../common/Buttons';
 import DatePicker from 'react-datepicker';
@@ -6,8 +6,10 @@ import styled from 'styled-components';
 import 'react-datepicker/dist/react-datepicker.css';
 import { ko } from 'date-fns/esm/locale';
 import axios from 'axios';
+import { api } from './../../utils/api';
 
-export default function FoodComponent() {
+export default function FoodComponent({ dogInfo }) {
+  const _id = dogInfo?.data;
   const [category, setCategory] = useState('');
   const [name, setName] = useState('');
   const [content, setContent] = useState('');
@@ -29,7 +31,7 @@ export default function FoodComponent() {
   //등록버튼
   const FoodPostClick = async () => {
     try {
-      const response = await axios.post('api/dogs/:id/foods', {
+      const response = await api.post(`api/dogs/${_id}/foods`, {
         date: startDate,
         category,
         name,
@@ -37,6 +39,7 @@ export default function FoodComponent() {
       });
       setFoodList([...foodList, response.data]);
       setCategory('');
+      alert('등록성공');
     } catch (error) {
       console.error('등록에 실패했습니다.', error);
     }
