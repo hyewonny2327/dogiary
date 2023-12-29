@@ -13,7 +13,6 @@ export function useAuth() {
       setIsAuth(false);
     }
     if (isAuth === false) {
-      // console.log('isAuth', isAuth);
       navigate('/loginPage');
     } else {
       setIsAuth(true);
@@ -22,7 +21,6 @@ export function useAuth() {
   useEffect(() => {
     //페이지 이동시 로직 실행
     //토큰 유무 조사
-    // console.log(pathname);
     if (pathname) {
       getUserAuth();
     }

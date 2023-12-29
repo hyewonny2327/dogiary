@@ -7,6 +7,7 @@ const mapSlice = createSlice({
     searchInput: '서울시청',
     markers: [],
     tag: 'tag4',
+    toggle: true,
   },
   reducers: {
     //searchInput값을 저장하는 reducer
@@ -19,6 +20,9 @@ const mapSlice = createSlice({
     },
     setTag: (state, action) => {
       state.tag = action.payload;
+    },
+    setToggle: (state, action) => {
+      state.toggle = action.payload;
     },
   },
 });
@@ -49,7 +53,8 @@ const feedSlice = createSlice({
 
 //액션 및 리듀서 내보내기
 //configureStore를 사용해서 리듀서들을 전달함 (createStore같은것. 저장공간생성)
-export const { setSearchInput, setMarkers, setTag } = mapSlice.actions;
+export const { setSearchInput, setMarkers, setTag, setToggle } =
+  mapSlice.actions;
 export const { setIsOpen } = modalSlice.actions;
 export const { setIsTimelineClicked } = feedSlice.actions;
 

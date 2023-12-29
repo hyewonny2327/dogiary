@@ -32,15 +32,11 @@ function JoinPage() {
         nickName: nickname,
       });
 
-      // console.log(response);
-      // console.log(nickname); // 확인용 로그
-
       if (response.data.check === false) {
         setNicknameCheckMsg('중복된 닉네임입니다.');
       } else {
         setNicknameCheckMsg('사용 가능한 닉네임입니다.');
       }
-      // console.log('닉네임 중복체크');
     } catch (error) {
       console.log(error.statusCode);
       console.error('API 호출 중 에러 발생:', error);
@@ -52,19 +48,16 @@ function JoinPage() {
   };
 
   const handleClickUserId = async () => {
-    // console.log(typeof user_Id);
     try {
       const response = await api.post('auth/check-id', {
         userId: user_Id,
       });
 
-      // console.log(response);
       if (!response.data.check) {
         setUserIdCheckMsg('사용 가능한 아이디 입니다.');
       } else {
         setUserIdCheckMsg('중복된 아이디입니다.');
       }
-      // console.log('아이디 중복체크');
     } catch (error) {
       console.error('API 호출 중 에러 발생:', error);
     }
@@ -75,7 +68,6 @@ function JoinPage() {
   };
 
   const handleClickEmail = async () => {
-    // console.log(email);
     try {
       const response = await api.post('auth/check-email', {
         email: email,
@@ -87,7 +79,6 @@ function JoinPage() {
           setEmailCheckMsg('해당 이메일로 인증번호를 보냈습니다.');
           setStayNumber(response.data.data.authNumber);
         }
-        // console.log('ok');
       }
     } catch (error) {
       console.error('API 호출 중 에러 발생:', error);
@@ -99,11 +90,8 @@ function JoinPage() {
   };
 
   const handleClickNumber = () => {
-    // console.log(number);
-    // console.log(StayNumber);
     if (Number(number) === Number(StayNumber)) {
       setNumberCheckMsg('인증번호가 확인되었습니다.');
-      // console.log('ok');
     } else {
       setNumberCheckMsg('인증번호가 틀렸습니다.');
     }
@@ -112,7 +100,6 @@ function JoinPage() {
   const PasswordValid = (Password) => {
     const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,20}$/;
     const isValid = passwordRegex.test(Password);
-    // console.log(`Password: ${Password}, isValid: ${isValid}`); //디버깅 확인하려고 넣은 것
     return isValid;
   };
 

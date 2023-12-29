@@ -22,7 +22,6 @@ function MapRenderer() {
 
     showPlacesByTag(clickedTag)
       .then((placesData) => {
-        // console.log(placesData);
         if (!placesData) {
           // 데이터가 없을 때의 처리
           console.log('No data available');
@@ -39,9 +38,7 @@ function MapRenderer() {
         setTitles(_titles);
         setIsMarkerClicked(Array(_positions.length).fill(false));
       })
-      .catch((error) => {
-        console.error('showAllPlaces 오류 in MapRenderer');
-      });
+      .catch((error) => {});
   }, [clickedTag]);
 
   useEffect(() => {
@@ -65,8 +62,6 @@ function MapRenderer() {
       .then((response) => {
         const placesData = response.data.data;
         if (!placesData) {
-          // 데이터가 없을 때의 처리
-          console.log('No data available');
           return;
         }
         const _positions = placesData.map((place) => ({
@@ -78,9 +73,7 @@ function MapRenderer() {
         setTitles(_titles);
         setIsMarkerClicked(Array(_positions.length).fill(false));
       })
-      .catch((error) => {
-        console.error('showAllPlaces 오류 in MapRenderer');
-      });
+      .catch((error) => {});
   }
 
   //마커 클릭하면 장소이름 보여주기

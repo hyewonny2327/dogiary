@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 
 async function UserLogin(id, pw, navigate) {
   try {
-    // console.log(id, pw);
     const response = await api.post('auth/login', {
       userId: id,
       password: pw,
@@ -35,7 +34,6 @@ function LoginPage() {
   };
 
   function handleLogin() {
-    // console.log(typeof user_Id, typeof password);
     UserLogin(user_Id, password, navigate);
   }
   function navigateJoin() {

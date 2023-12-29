@@ -58,9 +58,7 @@ function RegisterPlace() {
           }),
         );
         setMarkerAddresses(addresses);
-      } catch (error) {
-        console.error('데이터 가져오기 오류', error);
-      }
+      } catch (error) {}
     };
 
     if (isSearchBtnClicked) {
@@ -109,8 +107,8 @@ function RegisterPlace() {
 
   //! 사용자의 입력값 저장
 
-  const [selectedTag, setSelectedTag] = useState('tag0');
-  const [selectedToggle, setSelectedToggle] = useState(true);
+  const [selectedTag, setSelectedTag] = useState('');
+  const [selectedToggle, setSelectedToggle] = useState(null);
   const [textContent, setTextContent] = useState('');
 
   function handleToggleChange(event) {
@@ -151,18 +149,9 @@ function RegisterPlace() {
         formData.append('position', submitData.position);
         formData.append('imageUrl', submitData.imageUrl);
         formData.append('address', submitData.address);
-        // console.log('submitData 확인', submitData);
-        // console.log('폼데이터확인', formData);
         await registerMyPlace(formData);
-
-        //폼데이터 확인
-        // console.log('폼데이터를 확인해보자 : ', formDataToObject(formData));
-
-        // console.log('등록하기 클릭했음');
         navigate('/mapPage');
-      } catch (error) {
-        // console.log('이미지 업로드 중 오류 발생', error);
-      }
+      } catch (error) {}
     } else {
       alert('장소, 이미지를 빠짐없이 작성해주세요');
     }
@@ -184,14 +173,14 @@ function RegisterPlace() {
           <InputContainerStyle>
             <DropdownStyle>
               <select value={selectedToggle} onChange={handleToggleChange}>
-                <option value="공개여부 선택">공개여부 선택</option>
+                <option value="">공개여부 선택</option>
                 <option value="true">공개</option>
                 <option value="false">비공개</option>
               </select>
             </DropdownStyle>
             <DropdownStyle>
               <select value={selectedTag} onChange={handleTagChange}>
-                <option value="카테고리 선택">카테고리 선택</option>
+                <option value="">카테고리 선택</option>
                 <option value="tag0">산책</option>
                 <option value="tag1">애견동반</option>
                 <option value="tag2">상점</option>
@@ -305,6 +294,7 @@ const BtnContainer = styled.div`
 
   justify-content: space-between;
   .submit-button {
+    cursor: pointer;
     padding: 8px 25px;
     border-radius: 4px;
     box-sizing: border-box;
@@ -369,6 +359,7 @@ const InputContainerStyle = styled.form`
     border-radius: 6px;
     background: #bdaf74;
     color: #fff;
+    cursor: pointer;
 
     text-align: center;
     font-weight: 600;

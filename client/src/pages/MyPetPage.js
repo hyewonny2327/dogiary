@@ -24,9 +24,6 @@ export default function MyPetPage() {
   const fetchDogInfo = async (id) => {
     try {
       const response = await api.get(`/dogs?id=${id}`);
-
-      // console.log('HTTP 상태 코드:', response.status);
-
       if (response.status === 200) {
         const data = response.data;
         setDogInfo(data);

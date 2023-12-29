@@ -8,7 +8,6 @@ export function DogModal({ dogInfo, onCancel }) {
   const [editedDogInfo, setEditedDogInfo] = useState({ ...dogInfo });
 
   const handleSaveClick = async () => {
-    // console.log('handleSaveClick 실행');
     try {
       // 수정된 정보를 서버로 전송
       const response = await api.put(`/dogs/${dogInfo?._id}`, editedDogInfo);
@@ -29,7 +28,6 @@ export function DogModal({ dogInfo, onCancel }) {
   };
 
   const handleChange = (e) => {
-    // console.log('handleChange 실행');
     // 수정 중인 데이터 변경
     setEditedDogInfo({
       ...editedDogInfo,

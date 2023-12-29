@@ -60,14 +60,12 @@ export default function MyFeedPostPage() {
 
   function handleTitleInput(e) {
     const inputTitle = e.target.value;
-    // console.log(inputTitle);
     setTitle(inputTitle);
   }
   function handleDateInput(date) {
     //이미 날짜 저장이 되어있으면 alert
     setStartDate(date);
     const dateFormat = dayjs(date).format('YYYY-MM-DD');
-    console.log(typeof dateFormat);
     setDate(dateFormat);
   }
   useEffect(() => {
@@ -81,7 +79,6 @@ export default function MyFeedPostPage() {
   }, [_date]);
   async function isDuplicateData() {
     const diaries = await showAllDiaries();
-    console.log('_date 확인', _date);
     return diaries && diaries.some((diary) => diary.date === _date);
   }
 
@@ -93,13 +90,11 @@ export default function MyFeedPostPage() {
   });
 
   function handleSubmit(e) {
-    console.log('클릭됨');
     e.preventDefault();
 
     if (_title === '' || _date === '') {
       alert('날짜, 제목을 빠짐없이 입력해주세요');
     } else {
-      console.log('제목 잘 들어갔나', _title);
       formData.append('title', _title);
       formData.append('date', _date);
       formData.append('content', inputText);
@@ -107,7 +102,6 @@ export default function MyFeedPostPage() {
       uploadedImages.forEach((image, index) => {
         formData.append(`imageUrls`, image);
       });
-      console.log('formData', formData);
       fetchDiaryData(formData);
     }
   }

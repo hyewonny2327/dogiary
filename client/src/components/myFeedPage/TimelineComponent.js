@@ -60,7 +60,6 @@ export default function TimelineComponent() {
         } else {
           setMonthlyDiaries((prev) => [...prev, ...diaries]); // 기존 데이터와 새로운 데이터 합치기
         }
-        //setTargetRef(targetRef.current);
       } else {
         console.log('배열이 아님');
       }
@@ -115,9 +114,7 @@ export default function TimelineComponent() {
                 <img
                   className="image"
                   alt="대표이미지"
-                  //배포 후 잘 들어갔는지 확인 필요
                   src={content.imageUrls[subIndex]}
-                  // src={'/images/147722e1-adc8-4ca0-acea-67826c8af098.png'}
                 ></img>
               </div>
             ))}

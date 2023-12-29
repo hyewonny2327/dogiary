@@ -33,9 +33,7 @@ const PasswordModal = () => {
       );
 
       return response.data.data;
-    } catch (error) {
-      console.error('비밀번호 확인 오류:', error);
-    }
+    } catch (error) {}
   };
   //확인Btn
 
@@ -52,13 +50,12 @@ const PasswordModal = () => {
         clearInputField();
         alert('잘못된 비밀번호입니다. 다시 시도해주세요.');
       }
-    } catch (error) {
-      console.error('비밀번호 확인 오류:', error);
-    }
+    } catch (error) {}
   };
 
   const handlePasswordPage = () => {
     navigate('/find');
+    dispatch(setIsOpen(false));
   };
 
   return (

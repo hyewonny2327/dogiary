@@ -184,6 +184,7 @@ const SearchContainer = styled.div`
     margin: 10px 5px;
     border-radius: 4px;
     border: none;
+    cursor: pointer;
   }
   .text-input {
     background-color: #fff;
@@ -226,6 +227,7 @@ const MyMapIcon = styled.div`
   position: fixed;
   bottom: 22px;
   right: 29px;
+  cursor: pointer;
 `;
 
 const ModalContainerStyle = styled.div`

@@ -9,9 +9,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setIsTimelineClicked } from '../../slice/store';
 
 function MyFeed() {
-  //const [isCalendarClick, setIsCalendarClicked] = useState(true);
-  //const [isTimelineClick, setIsTimelineClicked] = useState(false);
-
   const dispatch = useDispatch();
   const isTimelineClicked = useSelector(
     (state) => state.feedTab.isTimelineClicked,
@@ -22,12 +19,8 @@ function MyFeed() {
   function handleClickTab(tab) {
     if (tab === 'calendar') {
       dispatch(setIsTimelineClicked(false));
-      // setIsCalendarClicked(!isCalendarClick);
-      // setIsTimelineClicked(!isTimelineClick);
     } else if (tab === 'timeline') {
       dispatch(setIsTimelineClicked(true));
-      // setIsCalendarClicked(!isCalendarClick);
-      // setIsTimelineClicked(!isTimelineClick);
     }
   }
   function handleButtonClick() {
@@ -38,7 +31,6 @@ function MyFeed() {
       <LogoBar />
       <NavBar />
       <MyFeedContainer>
-        {/* <MyFeedStyle> */}
         <div className="title">사진 일기장</div>
         <CalendarContainer>
           <div className="tab-container">

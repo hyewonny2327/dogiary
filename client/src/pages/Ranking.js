@@ -18,16 +18,12 @@ function Ranking() {
   const [currentUserRank, setcurrentUserRank] = useState();
   useEffect(() => {
     fetchRankingData();
-
-    // console.log(rankings);
   }, []);
 
   const fetchRankingData = async () => {
     try {
       const response = await api.get('/rank');
       const data = response.data.data;
-      // console.log(data.topUsers);
-
       setRankings(data.topUsers);
       setcurrentUserInfo(data.currentUserInfo);
       setcurrentUserRank(data.currentUserRank);
