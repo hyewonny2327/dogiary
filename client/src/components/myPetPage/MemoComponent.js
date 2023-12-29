@@ -8,7 +8,7 @@ import { ko } from 'date-fns/esm/locale';
 
 import { api } from '../../utils/api';
 
-export default function MemoComponent({ dogInfo }) {
+export default function MemoComponent({ dogInfo, apiCall }) {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [startDate, setStartDate] = useState(new Date());
@@ -26,7 +26,7 @@ export default function MemoComponent({ dogInfo }) {
   const memoPostClick = async () => {
     try {
       const response = await api.post(`/dogs/${_id._id}/memos`, {
-        date: startDate,
+        date: startDate.toISOString().split('T')[0],
         title,
         content,
       });
@@ -35,7 +35,7 @@ export default function MemoComponent({ dogInfo }) {
       alert('등록성공');
       setTitle('');
       setContent('');
-      return data;
+      apiCall(_id._id);
     } catch (error) {
       console.error('등록에 실패했습니다.', error);
     }
@@ -168,13 +168,14 @@ const DatePickerSelector = styled.div`
   border-radius: 4px;
 `;
 const StyledDatePicker = styled(DatePicker)`
-  width: 60%;
+  width: 80%;
   height: 100%;
   border: 1px solid #bdaf74;
   border-radius: 5px;
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
   color: black;
+  text-align: center;
 `;
 
 const MemoTitleInput = styled.div`
@@ -313,7 +314,7 @@ const MemoHistoryItemWrapper = styled.div`
 `;
 
 const Item = styled.div`
-  width: 80%;
+  width: 90%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -322,7 +323,7 @@ const Item = styled.div`
   //날짜
   & > div:first-child {
     width: 100%;
-    height: 50%;
+    height: 60%;
     font-size: 10px;
     color: #888888;
     /* background-color: red; */
