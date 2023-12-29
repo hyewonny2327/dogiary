@@ -7,7 +7,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { ko } from 'date-fns/esm/locale';
 import axios from 'axios';
 
-export default function MemoComponent() {
+export default function MemoComponent({ dogInfo }) {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [startDate, setStartDate] = useState(new Date());
