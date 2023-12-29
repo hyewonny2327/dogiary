@@ -85,7 +85,7 @@ export default function WeightsComponent({ dogInfo, apiCall }) {
                   </div>
                   <IconBtn>
                     <div>{item.weight}Kg</div>
-                    <div>...</div>
+                    {/* <div>...</div> */}
                   </IconBtn>
                 </WeigthItemWrapper>
               ))}
@@ -244,8 +244,7 @@ const WeigthItemWrapper = styled.div`
   }
   align-items: center;
   width: 100%;
-  height: 100%;
-  // background-color: blue;
+  height: 5vh;
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid #bdaf74;
