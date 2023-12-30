@@ -37,7 +37,7 @@ function LoginPage() {
     UserLogin(user_Id, password, navigate);
   }
   function navigateJoin() {
-    navigate('/JoinPage');
+    navigate('/joinPage');
   }
 
   return (

@@ -36,17 +36,13 @@ export default function DailyDiaryComponent({ clickedDate }) {
   }
 
   function formatDateString(clickedDate) {
-    // console.log(clickedDate.split(' ')[0]);
-
     const year = clickedDate.split(' ')[0].replace('년', '');
     const month = clickedDate.split(' ')[1].replace('월', '');
     const day = clickedDate.split(' ')[2].replace('일', '');
-    // console.log(year, month, day);
     const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(
       2,
       '0',
     )}`;
-    // console.log('formatted date', formattedDate);
     return formattedDate;
   }
   function handleMoreBtnClick() {
@@ -166,8 +162,8 @@ export default function DailyDiaryComponent({ clickedDate }) {
                 >
                   <img
                     className="image"
+                    // src="/images/dog2.jpg"
                     src={diary.imageUrls[imageIndex]}
-                    // src="/images/147722e1-adc8-4ca0-acea-67826c8af098.png"
                     alt="업로드된 이미지"
                   ></img>
                 </div>
@@ -175,9 +171,6 @@ export default function DailyDiaryComponent({ clickedDate }) {
             </div>
           </DailyDiary>
         ))}
-      {/* {moreData ? (
-        <div ref={targetRef} onIntersect={handleIntersect}></div>
-      ) : null} */}
     </Container>
   );
 }
@@ -253,6 +246,7 @@ const DailyDiary = styled.div`
     padding: 20px;
     box-sizing: border-box;
     margin: 2rem 0;
+    overflow: auto;
   }
   .image-container {
     width: 100%;
@@ -260,12 +254,13 @@ const DailyDiary = styled.div`
     overflow: auto;
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     flex-direction: column;
   }
   .image {
     width: 90%;
-    height: 300px;
-    object-fit: contain;
+    height: 100%;
+    object-fit: cover;
     //border: 1px solid red;
   }
   .text {
@@ -276,6 +271,7 @@ const DailyDiary = styled.div`
     box-sizing: border-box;
     border-bottom: 1px solid #bdaf74;
     overflow: auto;
+    object-fit: contain;
   }
 `;
 

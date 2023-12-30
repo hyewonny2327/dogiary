@@ -14,7 +14,7 @@ const mapService = {
       );
     }
     mapData.userId = currentUserId;
-    if (mapData.toggle == true) {
+    if (mapData.toggle == 'true') {
       // 사용자 찾기
       const user = await User.findOne({ userId: currentUserId });
 
@@ -65,7 +65,7 @@ const mapService = {
         );
       }
       const updatedMapProfile = await Map.findById(id).lean().session(session);
-      if (mapProfile.toggle == false && updatedMapProfile.toggle == true) {
+      if (mapProfile.toggle == false && updatedMapProfile.toggle == 'true') {
         const user = await User.findOne({ userId: currentUserId }).session(
           session,
         );
@@ -79,7 +79,7 @@ const mapService = {
         user.count = (user.count || 0) + 1;
         await user.save();
       }
-      if (mapProfile.toggle === true && updatedMapProfile.toggle === false) {
+      if (mapProfile.toggle === 'true' && updatedMapProfile.toggle === false) {
         const user = await User.findOne({ userId: currentUserId }).session(
           session,
         );
@@ -124,7 +124,7 @@ const mapService = {
           { statusCode: 403 },
         );
       }
-      if (mapToDelete.toggle == true) {
+      if (mapToDelete.toggle == 'true') {
         // 사용자 찾기
         const user = await User.findOne({ userId: currentUserId });
         if (!user) {

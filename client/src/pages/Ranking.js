@@ -24,6 +24,7 @@ function Ranking() {
     try {
       const response = await api.get('/rank');
       const data = response.data.data;
+      console.log('data', data);
       setRankings(data.topUsers);
       setcurrentUserInfo(data.currentUserInfo);
       setcurrentUserRank(data.currentUserRank);
@@ -31,13 +32,17 @@ function Ranking() {
       console.error('랭킹 데이터를 가져오는데 실패했습니다:', error);
     }
   };
+
+  useEffect(() => {
+    console.log(currentUserRank);
+  }, [currentUserRank]);
   return (
     <Container>
       <div className="App">
         <LogoBar></LogoBar>
         <NavBar></NavBar>
-        <div class="title">랭킹 보기</div>
-        <div class="myrank">나의 등수</div>
+        <div className="title">랭킹 보기</div>
+        <div className="myrank">나의 등수</div>
         <div>
           <StyledBox>
             {currentUserInfo && (
@@ -49,10 +54,10 @@ function Ranking() {
             )}
           </StyledBox>
         </div>
-        <div class="myrank">{currentMonth}월 TOP 5</div>
+        <div className="myrank">{currentMonth}월 TOP 5</div>
 
         {rankings.map((ranking, index) => (
-          <div class="Toprank" key={`Toprank${index}`}>
+          <div className="Toprank" key={`Toprank${index}`}>
             <RankingBox>
               <RankingDisplay
                 userRanking={index + 1}

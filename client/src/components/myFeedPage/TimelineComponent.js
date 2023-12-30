@@ -87,6 +87,7 @@ export default function TimelineComponent() {
 
       return acc;
     }, []);
+    console.log(dataArray);
     setMonthlyDiaryData(dataArray);
   }
 
@@ -95,6 +96,10 @@ export default function TimelineComponent() {
       setDiaryData(monthlyDiaries);
     }
   }, [monthlyDiaries]);
+
+  useEffect(() => {
+    console.log(monthlyDiaryData);
+  }, []);
 
   return (
     <TimeLine>
@@ -112,9 +117,11 @@ export default function TimelineComponent() {
                   <div>{content.title}</div>
                 </div>
                 <img
+                  key={`${subIndex}-image-${index}`}
                   className="image"
                   alt="대표이미지"
-                  src={content.imageUrls[subIndex]}
+                  src={content.imageUrls[0]}
+                  // src="/images/dog2.jpg"
                 ></img>
               </div>
             ))}
@@ -154,15 +161,23 @@ const TimeLine = styled.div`
   }
   .text-container {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    // top: 50%;
+    // left: 50%;
+    // transform: translate(-50%, -50%);
     text-align: center;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.22);
   }
   .image {
     width: 350px;
     height: 160px;
-    object-fit: contain;
+    object-fit: cover;
 
     //border: 1px solid red;
   }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import rankingImage from '../components/icons/foot.png';
 import styled from 'styled-components';
 import axios from 'axios';
@@ -12,6 +12,10 @@ import {
 } from '../pages/rankstyled';
 
 function RankingDisplay({ userRanking, nickName, count }) {
+  useEffect(() => {
+    console.log('랭킹', count);
+  }, []);
+
   return (
     <RankingContainer>
       <RankContainer>

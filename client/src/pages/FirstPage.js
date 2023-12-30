@@ -10,7 +10,7 @@ function FirstPage() {
     navigate('/loginPage');
   };
   const signIn = () => {
-    navigate('/JoinPage');
+    navigate('/joinPage');
   };
   return (
     <Wraper>

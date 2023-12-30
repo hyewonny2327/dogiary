@@ -32,6 +32,7 @@ function App() {
   const getUserAuth = () => {
     const tokenExist = localStorage.getItem('userToken');
     setIsAuth(!!tokenExist);
+    //여기에 문제가 있는것같다. 로그인창에서 메인으로 안가짐. .
     if (!!tokenExist === false) {
       navigate('/loginPage');
     }
