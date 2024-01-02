@@ -41,10 +41,6 @@ export default function MemoComponent({ dogInfo }) {
     }
   };
 
-  useEffect(() => {
-    console.log('dogInfo:', dogInfo);
-  }, [dogInfo]);
-
   return (
     <>
       <ContainerBox>
@@ -106,7 +102,7 @@ export default function MemoComponent({ dogInfo }) {
             <MemoHistoryItems>
               {/* 반복될아이템 */}
 
-              {_id.memos.map((item, index) => (
+              {/* {_id.memos.map((item, index) => (
                 <MemoHistoryItemWrapper key={index}>
                   <Item>
                     <div>{item.date}</div>
@@ -117,7 +113,7 @@ export default function MemoComponent({ dogInfo }) {
                     <div>...</div>
                   </IconBtn>
                 </MemoHistoryItemWrapper>
-              ))}
+              ))} */}
             </MemoHistoryItems>
           </BodySection>
         </MemoContainer>

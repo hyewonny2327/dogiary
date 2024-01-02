@@ -14,12 +14,7 @@ export default function MyPetPage() {
   const [dogInfo, setDogInfo] = useState(null);
 
   const location = useLocation();
-  const id = location.state.id;
-
-  useEffect(() => {
-    const dogId = id;
-    fetchDogInfo(dogId);
-  }, [id]);
+  const id = location.state?.id;
 
   const fetchDogInfo = async (id) => {
     try {
@@ -39,12 +34,17 @@ export default function MyPetPage() {
   };
 
   useEffect(() => {
-    console.log('dogInfo:', dogInfo);
-    // if (dogInfo && dogInfo.data) {
-    //   const dogType = dogInfo.data.type;
-    //   console.log('강아지 종류:', dogType);
-    // }
-  }, [dogInfo]);
+    const dogId = id;
+    fetchDogInfo(dogId);
+  }, [id]);
+
+  // useEffect(() => {
+  //   console.log('dogInfo:', dogInfo);
+  //   // if (dogInfo && dogInfo.data) {
+  //   //   const dogType = dogInfo.data.type;
+  //   //   console.log('강아지 종류:', dogType);
+  //   // }
+  // }, [dogInfo]);
 
   function handleClickTab(clickedTab) {
     setTab(clickedTab);
@@ -94,9 +94,7 @@ export default function MyPetPage() {
             {tab === 'weight' && <WeightComponent dogInfo={dogInfo} />}
             {tab === 'medical' && <MedicalComponent dogInfo={dogInfo} />}
             {tab === 'food' && <FoodComponent dogInfo={dogInfo} />}
-            {tab === 'memo' && (
-              <MemoComponent dogInfo={dogInfo} setDogInfo={setDogInfo} />
-            )}
+            {tab === 'memo' && <MemoComponent dogInfo={dogInfo} />}
           </div>
         </PetDiaryContainer>
       </Main>
@@ -147,7 +145,6 @@ const PetDiaryContainer = styled.div`
     text-decoration: underline;
     color: #5f5013;
     text-underline-offset: 8px;
-    text-decoration-thickness: 3px;
   }
 
   .content-container {
