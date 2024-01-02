@@ -5,10 +5,9 @@ import DatePicker from 'react-datepicker';
 import styled from 'styled-components';
 import 'react-datepicker/dist/react-datepicker.css';
 import { ko } from 'date-fns/esm/locale';
-import { SmallBtn } from '../common/Buttons';
 import axios from 'axios';
 import { api } from '../../utils/api';
-export default function MedicalComponent() {
+export default function MedicalComponent({ dogInfo, apiCall }) {
   const [content, setContent] = useState('');
   const [startDate, setStartDate] = useState(new Date());
   const [cost, setCost] = useState('');

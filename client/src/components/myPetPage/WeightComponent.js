@@ -16,7 +16,7 @@ export default function WeightsComponent({ dogInfo, apiCall }) {
     setWeight(e.target.value);
   };
 
-  const memoPostClick = async () => {
+  const weightPostClick = async () => {
     try {
       const response = await api.post(`/dogs/${_id._id}/weights`, {
         date: startDate.toISOString().split('T')[0],
