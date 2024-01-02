@@ -111,7 +111,6 @@ export default function MemoComponent({ dogInfo, apiCall }) {
                   </IconBtn>
                 </MemoHistoryItemWrapper>
               ))}{' '}
-              */}
             </MemoHistoryItems>
           </BodySection>
         </MemoContainer>
