@@ -1,26 +1,78 @@
-import logo from './logo.svg';
-import './App.css';
-import { Route,Routes } from 'react-router-dom';
-import MainPage from './pages/MainPage';
-import LoginPage from './pages/LoginPage';
-import JoinPage from './pages/JoinPage';
-import MyMapPage from './pages/MapPage/MyMapPage';
-import RegisterPlace from './pages/MapPage/RegisterPlace';
+import React, { Suspense, useEffect, useState } from 'react';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './slice/store';
-function App() {
-  return (
-    //provider로 컴포넌트를 감싸주어야 그 속의 컴포넌트들이 state에 접근할 수 있음
-    <Provider store={store}>
-        <Routes>
-          <Route path='/' element={<MainPage />} />
-          <Route path='/mapPage' element={<MyMapPage />} />
-          <Route path='/registerPlace' element={<RegisterPlace />} />
-          <Route path='/LoginPage' element={<LoginPage/>}/>
-          <Route path='/JoinPage' element={<JoinPage/>}/>
-        </Routes>
-    </Provider>
+import LoadingSpinner from './components/common/LoadingSpinner';
+import { useAuth } from './hooks/useAuth';
+// Lazy-loaded components
+const RegisterDog = React.lazy(() => import('./pages/RegisterDog'));
+const Ranking = React.lazy(() => import('./pages/Ranking'));
+const MainPage = React.lazy(() => import('./pages/MainPage'));
+const MyMapPage = React.lazy(() => import('./pages/MapPage/MyMapPage'));
+const RegisterPlace = React.lazy(() => import('./pages/MapPage/RegisterPlace'));
+const LoginPage = React.lazy(() => import('./pages/LoginPage'));
+const JoinPage = React.lazy(() => import('./pages/JoinPage'));
+const MyFeed = React.lazy(() => import('./pages/myFeedPage/MyFeed'));
+const MyFeedPostPage = React.lazy(
+  () => import('./pages/myFeedPage/MyFeedPostPage'),
+);
+const MyPlacePage = React.lazy(() => import('./pages/MapPage/MyPlacePage'));
+const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
+const ProfileUpdatePage = React.lazy(() => import('./pages/ProfileUpdatePage'));
+const MyPetPage = React.lazy(() => import('./pages/MyPetPage'));
+const FindIdPassword = React.lazy(() => import('./pages/FindIdPassword'));
+const SignOut = React.lazy(() => import('./pages/Signout'));
+const FirstPage = React.lazy(() => import('./pages/FirstPage'));
+const MyDogsPage = React.lazy(() => import('./pages/MyDogs'));
 
+function App() {
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const [isAuth, setIsAuth] = useState(!!localStorage.getItem('userToken'));
+  const getUserAuth = () => {
+    const tokenExist = localStorage.getItem('userToken');
+    setIsAuth(!!tokenExist);
+    if (!!tokenExist === false) {
+      navigate('/loginPage');
+    }
+  };
+
+  useEffect(() => {
+    getUserAuth();
+  }, [pathname]);
+
+  return (
+    <Provider store={store}>
+      <Suspense fallback={<LoadingSpinner />}>
+        <Routes>
+          {isAuth && (
+            <>
+              <Route path="/myFeed" element={<MyFeed />} />
+              <Route path="/myFeed/post" element={<MyFeedPostPage />} />
+              <Route path="/mapPage" element={<MyMapPage />} />
+              <Route path="/mapPage/myPlace" element={<MyPlacePage />} />
+              <Route
+                path="/mapPage/registerPlace"
+                element={<RegisterPlace />}
+              />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/profile/update" element={<ProfileUpdatePage />} />
+              <Route path="/myPet" element={<MyPetPage />} />
+              <Route path="/find" element={<FindIdPassword />} />
+              <Route path="/signOut" element={<SignOut />} />
+              <Route path="/mainPage" element={<FirstPage />} />
+              <Route path="/myDogs" element={<MyDogsPage />} />
+              <Route path="/rankings" element={<Ranking />} />
+              <Route path="/registerDog" element={<RegisterDog />} />
+            </>
+          )}
+          <Route path="/" element={<MainPage />} />
+          <Route path="/loginPage" element={<LoginPage />} />
+          <Route path="/joinPage" element={<JoinPage />} />
+          <Route path="/loading" element={<LoadingSpinner />} />
+        </Routes>
+      </Suspense>
+    </Provider>
   );
 }
 

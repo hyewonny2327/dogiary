@@ -1,7 +1,7 @@
-const memoService = require("../services/memoService.js");
-const errorHandler = require("../middlewares/errorHandler.js");
+const memoService = require('../services/memoService.js');
+const errorHandler = require('../middlewares/errorHandler.js');
 
-const commonErrors = require("../middlewares/commonError.js");
+const commonErrors = require('../middlewares/commonErrors.js');
 const memoController = {
 	//post
 	async postMemo(req, res, next) {
@@ -23,6 +23,7 @@ const memoController = {
 	},
 	// get
 	async getMemoById(req, res, next) {
+		const cursor = req.query.cursor;
 		try {
 			const dogId = req.params.id;
 			if (!dogId) {
@@ -32,8 +33,15 @@ const memoController = {
 					{ statusCode: 400 }
 				);
 			}
-			const memo = await memoService.getMemoById(dogId, req.currentUserId);
-			res.json(memo);
+			const memo = await memoService.getMemoById(
+				dogId,
+				req.currentUserId,
+				cursor
+			);
+			res.json({
+				error: null,
+				data: memo,
+			});
 		} catch (error) {
 			next(error);
 		}
@@ -63,23 +71,23 @@ const memoController = {
 		}
 	},
 
-	//delete
-	async deleteMemo(req, res, next) {
-		try {
-			const dogId = req.params.id;
-			const memoId = req.params.memoId;
-			if (!dogId || !memoId) {
-				throw new errorHandler(
-					commonErrors.argumentError,
-					"데이터를 받아오지 못했습니다.",
-					{ statusCode: 400 }
-				);
-			}
-			await memoService.deleteMemo(dogId, memoId, req.currentUserId);
-			res.status(200).json({ message: "Data deleted successfully" });
-		} catch (error) {
-			next(error);
-		}
-	},
+  //delete
+  async deleteMemo(req, res, next) {
+    try {
+      const dogId = req.params.id;
+      const memoId = req.params.memoId;
+      if (!dogId || !memoId) {
+        throw new errorHandler(
+          commonErrors.argumentError,
+          '데이터를 받아오지 못했습니다.',
+          { statusCode: 400 },
+        );
+      }
+      await memoService.deleteMemo(dogId, memoId, req.currentUserId);
+      res.status(200).json({ message: 'Data deleted successfully' });
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 module.exports = memoController;

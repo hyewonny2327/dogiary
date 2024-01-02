@@ -1,12 +1,29 @@
 import React, { useState } from 'react';
 import { LogoBar, NavBar } from '../components/common/Header';
 import { LongColoredBtn, LongStrokedBtn } from '../components/common/Buttons';
-import { ContainerBox, InputBox } from '../components/common/Boxes';  // Removed StyledContainerBox
+import { ContainerBox, InputBox } from '../components/common/Boxes'; // Removed StyledContainerBox
 import styled from 'styled-components';
+import { api } from '../utils/api';
+import { useNavigate } from 'react-router-dom';
 
+async function UserLogin(id, pw, navigate) {
+  try {
+    const response = await api.post('auth/login', {
+      userId: id,
+      password: pw,
+    });
+    let token = response.data.data.token;
+    localStorage.setItem('userToken', token);
+    alert('로그인성공');
+    navigate('/myFeed');
+  } catch (error) {
+    alert('로그인실패 다시 시도하세요');
+  }
+}
 function LoginPage() {
   const [user_Id, setUser_Id] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleChangeUserId = (e) => {
     setUser_Id(e.target.value);
@@ -16,6 +33,12 @@ function LoginPage() {
     setPassword(e.target.value);
   };
 
+  function handleLogin() {
+    UserLogin(user_Id, password, navigate);
+  }
+  function navigateJoin() {
+    navigate('/joinPage');
+  }
 
   return (
     <div className="main">
@@ -26,7 +49,7 @@ function LoginPage() {
           <LoginContainer className="container-box">
             <div className="text-box">
               <h3>로그인</h3>
-              <a>로그인을 해서 Dogiary의 서비스를 사용해보세요!</a>
+              <span>로그인을 해서 Dogiary의 서비스를 사용해보세요!</span>
             </div>
             <div className="loginBox">
               <InputBox>
@@ -54,8 +77,12 @@ function LoginPage() {
               </InputBox>
             </div>
             <div className="btn-box">
-              <LongColoredBtn text={'로그인하기'} className="long-btn" />
-              <LongStrokedBtn text={'회원가입'} className="long-btn" />
+              <LongColoredBtn className="long-btn" onClick={handleLogin}>
+                로그인하기
+              </LongColoredBtn>
+              <LongStrokedBtn className="long-btn" onClick={navigateJoin}>
+                회원가입
+              </LongStrokedBtn>
             </div>
           </LoginContainer>
         </ContainerBox>
@@ -82,11 +109,10 @@ const LoginContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width:80%;
-    height:90px;
+    width: 80%;
+    height: 90px;
     justify-content: space-between;
   }
-
 
   display: flex;
   flex-direction: column;
