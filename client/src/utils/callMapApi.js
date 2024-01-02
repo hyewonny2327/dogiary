@@ -3,7 +3,7 @@ import React from 'react';
 import { setMarkers } from '../slice/store';
 import getAddress from './getAddress';
 //kakao map api에서 키워드를 기준으로 지도를 불러오는 함수
-//키워드를 받으면 마커를 저장한다.  
+//키워드를 받으면 마커를 저장한다.
 
 /**
  * 
@@ -42,7 +42,6 @@ export default async function callMapApi(dispatch, searchInput) {
           reject(new Error(`Failed to fetch data: ${status}`));
         }
       });
-      
     });
 
     // 마커 업데이트
@@ -67,7 +66,5 @@ export default async function callMapApi(dispatch, searchInput) {
     // 주소 업데이트
     //setMarkerAddresses(addresses);
     //return addresses;
-  } catch (error) {
-    console.error('API 호출 및 주소 가져오기 오류:', error);
-  }
+  } catch (error) {}
 }

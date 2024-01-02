@@ -7,10 +7,10 @@ import puppyImg from '../puppy.png';
 function FirstPage() {
   const navigate = useNavigate();
   const login = () => {
-    navigate('/LoginPage');
+    navigate('/loginPage');
   };
   const signIn = () => {
-    navigate('/JoinPage');
+    navigate('/joinPage');
   };
   return (
     <Wraper>

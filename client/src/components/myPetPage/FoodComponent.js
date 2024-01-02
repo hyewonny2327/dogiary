@@ -6,14 +6,15 @@ import styled from 'styled-components';
 import 'react-datepicker/dist/react-datepicker.css';
 import { ko } from 'date-fns/esm/locale';
 import { api } from '../../utils/api';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCalendarDays } from '@fortawesome/free-solid-svg-icons';
 
-export default function FoodComponent({ dogInfo }) {
+export default function FoodComponent({ dogInfo, apiCall }) {
   const _id = dogInfo?.data;
   const [category, setCategory] = useState('');
   const [name, setName] = useState('');
   const [content, setContent] = useState('');
   const [startDate, setStartDate] = useState(new Date());
-  const [foodList, setFoodList] = useState([]);
 
   const handleChangeCategory = (e) => {
     setCategory(e.target.value);
@@ -28,25 +29,23 @@ export default function FoodComponent({ dogInfo }) {
   };
 
   //등록버튼
-  const FoodPostClick = async () => {
+  const foodPostClick = async () => {
     try {
-      const response = await api.post(`api/dogs/${_id}/foods`, {
-        date: startDate,
-        category,
-        name,
-        content,
+      const response = await api.post(`/dogs/${_id._id}/foods`, {
+        date: startDate.toISOString().split('T')[0],
+        category: category,
+        name: name,
+        content: content,
       });
-      setFoodList([...foodList, response.data]);
-      setCategory('');
       alert('등록성공');
+      setCategory('');
+      setName('');
+      setContent('');
+      apiCall(_id._id);
     } catch (error) {
       console.error('등록에 실패했습니다.', error);
     }
   };
-
-  useEffect(() => {
-    console.log('이거::', _id);
-  });
 
   return (
     <>
@@ -60,9 +59,9 @@ export default function FoodComponent({ dogInfo }) {
               </div>
               <div>
                 <SmallBtn
-                // onClick={(e) => {
-                // memoPostClick();
-                // }}
+                  onClick={(e) => {
+                    foodPostClick();
+                  }}
                 >
                   등록
                 </SmallBtn>
@@ -74,18 +73,18 @@ export default function FoodComponent({ dogInfo }) {
                 selected={startDate}
                 onChange={(date) => setStartDate(date)}
                 dateFormat="yyyy년 MM월 dd일"
-              />
+              ></StyledDatePicker>
             </DatePickerSelector>
             <InputArea>
               <div>
                 <label htmlFor="inputtitle">
                   <input
-                    // value={title}
+                    value={category}
                     type="text"
                     placeholder="분류"
                     name="title"
                     id="inputtitle"
-                    // onChange={handleChangeTitle}
+                    onChange={handleChangeCategory}
                   />
                 </label>
               </div>
@@ -94,29 +93,29 @@ export default function FoodComponent({ dogInfo }) {
               <div>
                 <label htmlFor="inputtitle">
                   <input
-                    // value={title}
+                    value={name}
                     type="text"
                     placeholder="제품명"
                     name="title"
                     id="inputtitle"
-                    // onChange={handleChangeTitle}
+                    onChange={handleChangeName}
                   />
                 </label>
               </div>
             </InputArea>
-            <TextArea>
+            <InputArea>
               <div>
                 <label htmlFor="textareacontent">
-                  <textarea
+                  <input
                     value={content}
                     name="content"
                     id="textareacontent"
                     placeholder="메모 입력"
                     onChange={handleChangeContent}
-                  ></textarea>
+                  />
                 </label>
               </div>
-            </TextArea>
+            </InputArea>
           </HeaderSection>
           <BodySection>
             <Food>
@@ -124,23 +123,21 @@ export default function FoodComponent({ dogInfo }) {
               <div>전체보기</div>
             </Food>
             <FoodItems>
-              {/* 반복될아이템 */}
-
-              {/* {_id.memos.map((item, index) => ( */}
-              <FoodItemWrapper>
-                <Item>
-                  <div>
-                    <div>날짜</div>
-                    <div>분류</div>
-                  </div>
-                  <div>제품명</div>
-                  <div>메모</div>
-                </Item>
-                <IconBtn>
-                  <div>...</div>
-                </IconBtn>
-              </FoodItemWrapper>
-              {/* ))} */}
+              {_id.foods.map((item, index) => (
+                <FoodItemWrapper>
+                  <Item>
+                    <div>
+                      <div>{item.date}</div>
+                      <div>{item.category}</div>
+                    </div>
+                    <div>{item.name}</div>
+                    <div>{item.content}</div>
+                  </Item>
+                  <IconBtn>
+                    <div>...</div>
+                  </IconBtn>
+                </FoodItemWrapper>
+              ))}
             </FoodItems>
           </BodySection>
         </FoodContainer>
@@ -198,13 +195,15 @@ const DatePickerSelector = styled.div`
   border-radius: 4px;
 `;
 const StyledDatePicker = styled(DatePicker)`
-  width: 60%;
+  // background: black;
+  width: 80%;
   height: 100%;
   border: 1px solid #bdaf74;
   border-radius: 5px;
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
   color: black;
+  text-align: center;
 `;
 
 const InputArea = styled.div`
@@ -236,51 +235,6 @@ const InputArea = styled.div`
         font-family: 'Noto Sans KR', sans-serif;
         font-weight: 700;
         color: #5f5013;
-        &::placeholder {
-          width: 100%;
-          height: 100%;
-          font-size: 14px;
-          color: #a6a9b1;
-        }
-      }
-    }
-  }
-`;
-
-const TextArea = styled.div`
-  width: 100%;
-  height: 15%;
-  border: 1px solid #bdaf74;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: rgba(255, 255, 255, 0);
-  border: 1px solid #bdaf74;
-  border-radius: 5px;
-
-  & > div {
-    width: 100%;
-    height: 100%;
-
-    & > label {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      & > textarea {
-        width: 90%;
-        height: 50%;
-        font-family: 'Noto Sans KR', sans-serif;
-        font-weight: 700;
-        color: #5f5013;
-        border: none;
-        overflow: scroll;
-
-        &::-webkit-scrollbar {
-          display: none;
-        }
-        outline: none;
         &::placeholder {
           width: 100%;
           height: 100%;
@@ -351,7 +305,7 @@ const Item = styled.div`
 
   //날짜
   & > div:first-child {
-    width: 20%;
+    width: 25%;
     height: 100%;
     font-size: 10px;
     color: #888888;
@@ -369,7 +323,7 @@ const Item = styled.div`
   }
   //제목
   & > div:nth-child(2) {
-    width: 30%;
+    width: 25%;
     height: 100%;
     font-size: 16px;
     color: black;

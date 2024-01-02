@@ -20,41 +20,30 @@ export default function DailyDiaryComponent({ clickedDate }) {
   async function callDailyDiaryApi() {
     try {
       const formattedDate = formatDateString(clickedDate);
-      console.log(formattedDate);
       const diaryData = await showDailyDiaries(formattedDate);
-      console.log(diaryData);
       if (Array.isArray(diaryData)) {
         if (diaryData.length === 0) {
           setIsNoData(true);
-          console.log(
-            '다이어리 정보 없음 -> state설정해서 기본 배경화면 보여주기',
-          );
         } else {
           setDailyDiaries(diaryData);
-          //setIsNoData(false);
         }
       } else {
         setIsNoData(true);
       }
     } catch (error) {
-      // setIsNoData(true);
+      console.error(error);
     }
   }
 
   function formatDateString(clickedDate) {
-    // '2023년 12월 23일' 형식의 문자열에서 숫자만 추출
-    const dateArray = clickedDate.match(/\d+/g);
-
-    // 추출한 숫자를 이용하여 day.js 객체 생성
-    //! day js 지우기 1!!!! 그냥 split 쓰기
-    const formattedDate = dayjs(
-      `${dateArray[0]}-${dateArray[1]}-${dateArray[2]}`,
-    );
-
-    // day.js를 사용하여 원하는 형식으로 포맷팅
-    const isoFormattedDate = formattedDate.format('YYYY-MM-DD');
-
-    return isoFormattedDate;
+    const year = clickedDate.split(' ')[0].replace('년', '');
+    const month = clickedDate.split(' ')[1].replace('월', '');
+    const day = clickedDate.split(' ')[2].replace('일', '');
+    const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(
+      2,
+      '0',
+    )}`;
+    return formattedDate;
   }
   function handleMoreBtnClick() {
     setIsMoreBtnClicked((prev) => !prev);
@@ -97,14 +86,10 @@ export default function DailyDiaryComponent({ clickedDate }) {
   }
 
   useEffect(() => {
-    console.log(isEditMode);
-  }, [isEditMode]);
-  useEffect(() => {
     callDailyDiaryApi();
   }, []);
   useEffect(() => {
     setDailyDiaries([]);
-    console.log(isNoData);
   }, [isNoData]);
   return (
     <Container>
@@ -177,8 +162,8 @@ export default function DailyDiaryComponent({ clickedDate }) {
                 >
                   <img
                     className="image"
-                    // src={diary.imageUrls[index]}
-                    src="/images/147722e1-adc8-4ca0-acea-67826c8af098.png"
+                    // src="/images/dog2.jpg"
+                    src={diary.imageUrls[imageIndex]}
                     alt="업로드된 이미지"
                   ></img>
                 </div>
@@ -186,9 +171,6 @@ export default function DailyDiaryComponent({ clickedDate }) {
             </div>
           </DailyDiary>
         ))}
-      {/* {moreData ? (
-        <div ref={targetRef} onIntersect={handleIntersect}></div>
-      ) : null} */}
     </Container>
   );
 }
@@ -264,6 +246,7 @@ const DailyDiary = styled.div`
     padding: 20px;
     box-sizing: border-box;
     margin: 2rem 0;
+    overflow: auto;
   }
   .image-container {
     width: 100%;
@@ -271,12 +254,13 @@ const DailyDiary = styled.div`
     overflow: auto;
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     flex-direction: column;
   }
   .image {
     width: 90%;
-    height: 300px;
-    object-fit: contain;
+    height: 100%;
+    object-fit: cover;
     //border: 1px solid red;
   }
   .text {
@@ -287,6 +271,7 @@ const DailyDiary = styled.div`
     box-sizing: border-box;
     border-bottom: 1px solid #bdaf74;
     overflow: auto;
+    object-fit: contain;
   }
 `;
 

@@ -18,30 +18,32 @@ function MapRenderer() {
     if (clickedTag === 'tag4') {
       fetchShowAllPlaces();
       return;
-    }
+    } else {
+      console.log(clickedTag);
 
-    showPlacesByTag(clickedTag)
-      .then((placesData) => {
-        console.log(placesData);
-        if (!placesData) {
-          // 데이터가 없을 때의 처리
-          console.log('No data available');
-          setPositions([]);
-          setTitles([]);
-          return;
-        }
-        const _positions = placesData.map((place) => ({
-          lat: place.position[1],
-          lng: place.position[0],
-        }));
-        const _titles = placesData.map((place) => place.title);
-        setPositions(_positions);
-        setTitles(_titles);
-        setIsMarkerClicked(Array(_positions.length).fill(false));
-      })
-      .catch((error) => {
-        console.error('showAllPlaces 오류 in MapRenderer');
-      });
+      showPlacesByTag(clickedTag)
+        .then((placesData) => {
+          console.log('데이터 확인', placesData);
+          if (!placesData) {
+            // 데이터가 없을 때의 처리
+            console.log('No data available');
+            setPositions([]);
+            setTitles([]);
+            return;
+          }
+          const _positions = placesData.map((place) => ({
+            lat: place.position[1],
+            lng: place.position[0],
+          }));
+          const _titles = placesData.map((place) => place.title);
+          setPositions(_positions);
+          setTitles(_titles);
+          setIsMarkerClicked(Array(_positions.length).fill(false));
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   }, [clickedTag]);
 
   useEffect(() => {
@@ -65,10 +67,9 @@ function MapRenderer() {
       .then((response) => {
         const placesData = response.data.data;
         if (!placesData) {
-          // 데이터가 없을 때의 처리
-          console.log('No data available');
           return;
         }
+        console.log(placesData);
         const _positions = placesData.map((place) => ({
           lat: place.position[1],
           lng: place.position[0],
@@ -78,9 +79,7 @@ function MapRenderer() {
         setTitles(_titles);
         setIsMarkerClicked(Array(_positions.length).fill(false));
       })
-      .catch((error) => {
-        console.error('showAllPlaces 오류 in MapRenderer');
-      });
+      .catch((error) => {});
   }
 
   //마커 클릭하면 장소이름 보여주기

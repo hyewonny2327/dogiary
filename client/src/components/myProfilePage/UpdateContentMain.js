@@ -64,9 +64,7 @@ const UpdateContentMain = ({
         // 조건 boolean
         setUpdateEnabled(false);
       }
-    } catch (error) {
-      console.error('닉네임 확인 중 오류 발생:', error);
-    }
+    } catch (error) {}
   };
 
   //
@@ -91,9 +89,7 @@ const UpdateContentMain = ({
         setUpdateEnabled(false);
         setWithdrawalPassword(false);
       }
-    } catch (error) {
-      console.error('비밀번호 확인 오류:', error);
-    }
+    } catch (error) {}
   };
 
   //새 비밀번호

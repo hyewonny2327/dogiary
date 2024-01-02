@@ -7,7 +7,7 @@ const dogController = {
   async postDog(req, res, next) {
     try {
       const dogData = req.body;
-
+      console.log(dogData);
       dogData.imageUrl = await getImageUrl(req);
       if (!dogData) {
         throw new errorHandler(
@@ -96,7 +96,7 @@ const getImageUrl = async (req) => {
       );
     }
   } catch (error) {
-    throw new errorHandler(commonErrors.internalError, 'internalError', {
+    throw new errorHandler('internalError', commonErrors.internalError, {
       statusCode: 500,
       cause: error,
     });

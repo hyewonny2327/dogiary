@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ContainerBox } from '../common/Boxes';
 import { SmallBtn } from '../common/Buttons';
 import DatePicker from 'react-datepicker';
@@ -8,30 +8,28 @@ import { ko } from 'date-fns/esm/locale';
 
 import { api } from '../../utils/api';
 
-export default function MemoComponent({ weights, id }) {
+export default function WeightsComponent({ dogInfo, apiCall }) {
   const [weight, setWeight] = useState('');
   const [startDate, setStartDate] = useState(new Date());
-
+  const _id = dogInfo?.data;
   const handleChangeWeight = (e) => {
     setWeight(e.target.value);
   };
 
   const memoPostClick = async () => {
     try {
-      const response = await api.post(`/dogs/${id}/weights`, {
+      const response = await api.post(`/dogs/${_id._id}/weights`, {
         date: startDate.toISOString().split('T')[0],
         weight: Number(weight),
       });
-      const data = response.data;
 
       alert('등록성공');
       setWeight('');
-      return data;
+      apiCall(_id._id);
     } catch (error) {
       console.error('등록에 실패했습니다.', error);
     }
   };
-
   return (
     <>
       <ContainerBox>
@@ -42,7 +40,7 @@ export default function MemoComponent({ weights, id }) {
               <div>
                 <SmallBtn
                   onClick={(e) => {
-                    memoPostClick();
+                    weightPostClick();
                   }}
                 >
                   등록
@@ -78,17 +76,19 @@ export default function MemoComponent({ weights, id }) {
               <div>전체보기</div>
             </Weigth>
             <WeigthItems>
-              {/* 반복될아이템 */}
-              <WeigthItemWrapper>
-                <Item>
-                  <div>나이</div>
-                  <div>날짜</div>
-                </Item>
-                <IconBtn>
-                  <div>몸무게</div>
-                  <div>...</div>
-                </IconBtn>
-              </WeigthItemWrapper>
+              {_id.weights.map((item, index) => (
+                <WeigthItemWrapper>
+                  <div className="datediv">
+                    <Item>
+                      <div>{item.date}</div>
+                    </Item>
+                  </div>
+                  <IconBtn>
+                    <div>{item.weight}Kg</div>
+                    {/* <div>...</div> */}
+                  </IconBtn>
+                </WeigthItemWrapper>
+              ))}
             </WeigthItems>
           </BodySection>
         </WeightContainer>
@@ -146,13 +146,14 @@ const DatePickerSelector = styled.div`
   border-radius: 4px;
 `;
 const StyledDatePicker = styled(DatePicker)`
-  width: 90%;
+  width: 80%;
   height: 100%;
   border: 1px solid #bdaf74;
   border-radius: 5px;
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
   color: black;
+  text-align: center;
 `;
 
 const WeightInput = styled.div`
@@ -238,9 +239,12 @@ const WeigthItems = styled.div`
 `;
 
 const WeigthItemWrapper = styled.div`
+  .datediv {
+    width: 50%;
+  }
+  align-items: center;
   width: 100%;
-  height: 35%;
-  /* background-color: blue; */
+  height: 5vh;
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid #bdaf74;
@@ -248,7 +252,9 @@ const WeigthItemWrapper = styled.div`
 `;
 
 const Item = styled.div`
+  padding: 5%;
   width: 65%;
+  // align-items: center;
   height: 100%;
   display: flex;
   justify-content: center;

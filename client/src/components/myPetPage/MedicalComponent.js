@@ -1,44 +1,44 @@
-import { useState } from 'react';
-import { ContainerBox, InputBox } from '../common/Boxes';
+import { useEffect, useState } from 'react';
+import { ContainerBox } from '../common/Boxes';
+import { SmallBtn } from '../common/Buttons';
 import DatePicker from 'react-datepicker';
 import styled from 'styled-components';
 import 'react-datepicker/dist/react-datepicker.css';
 import { ko } from 'date-fns/esm/locale';
 import { SmallBtn } from '../common/Buttons';
 import axios from 'axios';
-
+import { api } from '../../utils/api';
 export default function MedicalComponent() {
   const [content, setContent] = useState('');
-  const [hospital, setHospital] = useState('');
-  const [cost, setCost] = useState('');
   const [startDate, setStartDate] = useState(new Date());
-  const [medicalList, setMedicalList] = useState([]);
+  const [cost, setCost] = useState('');
+  const [hospital, setHospital] = useState('');
+
+  const _id = dogInfo?.data;
 
   const handleChangeContent = (e) => {
     setContent(e.target.value);
   };
-
-  const handleChangeHospital = (e) => {
-    setHospital(e.target.value);
-  };
-
   const handleChangeCost = (e) => {
     setCost(e.target.value);
   };
-
-  const MedicalPostClick = async () => {
+  const handleChangeHospital = (e) => {
+    setHospital(e.target.value);
+  };
+  const medicalPostClick = async () => {
     try {
-      const response = await axios.post(
-        'http://localhost:8080/api/dogs/:id/medicals/:id',
-        {
-          content,
-          date: startDate,
-          cost,
-          hospital,
-        },
-      );
-      setMedicalList([...medicalList, response.data]);
+      const response = await api.post(`/dogs/${_id._id}/medicals`, {
+        date: startDate.toISOString().split('T')[0],
+        content: content,
+        cost: Number(cost),
+        hospital: hospital,
+      });
+
+      alert('등록성공');
       setContent('');
+      setCost('');
+      setHospital('');
+      apiCall(_id._id);
     } catch (error) {
       console.error('등록에 실패했습니다.', error);
     }
@@ -53,9 +53,9 @@ export default function MedicalComponent() {
               <div>진료기록을 등록하세요.</div>
               <div>
                 <SmallBtn
-                // onClick={(e) => {
-                // memoPostClick();
-                // }}
+                  onClick={(e) => {
+                    medicalPostClick();
+                  }}
                 >
                   등록
                 </SmallBtn>
@@ -73,12 +73,12 @@ export default function MedicalComponent() {
               <div>
                 <label htmlFor="inputtitle">
                   <input
-                    // value={title}
+                    value={content}
                     type="text"
                     placeholder="진료내용"
                     name="title"
                     id="inputtitle"
-                    // onChange={handleChangeTitle}
+                    onChange={handleChangeContent}
                   />
                 </label>
               </div>
@@ -87,12 +87,12 @@ export default function MedicalComponent() {
               <div>
                 <label htmlFor="inputtitle">
                   <input
-                    // value={title}
+                    value={hospital}
                     type="text"
                     placeholder="병원"
                     name="title"
                     id="inputtitle"
-                    // onChange={handleChangeTitle}
+                    onChange={handleChangeHospital}
                   />
                 </label>
               </div>
@@ -101,11 +101,11 @@ export default function MedicalComponent() {
               <div>
                 <label htmlFor="textareacontent">
                   <textarea
-                    value={content}
+                    value={cost}
                     name="content"
                     id="textareacontent"
                     placeholder="비용"
-                    onChange={handleChangeContent}
+                    onChange={handleChangeCost}
                   ></textarea>
                 </label>
               </div>
@@ -117,22 +117,21 @@ export default function MedicalComponent() {
               <div>전체보기</div>
             </Madical>
             <MadicalItems>
-              {/* 반복될아이템 */}
-              {/* {_id.memos.map((item, index) => ( */}
-              <MadicalItemWrapper>
-                <Item>
-                  <div>날짜</div>
-                  <div>진료내용</div>
-                  <div>
-                    <div>병원</div>
-                    <div>비용</div>
-                  </div>
-                </Item>
-                <IconBtn>
-                  <div>...</div>
-                </IconBtn>
-              </MadicalItemWrapper>
-              {/* ))} */}
+              {_id.medicals.map((item, index) => (
+                <MadicalItemWrapper>
+                  <Item>
+                    <div>{item.date}</div>
+                    <div>{item.content}</div>
+                    <div>
+                      <div>{item.hospital}</div>
+                      <div>{item.cost.toLocaleString('ko-KR')}원</div>
+                    </div>
+                  </Item>
+                  <IconBtn>
+                    <div>...</div>
+                  </IconBtn>
+                </MadicalItemWrapper>
+              ))}
             </MadicalItems>
           </BodySection>
         </MedicalContainer>
@@ -190,13 +189,14 @@ const DatePickerSelector = styled.div`
   border-radius: 4px;
 `;
 const StyledDatePicker = styled(DatePicker)`
-  width: 60%;
+  width: 80%;
   height: 100%;
   border: 1px solid #bdaf74;
   border-radius: 5px;
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
   color: black;
+  text-align: center;
 `;
 
 const InputArea = styled.div`
@@ -355,8 +355,8 @@ const Item = styled.div`
     height: 50%;
     font-size: 16px;
     color: black;
-    align-items: center;
     display: flex;
+    align-items: center;
   }
   //내용
   & > div:last-child {

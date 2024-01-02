@@ -12,16 +12,12 @@ import { useLocation } from 'react-router-dom';
 export default function MyPetPage() {
   const [tab, setTab] = useState('profile');
   const [dogInfo, setDogInfo] = useState(null);
-
   const location = useLocation();
-  const id = location.state?.id;
+  const id = location.state.id;
 
   const fetchDogInfo = async (id) => {
     try {
       const response = await api.get(`/dogs?id=${id}`);
-
-      console.log('HTTP 상태 코드:', response.status);
-
       if (response.status === 200) {
         const data = response.data;
         setDogInfo(data);
@@ -34,17 +30,8 @@ export default function MyPetPage() {
   };
 
   useEffect(() => {
-    const dogId = id;
-    fetchDogInfo(dogId);
-  }, [id]);
-
-  // useEffect(() => {
-  //   console.log('dogInfo:', dogInfo);
-  //   // if (dogInfo && dogInfo.data) {
-  //   //   const dogType = dogInfo.data.type;
-  //   //   console.log('강아지 종류:', dogType);
-  //   // }
-  // }, [dogInfo]);
+    fetchDogInfo(id);
+  }, []);
 
   function handleClickTab(clickedTab) {
     setTab(clickedTab);
@@ -55,48 +42,66 @@ export default function MyPetPage() {
       <LogoBar />
       <NavBar />
       <Main>
-        <div className="title">의 페이지</div>
-        <PetDiaryContainer>
-          <div className="tab-container">
-            <div
-              onClick={() => handleClickTab('profile')}
-              className={tab === 'profile' ? 'clicked' : ''}
-            >
-              프로필
-            </div>
-            <div
-              onClick={() => handleClickTab('weight')}
-              className={tab === 'weight' ? 'clicked' : ''}
-            >
-              몸무게
-            </div>
-            <div
-              onClick={() => handleClickTab('medical')}
-              className={tab === 'medical' ? 'clicked' : ''}
-            >
-              진료 기록
-            </div>
-            <div
-              onClick={() => handleClickTab('food')}
-              className={tab === 'food' ? 'clicked' : ''}
-            >
-              사료/영양제/간식
-            </div>
-            <div
-              onClick={() => handleClickTab('memo')}
-              className={tab === 'memo' ? 'clicked' : ''}
-            >
-              메모
-            </div>
-          </div>
-          <div className="content-container">
-            {tab === 'profile' && <ProfileComponent dogInfo={dogInfo} />}
-            {tab === 'weight' && <WeightComponent dogInfo={dogInfo} />}
-            {tab === 'medical' && <MedicalComponent dogInfo={dogInfo} />}
-            {tab === 'food' && <FoodComponent dogInfo={dogInfo} />}
-            {tab === 'memo' && <MemoComponent dogInfo={dogInfo} />}
-          </div>
-        </PetDiaryContainer>
+        {dogInfo && (
+          <>
+            <div className="title">{dogInfo.data.name}의 페이지</div>
+            <PetDiaryContainer>
+              <div className="tab-container">
+                <div
+                  onClick={() => handleClickTab('profile')}
+                  className={tab === 'profile' ? 'clicked' : ''}
+                >
+                  프로필
+                </div>
+                <div
+                  onClick={() => handleClickTab('weight')}
+                  className={tab === 'weight' ? 'clicked' : ''}
+                >
+                  몸무게
+                </div>
+                <div
+                  onClick={() => handleClickTab('medical')}
+                  className={tab === 'medical' ? 'clicked' : ''}
+                >
+                  진료 기록
+                </div>
+                <div
+                  onClick={() => handleClickTab('food')}
+                  className={tab === 'food' ? 'clicked' : ''}
+                >
+                  사료/영양제/간식
+                </div>
+                <div
+                  onClick={() => handleClickTab('memo')}
+                  className={tab === 'memo' ? 'clicked' : ''}
+                >
+                  메모
+                </div>
+              </div>
+              <div className="content-container">
+                {tab === 'profile' && (
+                  <ProfileComponent apiCall={fetchDogInfo} dogInfo={dogInfo} />
+                )}
+                {tab === 'weight' && (
+                  <WeightComponent apiCall={fetchDogInfo} dogInfo={dogInfo} />
+                )}
+                {tab === 'medical' && (
+                  <MedicalComponent apiCall={fetchDogInfo} dogInfo={dogInfo} />
+                )}
+                {tab === 'food' && (
+                  <FoodComponent apiCall={fetchDogInfo} dogInfo={dogInfo} />
+                )}
+                {tab === 'memo' && (
+                  <MemoComponent
+                    dogInfo={dogInfo}
+                    apiCall={fetchDogInfo}
+                    setDogInfo={setDogInfo}
+                  />
+                )}
+              </div>
+            </PetDiaryContainer>
+          </>
+        )}
       </Main>
     </PetContainer>
   );
@@ -113,9 +118,10 @@ const Main = styled.div`
   width: 100%;
 
   .title {
-    font-size: 30px;
+    font-size: 25px;
     font-weight: 900;
     color: #5f5013;
+    margin-top: 5vh;
   }
 `;
 
@@ -149,9 +155,8 @@ const PetDiaryContainer = styled.div`
 
   .content-container {
     width: 370px;
-    height: 60vh;
 
-    overflow: auto;
+    // overflow: auto;
     display: flex;
     justify-content: center;
     align-items: center;
